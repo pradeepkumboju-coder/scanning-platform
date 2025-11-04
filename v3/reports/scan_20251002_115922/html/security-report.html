@@ -1,0 +1,1045 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Security Scan Report - scan_20251002_115922</title>
+    <style>
+        * { box-sizing: border-box; }
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            margin: 0;
+            padding: 20px;
+            background-color: #f8f9fa;
+            color: #333;
+            line-height: 1.6;
+        }
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            overflow: hidden;
+        }
+        .header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 30px;
+            text-align: center;
+        }
+        .header h1 {
+            margin: 0;
+            font-size: 2.5em;
+            font-weight: 300;
+        }
+        .header p {
+            margin: 10px 0 0;
+            opacity: 0.9;
+            font-size: 1.1em;
+        }
+        .node-status {
+            padding: 20px 30px;
+            border-left: 4px solid;
+            margin: 20px 30px;
+            border-radius: 4px;
+        }
+        .node-status.safe {
+            background: #d4edda;
+            border-color: #28a745;
+            color: #155724;
+        }
+        .node-status.vulnerable {
+            background: #f8d7da;
+            border-color: #dc3545;
+            color: #721c24;
+        }
+        .node-status.unknown {
+            background: #fff3cd;
+            border-color: #ffc107;
+            color: #856404;
+        }
+        .summary {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+            gap: 15px;
+            padding: 30px;
+            background: #f8f9fa;
+        }
+        .summary-card {
+            background: white;
+            padding: 20px;
+            border-radius: 8px;
+            text-align: center;
+            border-left: 4px solid;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            transition: transform 0.2s;
+        }
+        .summary-card:hover {
+            transform: translateY(-2px);
+        }
+        .summary-card h3 {
+            margin: 0;
+            font-size: 2em;
+            font-weight: 600;
+        }
+        .summary-card p {
+            margin: 5px 0 0;
+            color: #666;
+            text-transform: uppercase;
+            font-size: 0.8em;
+            font-weight: bold;
+            letter-spacing: 0.5px;
+        }
+        .metrics-section {
+            padding: 30px;
+        }
+        .metrics-section h2 {
+            color: #333;
+            border-bottom: 2px solid #e9ecef;
+            padding-bottom: 10px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        .table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 15px;
+        }
+        .table th,
+        .table td {
+            padding: 12px 15px;
+            text-align: left;
+            border-bottom: 1px solid #e9ecef;
+        }
+        .table th {
+            background-color: #f8f9fa;
+            font-weight: 600;
+            color: #333;
+        }
+        .table tr:hover {
+            background-color: #f8f9fa;
+        }
+        .severity-badge {
+            padding: 4px 12px;
+            border-radius: 20px;
+            color: white;
+            font-size: 0.8em;
+            font-weight: bold;
+            text-transform: uppercase;
+            white-space: nowrap;
+        }
+        .vulnerability-details {
+            padding: 30px;
+        }
+        .vulnerability-item {
+            background: white;
+            border: 1px solid #e9ecef;
+            border-radius: 8px;
+            margin-bottom: 15px;
+            overflow: hidden;
+            transition: box-shadow 0.2s;
+        }
+        .vulnerability-item:hover {
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+        }
+        .vulnerability-header {
+            padding: 15px 20px;
+            background: #f8f9fa;
+            border-bottom: 1px solid #e9ecef;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 10px;
+        }
+        .vulnerability-body {
+            padding: 20px;
+        }
+        .source-tag {
+            background: #6c757d;
+            color: white;
+            padding: 2px 8px;
+            border-radius: 4px;
+            font-size: 0.7em;
+            margin-left: 10px;
+        }
+        .package-path {
+            color: #6c757d;
+            font-size: 0.9em;
+            margin-top: 5px;
+        }
+        .footer {
+            background: #343a40;
+            color: white;
+            padding: 20px 30px;
+            text-align: center;
+            font-size: 0.9em;
+        }
+        .pass { color: #28a745; font-weight: bold; }
+        .fail { color: #dc3545; font-weight: bold; }
+        .warn { color: #fd7e14; font-weight: bold; }
+        .recommendations {
+            background: #f8f9fa;
+            padding: 20px;
+            border-radius: 8px;
+            margin-top: 20px;
+        }
+        .recommendation-item {
+            padding: 10px 0;
+            border-bottom: 1px solid #e9ecef;
+        }
+        .recommendation-item:last-child {
+            border-bottom: none;
+        }
+        .priority-critical { color: #dc3545; font-weight: bold; }
+        .priority-high { color: #fd7e14; font-weight: bold; }
+        .priority-medium { color: #ffc107; font-weight: bold; }
+        .priority-low { color: #28a745; font-weight: bold; }
+        .empty-state {
+            text-align: center;
+            padding: 40px;
+            color: #6c757d;
+        }
+        .empty-state h3 {
+            color: #28a745;
+            font-size: 1.5em;
+            margin-bottom: 10px;
+        }
+        @media (max-width: 768px) {
+            .summary {
+                grid-template-columns: repeat(2, 1fr);
+            }
+            .vulnerability-header {
+                flex-direction: column;
+                align-items: flex-start;
+            }
+            .table {
+                font-size: 0.9em;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>🛡️ Security Scan Report</h1>
+            <p>Scan ID: scan_20251002_115922 | Generated: 10/2/2025, 11:59:26 AM</p>
+        </div>
+        
+        <div class="node-status vulnerable">
+            <strong>Node.js Security Status:</strong> Node.js version has known vulnerabilities
+            
+            <details style="margin-top: 10px;">
+                <summary>View Details</summary>
+                <pre style="margin: 10px 0; font-size: 0.9em;">██████   █████  ███    ██  ██████  ███████ ███████
+██   ██ ██   ██ ████   ██ ██       ██      ██   ██
+██   ██ ███████ ██ ██  ██ ██   ███ █████   ███████
+██   ██ ██   ██ ██  ██ ██ ██    ██ ██      ██   ██
+██████  ██   ██ ██   ████  ██████  ███████ ██   ██
+[1mThe current Node.js version (v20.17.0) is vulnerable to the following CVEs:[22m
+[1mCVE-2025-23083[22m(high): With the aid of the diagnostics_channel utility, an event can be hooked into whenever a worker thread is created. This is not limited only to workers but also exposes internal workers, where an instance of them can be fetched, and its constructor can be grabbed and reinstated for malicious usage. 
+This vulnerability affects Permission Model users (--permission) on Node.js v20, v22, and v23.
+[1mPatched versions[22m: ^20.18.2 || ^22.13.1 || ^23.6.1
+=</pre>
+            </details>
+            
+        </div>
+        
+        <div class="summary">
+            
+                <div class="summary-card" style="border-left-color: #dc3545">
+                    <h3 style="color: #dc3545">4</h3>
+                    <p>critical</p>
+                </div>
+              
+                <div class="summary-card" style="border-left-color: #fd7e14">
+                    <h3 style="color: #fd7e14">22</h3>
+                    <p>high</p>
+                </div>
+              
+                <div class="summary-card" style="border-left-color: #ffc107">
+                    <h3 style="color: #ffc107">7</h3>
+                    <p>moderate</p>
+                </div>
+              
+                <div class="summary-card" style="border-left-color: #ffc107">
+                    <h3 style="color: #ffc107">0</h3>
+                    <p>medium</p>
+                </div>
+              
+                <div class="summary-card" style="border-left-color: #28a745">
+                    <h3 style="color: #28a745">11</h3>
+                    <p>low</p>
+                </div>
+              
+                <div class="summary-card" style="border-left-color: #17a2b8">
+                    <h3 style="color: #17a2b8">0</h3>
+                    <p>info</p>
+                </div>
+              
+        </div>
+        
+        <div class="metrics-section">
+            <h2>📊 Security Targets</h2>
+            <table class="table">
+                <thead>
+                    <tr>
+                        <th>Metric</th>
+                        <th>Current</th>
+                        <th>Target</th>
+                        <th>Status</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>Critical Vulnerabilities</td>
+                        <td>4</td>
+                        <td>0</td>
+                        <td class="fail">FAIL</td>
+                    </tr>
+                    <tr>
+                        <td>High Vulnerabilities</td>
+                        <td>22</td>
+                        <td>&lt; 5</td>
+                        <td class="fail">FAIL</td>
+                    </tr>
+                    <tr>
+                        <td>Medium/Moderate Vulnerabilities</td>
+                        <td>7</td>
+                        <td>&lt; 20</td>
+                        <td class="pass">PASS</td>
+                    </tr>
+                    <tr>
+                        <td>Node.js Security</td>
+                        <td>Vulnerable</td>
+                        <td>Safe</td>
+                        <td class="fail">FAIL</td>
+                    </tr>
+                </tbody>
+            </table>
+            
+            
+        </div>
+        
+        <div class="vulnerability-details">
+            <h2>🔍 Vulnerability Details</h2>
+            
+            
+                <div class="vulnerability-item">
+                    <div class="vulnerability-header">
+                        <div>
+                            <strong>packages__lone-star-platform</strong>
+                            <span class="source-tag">pnpm-audit</span>
+                            <div class="package-path">packages__lone-star-platform>@aristocrattechnologiesinc/meta-service>mongoose</div>
+                        </div>
+                        <span class="severity-badge" style="background-color: #dc3545">critical</span>
+                    </div>
+                    <div class="vulnerability-body">
+                        <h4>Mongoose search injection vulnerability</h4>
+                        <p><strong>Description:</strong> https://github.com/advisories/GHSA-vg7j-7cwx-8wgw</p>
+                        <p><strong>Fix Available:</strong> Manual</p>
+                    </div>
+                </div>
+            
+                <div class="vulnerability-item">
+                    <div class="vulnerability-header">
+                        <div>
+                            <strong>packages__lone-star-platform</strong>
+                            <span class="source-tag">pnpm-audit</span>
+                            <div class="package-path">packages__lone-star-platform>koa</div>
+                        </div>
+                        <span class="severity-badge" style="background-color: #dc3545">critical</span>
+                    </div>
+                    <div class="vulnerability-body">
+                        <h4>Inefficient Regular Expression Complexity in koa</h4>
+                        <p><strong>Description:</strong> https://github.com/advisories/GHSA-593f-38f6-jp5m</p>
+                        <p><strong>Fix Available:</strong> Manual</p>
+                    </div>
+                </div>
+            
+                <div class="vulnerability-item">
+                    <div class="vulnerability-header">
+                        <div>
+                            <strong>packages__clients__atlas</strong>
+                            <span class="source-tag">pnpm-audit</span>
+                            <div class="package-path">packages__clients__atlas>@types/node-fetch>form-data</div>
+                        </div>
+                        <span class="severity-badge" style="background-color: #dc3545">critical</span>
+                    </div>
+                    <div class="vulnerability-body">
+                        <h4>form-data uses unsafe random function in form-data for choosing boundary</h4>
+                        <p><strong>Description:</strong> https://github.com/advisories/GHSA-fjxv-7rqg-78g4</p>
+                        <p><strong>Fix Available:</strong> Manual</p>
+                    </div>
+                </div>
+            
+                <div class="vulnerability-item">
+                    <div class="vulnerability-header">
+                        <div>
+                            <strong>packages__logging__newrelic</strong>
+                            <span class="source-tag">pnpm-audit</span>
+                            <div class="package-path">packages__logging__newrelic>newrelic>@newrelic/security-agent>sync-request>then-request>form-data</div>
+                        </div>
+                        <span class="severity-badge" style="background-color: #dc3545">critical</span>
+                    </div>
+                    <div class="vulnerability-body">
+                        <h4>form-data uses unsafe random function in form-data for choosing boundary</h4>
+                        <p><strong>Description:</strong> https://github.com/advisories/GHSA-fjxv-7rqg-78g4</p>
+                        <p><strong>Fix Available:</strong> Manual</p>
+                    </div>
+                </div>
+            
+                <div class="vulnerability-item">
+                    <div class="vulnerability-header">
+                        <div>
+                            <strong>packages__lone-star-platform</strong>
+                            <span class="source-tag">pnpm-audit</span>
+                            <div class="package-path">packages__lone-star-platform>puppeteer>ws</div>
+                        </div>
+                        <span class="severity-badge" style="background-color: #fd7e14">high</span>
+                    </div>
+                    <div class="vulnerability-body">
+                        <h4>ws affected by a DoS when handling a request with many HTTP headers</h4>
+                        <p><strong>Description:</strong> https://github.com/advisories/GHSA-3h5v-q93c-6h6q</p>
+                        <p><strong>Fix Available:</strong> Manual</p>
+                    </div>
+                </div>
+            
+                <div class="vulnerability-item">
+                    <div class="vulnerability-header">
+                        <div>
+                            <strong>packages__lone-star-platform</strong>
+                            <span class="source-tag">pnpm-audit</span>
+                            <div class="package-path">packages__lone-star-platform>@aristocrattechnologiesinc/meta-service>@nestjs/platform-express>body-parser</div>
+                        </div>
+                        <span class="severity-badge" style="background-color: #fd7e14">high</span>
+                    </div>
+                    <div class="vulnerability-body">
+                        <h4>body-parser vulnerable to denial of service when url encoding is enabled</h4>
+                        <p><strong>Description:</strong> https://github.com/advisories/GHSA-qwcr-r2fm-qrc7</p>
+                        <p><strong>Fix Available:</strong> Manual</p>
+                    </div>
+                </div>
+            
+                <div class="vulnerability-item">
+                    <div class="vulnerability-header">
+                        <div>
+                            <strong>packages__lone-star-platform</strong>
+                            <span class="source-tag">pnpm-audit</span>
+                            <div class="package-path">packages__lone-star-platform>@aristocrattechnologiesinc/meta-service>mongoose</div>
+                        </div>
+                        <span class="severity-badge" style="background-color: #fd7e14">high</span>
+                    </div>
+                    <div class="vulnerability-body">
+                        <h4>Mongoose search injection vulnerability</h4>
+                        <p><strong>Description:</strong> https://github.com/advisories/GHSA-m7xq-9374-9rvx</p>
+                        <p><strong>Fix Available:</strong> Manual</p>
+                    </div>
+                </div>
+            
+                <div class="vulnerability-item">
+                    <div class="vulnerability-header">
+                        <div>
+                            <strong>packages__lone-star-platform</strong>
+                            <span class="source-tag">pnpm-audit</span>
+                            <div class="package-path">packages__lone-star-platform>koa-route>path-to-regexp</div>
+                        </div>
+                        <span class="severity-badge" style="background-color: #fd7e14">high</span>
+                    </div>
+                    <div class="vulnerability-body">
+                        <h4>path-to-regexp outputs backtracking regular expressions</h4>
+                        <p><strong>Description:</strong> https://github.com/advisories/GHSA-9wv6-86v2-598j</p>
+                        <p><strong>Fix Available:</strong> Manual</p>
+                    </div>
+                </div>
+            
+                <div class="vulnerability-item">
+                    <div class="vulnerability-header">
+                        <div>
+                            <strong>packages__lone-star-platform</strong>
+                            <span class="source-tag">pnpm-audit</span>
+                            <div class="package-path">packages__lone-star-platform>@aristocrattechnologiesinc/meta-service>@nestjs/core>path-to-regexp</div>
+                        </div>
+                        <span class="severity-badge" style="background-color: #fd7e14">high</span>
+                    </div>
+                    <div class="vulnerability-body">
+                        <h4>path-to-regexp outputs backtracking regular expressions</h4>
+                        <p><strong>Description:</strong> https://github.com/advisories/GHSA-9wv6-86v2-598j</p>
+                        <p><strong>Fix Available:</strong> Manual</p>
+                    </div>
+                </div>
+            
+                <div class="vulnerability-item">
+                    <div class="vulnerability-header">
+                        <div>
+                            <strong>packages__lone-star-platform</strong>
+                            <span class="source-tag">pnpm-audit</span>
+                            <div class="package-path">packages__lone-star-platform>@types/koa-route>path-to-regexp</div>
+                        </div>
+                        <span class="severity-badge" style="background-color: #fd7e14">high</span>
+                    </div>
+                    <div class="vulnerability-body">
+                        <h4>path-to-regexp outputs backtracking regular expressions</h4>
+                        <p><strong>Description:</strong> https://github.com/advisories/GHSA-9wv6-86v2-598j</p>
+                        <p><strong>Fix Available:</strong> Manual</p>
+                    </div>
+                </div>
+            
+                <div class="vulnerability-item">
+                    <div class="vulnerability-header">
+                        <div>
+                            <strong>packages__lone-star-platform</strong>
+                            <span class="source-tag">pnpm-audit</span>
+                            <div class="package-path">packages__lone-star-platform>@aristocrattechnologiesinc/meta-service>@nestjs/platform-express>express>path-to-regexp</div>
+                        </div>
+                        <span class="severity-badge" style="background-color: #fd7e14">high</span>
+                    </div>
+                    <div class="vulnerability-body">
+                        <h4>path-to-regexp outputs backtracking regular expressions</h4>
+                        <p><strong>Description:</strong> https://github.com/advisories/GHSA-9wv6-86v2-598j</p>
+                        <p><strong>Fix Available:</strong> Manual</p>
+                    </div>
+                </div>
+            
+                <div class="vulnerability-item">
+                    <div class="vulnerability-header">
+                        <div>
+                            <strong>packages__lone-star-platform</strong>
+                            <span class="source-tag">pnpm-audit</span>
+                            <div class="package-path">packages__lone-star-platform>@aristocrattechnologiesinc/meta-service>axios</div>
+                        </div>
+                        <span class="severity-badge" style="background-color: #fd7e14">high</span>
+                    </div>
+                    <div class="vulnerability-body">
+                        <h4>axios Requests Vulnerable To Possible SSRF and Credential Leakage via Absolute URL</h4>
+                        <p><strong>Description:</strong> https://github.com/advisories/GHSA-jr5f-v2jv-69x6</p>
+                        <p><strong>Fix Available:</strong> Manual</p>
+                    </div>
+                </div>
+            
+                <div class="vulnerability-item">
+                    <div class="vulnerability-header">
+                        <div>
+                            <strong>packages__lone-star-platform</strong>
+                            <span class="source-tag">pnpm-audit</span>
+                            <div class="package-path">packages__lone-star-platform>@aristocrattechnologiesinc/meta-service>nest-openapi-tools>@openapitools/openapi-generator-cli>axios</div>
+                        </div>
+                        <span class="severity-badge" style="background-color: #fd7e14">high</span>
+                    </div>
+                    <div class="vulnerability-body">
+                        <h4>axios Requests Vulnerable To Possible SSRF and Credential Leakage via Absolute URL</h4>
+                        <p><strong>Description:</strong> https://github.com/advisories/GHSA-jr5f-v2jv-69x6</p>
+                        <p><strong>Fix Available:</strong> Manual</p>
+                    </div>
+                </div>
+            
+                <div class="vulnerability-item">
+                    <div class="vulnerability-header">
+                        <div>
+                            <strong>packages__lone-star-platform</strong>
+                            <span class="source-tag">pnpm-audit</span>
+                            <div class="package-path">packages__lone-star-platform>axios</div>
+                        </div>
+                        <span class="severity-badge" style="background-color: #fd7e14">high</span>
+                    </div>
+                    <div class="vulnerability-body">
+                        <h4>axios Requests Vulnerable To Possible SSRF and Credential Leakage via Absolute URL</h4>
+                        <p><strong>Description:</strong> https://github.com/advisories/GHSA-jr5f-v2jv-69x6</p>
+                        <p><strong>Fix Available:</strong> Manual</p>
+                    </div>
+                </div>
+            
+                <div class="vulnerability-item">
+                    <div class="vulnerability-header">
+                        <div>
+                            <strong>packages__plugins-mock-atlas</strong>
+                            <span class="source-tag">pnpm-audit</span>
+                            <div class="package-path">packages__plugins-mock-atlas>webpack-spawn-plugin>cross-spawn</div>
+                        </div>
+                        <span class="severity-badge" style="background-color: #fd7e14">high</span>
+                    </div>
+                    <div class="vulnerability-body">
+                        <h4>Regular Expression Denial of Service (ReDoS) in cross-spawn</h4>
+                        <p><strong>Description:</strong> https://github.com/advisories/GHSA-3xgq-45jj-v275</p>
+                        <p><strong>Fix Available:</strong> Manual</p>
+                    </div>
+                </div>
+            
+                <div class="vulnerability-item">
+                    <div class="vulnerability-header">
+                        <div>
+                            <strong>packages__plugins-mock-atlas</strong>
+                            <span class="source-tag">pnpm-audit</span>
+                            <div class="package-path">packages__plugins-mock-atlas>webpack-spawn-plugin>fkill>pid-from-port>execa>cross-spawn</div>
+                        </div>
+                        <span class="severity-badge" style="background-color: #fd7e14">high</span>
+                    </div>
+                    <div class="vulnerability-body">
+                        <h4>Regular Expression Denial of Service (ReDoS) in cross-spawn</h4>
+                        <p><strong>Description:</strong> https://github.com/advisories/GHSA-3xgq-45jj-v275</p>
+                        <p><strong>Fix Available:</strong> Manual</p>
+                    </div>
+                </div>
+            
+                <div class="vulnerability-item">
+                    <div class="vulnerability-header">
+                        <div>
+                            <strong>packages__base-game-lib</strong>
+                            <span class="source-tag">pnpm-audit</span>
+                            <div class="package-path">packages__base-game-lib>eslint>cross-spawn</div>
+                        </div>
+                        <span class="severity-badge" style="background-color: #fd7e14">high</span>
+                    </div>
+                    <div class="vulnerability-body">
+                        <h4>Regular Expression Denial of Service (ReDoS) in cross-spawn</h4>
+                        <p><strong>Description:</strong> https://github.com/advisories/GHSA-3xgq-45jj-v275</p>
+                        <p><strong>Fix Available:</strong> Manual</p>
+                    </div>
+                </div>
+            
+                <div class="vulnerability-item">
+                    <div class="vulnerability-header">
+                        <div>
+                            <strong>packages__lone-star-platform</strong>
+                            <span class="source-tag">pnpm-audit</span>
+                            <div class="package-path">packages__lone-star-platform>@newrelic/native-metrics>prebuildify>tar-fs</div>
+                        </div>
+                        <span class="severity-badge" style="background-color: #fd7e14">high</span>
+                    </div>
+                    <div class="vulnerability-body">
+                        <h4>tar-fs Vulnerable to Link Following and Path Traversal via Extracting a Crafted tar File</h4>
+                        <p><strong>Description:</strong> https://github.com/advisories/GHSA-pq67-2wwv-3xjx</p>
+                        <p><strong>Fix Available:</strong> Manual</p>
+                    </div>
+                </div>
+            
+                <div class="vulnerability-item">
+                    <div class="vulnerability-header">
+                        <div>
+                            <strong>packages__lone-star-platform</strong>
+                            <span class="source-tag">pnpm-audit</span>
+                            <div class="package-path">packages__lone-star-platform>@aristocrattechnologiesinc/meta-service>@nestjs/platform-express>multer</div>
+                        </div>
+                        <span class="severity-badge" style="background-color: #fd7e14">high</span>
+                    </div>
+                    <div class="vulnerability-body">
+                        <h4>Multer vulnerable to Denial of Service from maliciously crafted requests</h4>
+                        <p><strong>Description:</strong> https://github.com/advisories/GHSA-4pg4-qvpc-4q3h</p>
+                        <p><strong>Fix Available:</strong> Manual</p>
+                    </div>
+                </div>
+            
+                <div class="vulnerability-item">
+                    <div class="vulnerability-header">
+                        <div>
+                            <strong>packages__lone-star-platform</strong>
+                            <span class="source-tag">pnpm-audit</span>
+                            <div class="package-path">packages__lone-star-platform>@aristocrattechnologiesinc/meta-service>@nestjs/platform-express>express>path-to-regexp</div>
+                        </div>
+                        <span class="severity-badge" style="background-color: #fd7e14">high</span>
+                    </div>
+                    <div class="vulnerability-body">
+                        <h4>path-to-regexp contains a ReDoS</h4>
+                        <p><strong>Description:</strong> https://github.com/advisories/GHSA-rhx6-c78j-4q9w</p>
+                        <p><strong>Fix Available:</strong> Manual</p>
+                    </div>
+                </div>
+            
+                <div class="vulnerability-item">
+                    <div class="vulnerability-header">
+                        <div>
+                            <strong>packages__lone-star-platform</strong>
+                            <span class="source-tag">pnpm-audit</span>
+                            <div class="package-path">packages__lone-star-platform>@aristocrattechnologiesinc/meta-service>@nestjs/platform-express>multer</div>
+                        </div>
+                        <span class="severity-badge" style="background-color: #fd7e14">high</span>
+                    </div>
+                    <div class="vulnerability-body">
+                        <h4>Multer vulnerable to Denial of Service via unhandled exception</h4>
+                        <p><strong>Description:</strong> https://github.com/advisories/GHSA-g5hg-p3ph-g8qg</p>
+                        <p><strong>Fix Available:</strong> Manual</p>
+                    </div>
+                </div>
+            
+                <div class="vulnerability-item">
+                    <div class="vulnerability-header">
+                        <div>
+                            <strong>packages__lone-star-platform</strong>
+                            <span class="source-tag">pnpm-audit</span>
+                            <div class="package-path">packages__lone-star-platform>@aristocrattechnologiesinc/meta-service>@nestjs/platform-express>multer</div>
+                        </div>
+                        <span class="severity-badge" style="background-color: #fd7e14">high</span>
+                    </div>
+                    <div class="vulnerability-body">
+                        <h4>Multer vulnerable to Denial of Service via unhandled exception from malformed request</h4>
+                        <p><strong>Description:</strong> https://github.com/advisories/GHSA-fjgf-rc76-4x9p</p>
+                        <p><strong>Fix Available:</strong> Manual</p>
+                    </div>
+                </div>
+            
+                <div class="vulnerability-item">
+                    <div class="vulnerability-header">
+                        <div>
+                            <strong>packages__lone-star-platform</strong>
+                            <span class="source-tag">pnpm-audit</span>
+                            <div class="package-path">packages__lone-star-platform>@newrelic/native-metrics>prebuildify>tar-fs</div>
+                        </div>
+                        <span class="severity-badge" style="background-color: #fd7e14">high</span>
+                    </div>
+                    <div class="vulnerability-body">
+                        <h4>tar-fs can extract outside the specified dir with a specific tarball</h4>
+                        <p><strong>Description:</strong> https://github.com/advisories/GHSA-8cj5-5rvv-wf4v</p>
+                        <p><strong>Fix Available:</strong> Manual</p>
+                    </div>
+                </div>
+            
+                <div class="vulnerability-item">
+                    <div class="vulnerability-header">
+                        <div>
+                            <strong>packages__lone-star-platform</strong>
+                            <span class="source-tag">pnpm-audit</span>
+                            <div class="package-path">packages__lone-star-platform>@aristocrattechnologiesinc/meta-service>axios</div>
+                        </div>
+                        <span class="severity-badge" style="background-color: #fd7e14">high</span>
+                    </div>
+                    <div class="vulnerability-body">
+                        <h4>Axios is vulnerable to DoS attack through lack of data size check</h4>
+                        <p><strong>Description:</strong> https://github.com/advisories/GHSA-4hjh-wcwx-xvwj</p>
+                        <p><strong>Fix Available:</strong> Manual</p>
+                    </div>
+                </div>
+            
+                <div class="vulnerability-item">
+                    <div class="vulnerability-header">
+                        <div>
+                            <strong>packages__lone-star-platform</strong>
+                            <span class="source-tag">pnpm-audit</span>
+                            <div class="package-path">packages__lone-star-platform>@aristocrattechnologiesinc/meta-service>nest-openapi-tools>@openapitools/openapi-generator-cli>axios</div>
+                        </div>
+                        <span class="severity-badge" style="background-color: #fd7e14">high</span>
+                    </div>
+                    <div class="vulnerability-body">
+                        <h4>Axios is vulnerable to DoS attack through lack of data size check</h4>
+                        <p><strong>Description:</strong> https://github.com/advisories/GHSA-4hjh-wcwx-xvwj</p>
+                        <p><strong>Fix Available:</strong> Manual</p>
+                    </div>
+                </div>
+            
+                <div class="vulnerability-item">
+                    <div class="vulnerability-header">
+                        <div>
+                            <strong>packages__lone-star-platform</strong>
+                            <span class="source-tag">pnpm-audit</span>
+                            <div class="package-path">packages__lone-star-platform>axios</div>
+                        </div>
+                        <span class="severity-badge" style="background-color: #fd7e14">high</span>
+                    </div>
+                    <div class="vulnerability-body">
+                        <h4>Axios is vulnerable to DoS attack through lack of data size check</h4>
+                        <p><strong>Description:</strong> https://github.com/advisories/GHSA-4hjh-wcwx-xvwj</p>
+                        <p><strong>Fix Available:</strong> Manual</p>
+                    </div>
+                </div>
+            
+                <div class="vulnerability-item">
+                    <div class="vulnerability-header">
+                        <div>
+                            <strong>.</strong>
+                            <span class="source-tag">pnpm-audit</span>
+                            <div class="package-path">.>pnpm</div>
+                        </div>
+                        <span class="severity-badge" style="background-color: #ffc107">moderate</span>
+                    </div>
+                    <div class="vulnerability-body">
+                        <h4>pnpm no-script global cache poisoning via overrides / `ignore-scripts` evasion</h4>
+                        <p><strong>Description:</strong> https://github.com/advisories/GHSA-vm32-9rqf-rh3r</p>
+                        <p><strong>Fix Available:</strong> Manual</p>
+                    </div>
+                </div>
+            
+                <div class="vulnerability-item">
+                    <div class="vulnerability-header">
+                        <div>
+                            <strong>packages__lone-star-platform</strong>
+                            <span class="source-tag">pnpm-audit</span>
+                            <div class="package-path">packages__lone-star-platform>koa</div>
+                        </div>
+                        <span class="severity-badge" style="background-color: #ffc107">moderate</span>
+                    </div>
+                    <div class="vulnerability-body">
+                        <h4>Koajs vulnerable to Cross-Site Scripting (XSS) at ctx.redirect() function</h4>
+                        <p><strong>Description:</strong> https://github.com/advisories/GHSA-x2rg-q646-7m2v</p>
+                        <p><strong>Fix Available:</strong> Manual</p>
+                    </div>
+                </div>
+            
+                <div class="vulnerability-item">
+                    <div class="vulnerability-header">
+                        <div>
+                            <strong>packages__lone-star-platform</strong>
+                            <span class="source-tag">pnpm-audit</span>
+                            <div class="package-path">packages__lone-star-platform>@aristocrattechnologiesinc/meta-service>@nestjs/common</div>
+                        </div>
+                        <span class="severity-badge" style="background-color: #ffc107">moderate</span>
+                    </div>
+                    <div class="vulnerability-body">
+                        <h4>nest allows a remote attacker to execute arbitrary code via the Content-Type header</h4>
+                        <p><strong>Description:</strong> https://github.com/advisories/GHSA-cj7v-w2c7-cp7c</p>
+                        <p><strong>Fix Available:</strong> Manual</p>
+                    </div>
+                </div>
+            
+                <div class="vulnerability-item">
+                    <div class="vulnerability-header">
+                        <div>
+                            <strong>packages__lone-star-platform</strong>
+                            <span class="source-tag">pnpm-audit</span>
+                            <div class="package-path">packages__lone-star-platform>@aristocrattechnologiesinc/meta-service>nest-openapi-tools>@openapitools/openapi-generator-cli>@nestjs/common</div>
+                        </div>
+                        <span class="severity-badge" style="background-color: #ffc107">moderate</span>
+                    </div>
+                    <div class="vulnerability-body">
+                        <h4>nest allows a remote attacker to execute arbitrary code via the Content-Type header</h4>
+                        <p><strong>Description:</strong> https://github.com/advisories/GHSA-cj7v-w2c7-cp7c</p>
+                        <p><strong>Fix Available:</strong> Manual</p>
+                    </div>
+                </div>
+            
+                <div class="vulnerability-item">
+                    <div class="vulnerability-header">
+                        <div>
+                            <strong>packages__lone-star-platform</strong>
+                            <span class="source-tag">pnpm-audit</span>
+                            <div class="package-path">packages__lone-star-platform>@aristocrattechnologiesinc/meta-service>nest-openapi-tools>@openapitools/openapi-generator-cli>concurrently>date-fns>@babel/runtime</div>
+                        </div>
+                        <span class="severity-badge" style="background-color: #ffc107">moderate</span>
+                    </div>
+                    <div class="vulnerability-body">
+                        <h4>Babel has inefficient RegExp complexity in generated code with .replace when transpiling named capturing groups</h4>
+                        <p><strong>Description:</strong> https://github.com/advisories/GHSA-968p-4wvh-cqc8</p>
+                        <p><strong>Fix Available:</strong> Manual</p>
+                    </div>
+                </div>
+            
+                <div class="vulnerability-item">
+                    <div class="vulnerability-header">
+                        <div>
+                            <strong>packages__lone-star-platform</strong>
+                            <span class="source-tag">pnpm-audit</span>
+                            <div class="package-path">packages__lone-star-platform>jest>@jest/core>@jest/reporters>istanbul-lib-instrument>@babel/core>@babel/helpers</div>
+                        </div>
+                        <span class="severity-badge" style="background-color: #ffc107">moderate</span>
+                    </div>
+                    <div class="vulnerability-body">
+                        <h4>Babel has inefficient RegExp complexity in generated code with .replace when transpiling named capturing groups</h4>
+                        <p><strong>Description:</strong> https://github.com/advisories/GHSA-968p-4wvh-cqc8</p>
+                        <p><strong>Fix Available:</strong> Manual</p>
+                    </div>
+                </div>
+            
+                <div class="vulnerability-item">
+                    <div class="vulnerability-header">
+                        <div>
+                            <strong>.</strong>
+                            <span class="source-tag">pnpm-audit</span>
+                            <div class="package-path">.>pnpm</div>
+                        </div>
+                        <span class="severity-badge" style="background-color: #ffc107">moderate</span>
+                    </div>
+                    <div class="vulnerability-body">
+                        <h4>pnpm uses the md5 path shortening function causes packet paths to coincide, which causes indirect packet overwriting</h4>
+                        <p><strong>Description:</strong> https://github.com/advisories/GHSA-8cc4-rfj6-fhg4</p>
+                        <p><strong>Fix Available:</strong> Manual</p>
+                    </div>
+                </div>
+            
+                <div class="vulnerability-item">
+                    <div class="vulnerability-header">
+                        <div>
+                            <strong>packages__lone-star-platform</strong>
+                            <span class="source-tag">pnpm-audit</span>
+                            <div class="package-path">packages__lone-star-platform>@aristocrattechnologiesinc/meta-service>@nestjs/platform-express>express>send</div>
+                        </div>
+                        <span class="severity-badge" style="background-color: #28a745">low</span>
+                    </div>
+                    <div class="vulnerability-body">
+                        <h4>send vulnerable to template injection that can lead to XSS</h4>
+                        <p><strong>Description:</strong> https://github.com/advisories/GHSA-m6fv-jmcg-4jfg</p>
+                        <p><strong>Fix Available:</strong> Manual</p>
+                    </div>
+                </div>
+            
+                <div class="vulnerability-item">
+                    <div class="vulnerability-header">
+                        <div>
+                            <strong>packages__lone-star-platform</strong>
+                            <span class="source-tag">pnpm-audit</span>
+                            <div class="package-path">packages__lone-star-platform>@aristocrattechnologiesinc/meta-service>@nestjs/platform-express>express>serve-static</div>
+                        </div>
+                        <span class="severity-badge" style="background-color: #28a745">low</span>
+                    </div>
+                    <div class="vulnerability-body">
+                        <h4>serve-static vulnerable to template injection that can lead to XSS</h4>
+                        <p><strong>Description:</strong> https://github.com/advisories/GHSA-cm22-4g7w-348p</p>
+                        <p><strong>Fix Available:</strong> Manual</p>
+                    </div>
+                </div>
+            
+                <div class="vulnerability-item">
+                    <div class="vulnerability-header">
+                        <div>
+                            <strong>packages__lone-star-platform</strong>
+                            <span class="source-tag">pnpm-audit</span>
+                            <div class="package-path">packages__lone-star-platform>@aristocrattechnologiesinc/meta-service>@nestjs/platform-express>express</div>
+                        </div>
+                        <span class="severity-badge" style="background-color: #28a745">low</span>
+                    </div>
+                    <div class="vulnerability-body">
+                        <h4>express vulnerable to XSS via response.redirect()</h4>
+                        <p><strong>Description:</strong> https://github.com/advisories/GHSA-qw6h-vgh9-j6wx</p>
+                        <p><strong>Fix Available:</strong> Manual</p>
+                    </div>
+                </div>
+            
+                <div class="vulnerability-item">
+                    <div class="vulnerability-header">
+                        <div>
+                            <strong>packages__lone-star-platform</strong>
+                            <span class="source-tag">pnpm-audit</span>
+                            <div class="package-path">packages__lone-star-platform>@aristocrattechnologiesinc/meta-service>@nestjs/platform-express>express>cookie</div>
+                        </div>
+                        <span class="severity-badge" style="background-color: #28a745">low</span>
+                    </div>
+                    <div class="vulnerability-body">
+                        <h4>cookie accepts cookie name, path, and domain with out of bounds characters</h4>
+                        <p><strong>Description:</strong> https://github.com/advisories/GHSA-pxg6-pf52-xh8x</p>
+                        <p><strong>Fix Available:</strong> Manual</p>
+                    </div>
+                </div>
+            
+                <div class="vulnerability-item">
+                    <div class="vulnerability-header">
+                        <div>
+                            <strong>packages__lone-star-platform</strong>
+                            <span class="source-tag">pnpm-audit</span>
+                            <div class="package-path">packages__lone-star-platform>@aristocrattechnologiesinc/meta-service>superagent>formidable</div>
+                        </div>
+                        <span class="severity-badge" style="background-color: #28a745">low</span>
+                    </div>
+                    <div class="vulnerability-body">
+                        <h4>Formidable relies on hexoid to prevent guessing of filenames for untrusted executable content</h4>
+                        <p><strong>Description:</strong> https://github.com/advisories/GHSA-75v8-2h7p-7m2m</p>
+                        <p><strong>Fix Available:</strong> Manual</p>
+                    </div>
+                </div>
+            
+                <div class="vulnerability-item">
+                    <div class="vulnerability-header">
+                        <div>
+                            <strong>.</strong>
+                            <span class="source-tag">pnpm-audit</span>
+                            <div class="package-path">.>@aristocrattechnologiesinc/random-number>grpc-tools>@mapbox/node-pre-gyp>rimraf>glob>minimatch>brace-expansion</div>
+                        </div>
+                        <span class="severity-badge" style="background-color: #28a745">low</span>
+                    </div>
+                    <div class="vulnerability-body">
+                        <h4>brace-expansion Regular Expression Denial of Service vulnerability</h4>
+                        <p><strong>Description:</strong> https://github.com/advisories/GHSA-v6h2-p8h4-qcjw</p>
+                        <p><strong>Fix Available:</strong> Manual</p>
+                    </div>
+                </div>
+            
+                <div class="vulnerability-item">
+                    <div class="vulnerability-header">
+                        <div>
+                            <strong>packages__lone-star-platform</strong>
+                            <span class="source-tag">pnpm-audit</span>
+                            <div class="package-path">packages__lone-star-platform>ts-jest>ejs>jake>filelist>minimatch>brace-expansion</div>
+                        </div>
+                        <span class="severity-badge" style="background-color: #28a745">low</span>
+                    </div>
+                    <div class="vulnerability-body">
+                        <h4>brace-expansion Regular Expression Denial of Service vulnerability</h4>
+                        <p><strong>Description:</strong> https://github.com/advisories/GHSA-v6h2-p8h4-qcjw</p>
+                        <p><strong>Fix Available:</strong> Manual</p>
+                    </div>
+                </div>
+            
+                <div class="vulnerability-item">
+                    <div class="vulnerability-header">
+                        <div>
+                            <strong>packages__lone-star-platform</strong>
+                            <span class="source-tag">pnpm-audit</span>
+                            <div class="package-path">packages__lone-star-platform>koa</div>
+                        </div>
+                        <span class="severity-badge" style="background-color: #28a745">low</span>
+                    </div>
+                    <div class="vulnerability-body">
+                        <h4>Koa Open Redirect via Referrer Header (User-Controlled)</h4>
+                        <p><strong>Description:</strong> https://github.com/advisories/GHSA-jgmv-j7ww-jx2x</p>
+                        <p><strong>Fix Available:</strong> Manual</p>
+                    </div>
+                </div>
+            
+                <div class="vulnerability-item">
+                    <div class="vulnerability-header">
+                        <div>
+                            <strong>packages__lone-star-platform</strong>
+                            <span class="source-tag">pnpm-audit</span>
+                            <div class="package-path">packages__lone-star-platform>@aristocrattechnologiesinc/meta-service>nest-openapi-tools>@openapitools/openapi-generator-cli>inquirer>external-editor>tmp</div>
+                        </div>
+                        <span class="severity-badge" style="background-color: #28a745">low</span>
+                    </div>
+                    <div class="vulnerability-body">
+                        <h4>tmp allows arbitrary temporary file / directory write via symbolic link `dir` parameter</h4>
+                        <p><strong>Description:</strong> https://github.com/advisories/GHSA-52f5-9888-hmc6</p>
+                        <p><strong>Fix Available:</strong> Manual</p>
+                    </div>
+                </div>
+            
+                <div class="vulnerability-item">
+                    <div class="vulnerability-header">
+                        <div>
+                            <strong>packages__storage__sqlite-ops</strong>
+                            <span class="source-tag">pnpm-audit</span>
+                            <div class="package-path">packages__storage__sqlite-ops>vitest>vite</div>
+                        </div>
+                        <span class="severity-badge" style="background-color: #28a745">low</span>
+                    </div>
+                    <div class="vulnerability-body">
+                        <h4>Vite middleware may serve files starting with the same name with the public directory</h4>
+                        <p><strong>Description:</strong> https://github.com/advisories/GHSA-g4jq-h2w9-997c</p>
+                        <p><strong>Fix Available:</strong> Manual</p>
+                    </div>
+                </div>
+            
+                <div class="vulnerability-item">
+                    <div class="vulnerability-header">
+                        <div>
+                            <strong>packages__storage__sqlite-ops</strong>
+                            <span class="source-tag">pnpm-audit</span>
+                            <div class="package-path">packages__storage__sqlite-ops>vitest>vite</div>
+                        </div>
+                        <span class="severity-badge" style="background-color: #28a745">low</span>
+                    </div>
+                    <div class="vulnerability-body">
+                        <h4>Vite's `server.fs` settings were not applied to HTML files</h4>
+                        <p><strong>Description:</strong> https://github.com/advisories/GHSA-jqfw-vq24-v9c3</p>
+                        <p><strong>Fix Available:</strong> Manual</p>
+                    </div>
+                </div>
+            
+            
+            
+        </div>
+        
+        <div class="footer">
+            <p>Generated by Security Scanner | Focus: Node.js, npm audit, better-npm-audit</p>
+            <p><small>Report includes results from: is-my-node-vulnerable, npm audit, better-npm-audit</small></p>
+        </div>
+    </div>
+</body>
+</html>

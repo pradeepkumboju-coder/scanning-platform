@@ -1,0 +1,175 @@
+name: Node.js Security & Quality Scans
+
+on:
+  push:
+    branches: [ main, master ]
+  pull_request:
+    branches: [ main, master ]
+
+jobs:
+  scans:
+    runs-on: ubuntu-latest
+    # Optional matrix — remove or adjust if you don't want multiple node versions
+    strategy:
+      matrix:
+        node-version: [18.x]
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0   # needed for some secret scanning/history checks
+
+      - name: Setup Node.js ${{ matrix.node-version }}
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ matrix.node-version }}
+
+      - name: Cache npm & pnpm caches
+        uses: actions/cache@v4
+        with:
+          path: |
+            ~/.npm
+            ~/.pnpm-store
+          key: ${{ runner.os }}-node-${{ hashFiles('**/package-lock.json', '**/pnpm-lock.yaml') }}
+          restore-keys: |
+            ${{ runner.os }}-node-
+
+      - name: Detect package manager
+        id: detect-pm
+        run: |
+          if [ -f "pnpm-lock.yaml" ]; then
+            echo "manager=pnpm" >> $GITHUB_OUTPUT
+          else
+            echo "manager=npm" >> $GITHUB_OUTPUT
+          fi
+
+      - name: Install dependencies (respecting pm)
+        run: |
+          mkdir -p reports
+          if [ "${{ steps.detect-pm.outputs.manager }}" = "pnpm" ]; then
+            npm install -g pnpm
+            pnpm install --frozen-lockfile || true
+          else
+            npm ci || true
+          fi
+
+      # -------------------- Scans (non-blocking) --------------------
+
+      - name: npm/pnpm audit (save output)
+        run: |
+          if [ "${{ steps.detect-pm.outputs.manager }}" = "pnpm" ]; then
+            pnpm audit --json > reports/pnpm-audit.json || true
+          else
+            npm audit --json > reports/npm-audit.json || true
+          fi
+        continue-on-error: true
+
+      - name: Run Snyk vulnerability scan (non-blocking)
+        # requires SNYK_TOKEN secret
+        uses: snyk/actions/node@master
+        with:
+          command: test
+          args: --all-projects --json-file-output=reports/snyk-report.json
+        env:
+          SNYK_TOKEN: 7b7dad12-ffb9-487a-8f10-67f5ef83b729
+        continue-on-error: true
+
+      - name: Run ESLint (dump JSON)
+        run: |
+          # Install formatter just in case; if you already have it in devDeps skip install
+          npm i -D eslint eslint-formatter-json || true
+          npx eslint -f json . > reports/eslint.json || true
+        continue-on-error: true
+
+      - name: Run Semgrep (save JSON)
+        uses: returntocorp/semgrep-action@v1
+        with:
+          config: auto
+          output: reports/semgrep.json
+        continue-on-error: true
+
+      - name: Secret Scanning (GitLeaks)
+        uses: zricethezav/gitleaks-action@v2
+        with:
+          args: detect --source . --no-git --report-format json --report-path reports/gitleaks.json
+        continue-on-error: true
+
+      - name: License Compliance (license-checker)
+        run: |
+          npx license-checker --json > reports/licenses.json || true
+        continue-on-error: true
+
+      - name: Run Unit Tests with Coverage
+        run: |
+          if [ "${{ steps.detect-pm.outputs.manager }}" = "pnpm" ]; then
+            pnpm test -- --coverage || true
+          else
+            npm test -- --coverage || true
+          fi
+          # collect nyc/lcov if present
+          if [ -f coverage/coverage-final.json ]; then
+            cp -r coverage reports/coverage || true
+          fi
+        continue-on-error: true
+
+      - name: Dockerfile lint (hadolint) — if Dockerfile exists
+        if: ${{ always() && (hashFiles('Dockerfile') != '') }}
+        run: |
+          docker run --rm -i hadolint/hadolint < Dockerfile > reports/hadolint.txt || true
+        continue-on-error: true
+
+      - name: Checkov IaC Scan — if terraform / k8s manifests exist
+        if: ${{ always() && (hashFiles('**/*.tf', '**/*.yaml', '**/*.yml') != '') }}
+        uses: bridgecrewio/checkov-action@v12
+        with:
+          directory: .
+          output_format: json
+          output_file_path: reports/checkov.json
+        continue-on-error: true
+
+      # -------------------- SonarCloud --------------------
+      - name: SonarCloud Scan (non-blocking)
+        if: ${{ secrets.SONAR_TOKEN }}
+        uses: sonarsource/sonarcloud-github-action@v2
+        with:
+          # set these repo-specific values in repo secrets or replace with strings
+          args: >
+            -Dsonar.login=${{ secrets.SONAR_TOKEN }}
+            -Dsonar.projectKey=${{ secrets.SONAR_PROJECT_KEY }}
+            -Dsonar.organization=pradeepkumboju-coder
+            -Dsonar.sources=.
+            -Dsonar.javascript.lcov.reportPaths=coverage/lcov.info
+        env:
+          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+        continue-on-error: true
+
+      # -------------------- Collect & Produce Combined Report -------------
+
+      - name: Create consolidated summary (reports/summary.md)
+        run: |
+          echo "# Security & Quality Scan Report" > reports/summary.md
+          echo "" >> reports/summary.md
+          echo "Generated at: $(date -u +"%Y-%m-%dT%H:%M:%SZ") (UTC)" >> reports/summary.md
+          echo "" >> reports/summary.md
+          echo "## Included artifacts" >> reports/summary.md
+          echo "" >> reports/summary.md
+          for f in reports/*; do
+            echo "- $(basename "$f")" >> reports/summary.md
+          done
+          echo "" >> reports/summary.md
+          echo "## Quick guidance" >> reports/summary.md
+          echo "- This workflow is intentionally **non-blocking**: scans won't fail the run." >> reports/summary.md
+          echo "- Download the full JSON/text outputs from the artifact to review details." >> reports/summary.md
+        continue-on-error: true
+
+      - name: Save raw tool outputs (if any missing, create placeholders)
+        run: |
+          touch reports/npm-audit.json reports/pnpm-audit.json reports/snyk-report.json reports/eslint.json reports/semgrep.json reports/gitleaks.json reports/licenses.json reports/checkov.json reports/hadolint.txt || true
+        continue-on-error: true
+
+      - name: Upload full report artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: security-scan-report-${{ github.run_id }}
+          path: reports/

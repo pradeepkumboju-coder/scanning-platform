@@ -1,0 +1,581 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Security Scan Report - scan_20251016_105855</title>
+    <style>
+        * { box-sizing: border-box; }
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            margin: 0;
+            padding: 20px;
+            background-color: #f8f9fa;
+            color: #333;
+            line-height: 1.6;
+        }
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            overflow: hidden;
+        }
+        .header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 30px;
+            text-align: center;
+        }
+        .header h1 {
+            margin: 0;
+            font-size: 2.5em;
+            font-weight: 300;
+        }
+        .header p {
+            margin: 10px 0 0;
+            opacity: 0.9;
+            font-size: 1.1em;
+        }
+        .node-status {
+            padding: 20px 30px;
+            border-left: 4px solid;
+            margin: 20px 30px;
+            border-radius: 4px;
+        }
+        .node-status.safe {
+            background: #d4edda;
+            border-color: #28a745;
+            color: #155724;
+        }
+        .node-status.vulnerable {
+            background: #f8d7da;
+            border-color: #dc3545;
+            color: #721c24;
+        }
+        .node-status.unknown {
+            background: #fff3cd;
+            border-color: #ffc107;
+            color: #856404;
+        }
+        .summary {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+            gap: 15px;
+            padding: 30px;
+            background: #f8f9fa;
+        }
+        .summary-card {
+            background: white;
+            padding: 20px;
+            border-radius: 8px;
+            text-align: center;
+            border-left: 4px solid;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            transition: transform 0.2s;
+        }
+        .summary-card:hover {
+            transform: translateY(-2px);
+        }
+        .summary-card h3 {
+            margin: 0;
+            font-size: 2em;
+            font-weight: 600;
+        }
+        .summary-card p {
+            margin: 5px 0 0;
+            color: #666;
+            text-transform: uppercase;
+            font-size: 0.8em;
+            font-weight: bold;
+            letter-spacing: 0.5px;
+        }
+        .metrics-section {
+            padding: 30px;
+        }
+        .metrics-section h2 {
+            color: #333;
+            border-bottom: 2px solid #e9ecef;
+            padding-bottom: 10px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        .table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 15px;
+        }
+        .table th,
+        .table td {
+            padding: 12px 15px;
+            text-align: left;
+            border-bottom: 1px solid #e9ecef;
+        }
+        .table th {
+            background-color: #f8f9fa;
+            font-weight: 600;
+            color: #333;
+        }
+        .table tr:hover {
+            background-color: #f8f9fa;
+        }
+        .severity-badge {
+            padding: 4px 12px;
+            border-radius: 20px;
+            color: white;
+            font-size: 0.8em;
+            font-weight: bold;
+            text-transform: uppercase;
+            white-space: nowrap;
+        }
+        .vulnerability-details {
+            padding: 30px;
+        }
+        .vulnerability-item {
+            background: white;
+            border: 1px solid #e9ecef;
+            border-radius: 8px;
+            margin-bottom: 15px;
+            overflow: hidden;
+            transition: box-shadow 0.2s;
+        }
+        .vulnerability-item:hover {
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+        }
+        .vulnerability-header {
+            padding: 15px 20px;
+            background: #f8f9fa;
+            border-bottom: 1px solid #e9ecef;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 10px;
+        }
+        .vulnerability-body {
+            padding: 20px;
+        }
+        .source-tag {
+            background: #6c757d;
+            color: white;
+            padding: 2px 8px;
+            border-radius: 4px;
+            font-size: 0.7em;
+            margin-left: 10px;
+        }
+        .package-path {
+            color: #6c757d;
+            font-size: 0.9em;
+            margin-top: 5px;
+        }
+        .footer {
+            background: #343a40;
+            color: white;
+            padding: 20px 30px;
+            text-align: center;
+            font-size: 0.9em;
+        }
+        .pass { color: #28a745; font-weight: bold; }
+        .fail { color: #dc3545; font-weight: bold; }
+        .warn { color: #fd7e14; font-weight: bold; }
+        .recommendations {
+            background: #f8f9fa;
+            padding: 20px;
+            border-radius: 8px;
+            margin-top: 20px;
+        }
+        .recommendation-item {
+            padding: 10px 0;
+            border-bottom: 1px solid #e9ecef;
+        }
+        .recommendation-item:last-child {
+            border-bottom: none;
+        }
+        .priority-critical { color: #dc3545; font-weight: bold; }
+        .priority-high { color: #fd7e14; font-weight: bold; }
+        .priority-medium { color: #ffc107; font-weight: bold; }
+        .priority-low { color: #28a745; font-weight: bold; }
+        .empty-state {
+            text-align: center;
+            padding: 40px;
+            color: #6c757d;
+        }
+        .empty-state h3 {
+            color: #28a745;
+            font-size: 1.5em;
+            margin-bottom: 10px;
+        }
+        @media (max-width: 768px) {
+            .summary {
+                grid-template-columns: repeat(2, 1fr);
+            }
+            .vulnerability-header {
+                flex-direction: column;
+                align-items: flex-start;
+            }
+            .table {
+                font-size: 0.9em;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>🛡️ Security Scan Report</h1>
+            <p>Scan ID: scan_20251016_105855 | Generated: 10/16/2025, 10:58:58 AM</p>
+        </div>
+        
+        <div class="node-status vulnerable">
+            <strong>Node.js Security Status:</strong> Node.js version has known vulnerabilities
+            
+            <details style="margin-top: 10px;">
+                <summary>View Details</summary>
+                <pre style="margin: 10px 0; font-size: 0.9em;">██████   █████  ███    ██  ██████  ███████ ███████
+██   ██ ██   ██ ████   ██ ██       ██      ██   ██
+██   ██ ███████ ██ ██  ██ ██   ███ █████   ███████
+██   ██ ██   ██ ██  ██ ██ ██    ██ ██      ██   ██
+██████  ██   ██ ██   ████  ██████  ███████ ██   ██
+[1mThe current Node.js version (v20.17.0) is vulnerable to the following CVEs:[22m
+[1mCVE-2025-23083[22m(high): With the aid of the diagnostics_channel utility, an event can be hooked into whenever a worker thread is created. This is not limited only to workers but also exposes internal workers, where an instance of them can be fetched, and its constructor can be grabbed and reinstated for malicious usage. 
+This vulnerability affects Permission Model users (--permission) on Node.js v20, v22, and v23.
+[1mPatched versions[22m: ^20.18.2 || ^22.13.1 || ^23.6.1
+=</pre>
+            </details>
+            
+        </div>
+        
+        <div class="summary">
+            
+                <div class="summary-card" style="border-left-color: #dc3545">
+                    <h3 style="color: #dc3545">2</h3>
+                    <p>critical</p>
+                </div>
+              
+                <div class="summary-card" style="border-left-color: #fd7e14">
+                    <h3 style="color: #fd7e14">5</h3>
+                    <p>high</p>
+                </div>
+              
+                <div class="summary-card" style="border-left-color: #ffc107">
+                    <h3 style="color: #ffc107">7</h3>
+                    <p>moderate</p>
+                </div>
+              
+                <div class="summary-card" style="border-left-color: #ffc107">
+                    <h3 style="color: #ffc107">0</h3>
+                    <p>medium</p>
+                </div>
+              
+                <div class="summary-card" style="border-left-color: #28a745">
+                    <h3 style="color: #28a745">1</h3>
+                    <p>low</p>
+                </div>
+              
+                <div class="summary-card" style="border-left-color: #17a2b8">
+                    <h3 style="color: #17a2b8">0</h3>
+                    <p>info</p>
+                </div>
+              
+        </div>
+        
+        <div class="metrics-section">
+            <h2>📊 Security Targets</h2>
+            <table class="table">
+                <thead>
+                    <tr>
+                        <th>Metric</th>
+                        <th>Current</th>
+                        <th>Target</th>
+                        <th>Status</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>Critical Vulnerabilities</td>
+                        <td>2</td>
+                        <td>0</td>
+                        <td class="fail">FAIL</td>
+                    </tr>
+                    <tr>
+                        <td>High Vulnerabilities</td>
+                        <td>5</td>
+                        <td>&lt; 5</td>
+                        <td class="fail">FAIL</td>
+                    </tr>
+                    <tr>
+                        <td>Medium/Moderate Vulnerabilities</td>
+                        <td>7</td>
+                        <td>&lt; 20</td>
+                        <td class="pass">PASS</td>
+                    </tr>
+                    <tr>
+                        <td>Node.js Security</td>
+                        <td>Vulnerable</td>
+                        <td>Safe</td>
+                        <td class="fail">FAIL</td>
+                    </tr>
+                </tbody>
+            </table>
+            
+            
+        </div>
+        
+        <div class="vulnerability-details">
+            <h2>🔍 Vulnerability Details</h2>
+            
+            
+                <div class="vulnerability-item">
+                    <div class="vulnerability-header">
+                        <div>
+                            <strong>.</strong>
+                            <span class="source-tag">pnpm-audit</span>
+                            <div class="package-path">.>koa</div>
+                        </div>
+                        <span class="severity-badge" style="background-color: #dc3545">critical</span>
+                    </div>
+                    <div class="vulnerability-body">
+                        <h4>Inefficient Regular Expression Complexity in koa</h4>
+                        <p><strong>Description:</strong> https://github.com/advisories/GHSA-593f-38f6-jp5m</p>
+                        <p><strong>Fix Available:</strong> Manual</p>
+                    </div>
+                </div>
+            
+                <div class="vulnerability-item">
+                    <div class="vulnerability-header">
+                        <div>
+                            <strong>.</strong>
+                            <span class="source-tag">pnpm-audit</span>
+                            <div class="package-path">.>jest>jest-cli>jest-config>jest-environment-jsdom>jsdom>request>form-data</div>
+                        </div>
+                        <span class="severity-badge" style="background-color: #dc3545">critical</span>
+                    </div>
+                    <div class="vulnerability-body">
+                        <h4>form-data uses unsafe random function in form-data for choosing boundary</h4>
+                        <p><strong>Description:</strong> https://github.com/advisories/GHSA-fjxv-7rqg-78g4</p>
+                        <p><strong>Fix Available:</strong> Manual</p>
+                    </div>
+                </div>
+            
+                <div class="vulnerability-item">
+                    <div class="vulnerability-header">
+                        <div>
+                            <strong>.</strong>
+                            <span class="source-tag">pnpm-audit</span>
+                            <div class="package-path">.>jest>jest-cli>@jest/core>micromatch>braces</div>
+                        </div>
+                        <span class="severity-badge" style="background-color: #fd7e14">high</span>
+                    </div>
+                    <div class="vulnerability-body">
+                        <h4>Uncontrolled resource consumption in braces</h4>
+                        <p><strong>Description:</strong> https://github.com/advisories/GHSA-grv7-fg5c-xmjg</p>
+                        <p><strong>Fix Available:</strong> Manual</p>
+                    </div>
+                </div>
+            
+                <div class="vulnerability-item">
+                    <div class="vulnerability-header">
+                        <div>
+                            <strong>.</strong>
+                            <span class="source-tag">pnpm-audit</span>
+                            <div class="package-path">.>@aristocrattechnologiesinc/lone-star-platform>puppeteer>ws</div>
+                        </div>
+                        <span class="severity-badge" style="background-color: #fd7e14">high</span>
+                    </div>
+                    <div class="vulnerability-body">
+                        <h4>ws affected by a DoS when handling a request with many HTTP headers</h4>
+                        <p><strong>Description:</strong> https://github.com/advisories/GHSA-3h5v-q93c-6h6q</p>
+                        <p><strong>Fix Available:</strong> Manual</p>
+                    </div>
+                </div>
+            
+                <div class="vulnerability-item">
+                    <div class="vulnerability-header">
+                        <div>
+                            <strong>.</strong>
+                            <span class="source-tag">pnpm-audit</span>
+                            <div class="package-path">.>@aristocrattechnologiesinc/lone-star-platform>puppeteer>tar-fs</div>
+                        </div>
+                        <span class="severity-badge" style="background-color: #fd7e14">high</span>
+                    </div>
+                    <div class="vulnerability-body">
+                        <h4>tar-fs can extract outside the specified dir with a specific tarball</h4>
+                        <p><strong>Description:</strong> https://github.com/advisories/GHSA-8cj5-5rvv-wf4v</p>
+                        <p><strong>Fix Available:</strong> Manual</p>
+                    </div>
+                </div>
+            
+                <div class="vulnerability-item">
+                    <div class="vulnerability-header">
+                        <div>
+                            <strong>.</strong>
+                            <span class="source-tag">pnpm-audit</span>
+                            <div class="package-path">.>@aristocrattechnologiesinc/lone-star-platform>puppeteer>tar-fs</div>
+                        </div>
+                        <span class="severity-badge" style="background-color: #fd7e14">high</span>
+                    </div>
+                    <div class="vulnerability-body">
+                        <h4>tar-fs has a symlink validation bypass if destination directory is predictable with a specific tarball</h4>
+                        <p><strong>Description:</strong> https://github.com/advisories/GHSA-vj76-c3g6-qr5v</p>
+                        <p><strong>Fix Available:</strong> Manual</p>
+                    </div>
+                </div>
+            
+                <div class="vulnerability-item">
+                    <div class="vulnerability-header">
+                        <div>
+                            <strong>.</strong>
+                            <span class="source-tag">pnpm-audit</span>
+                            <div class="package-path">.>@aristocrattechnologiesinc/lone-star-platform>puppeteer>tar-fs</div>
+                        </div>
+                        <span class="severity-badge" style="background-color: #fd7e14">high</span>
+                    </div>
+                    <div class="vulnerability-body">
+                        <h4>tar-fs Vulnerable to Link Following and Path Traversal via Extracting a Crafted tar File</h4>
+                        <p><strong>Description:</strong> https://github.com/advisories/GHSA-pq67-2wwv-3xjx</p>
+                        <p><strong>Fix Available:</strong> Manual</p>
+                    </div>
+                </div>
+            
+                <div class="vulnerability-item">
+                    <div class="vulnerability-header">
+                        <div>
+                            <strong>.</strong>
+                            <span class="source-tag">pnpm-audit</span>
+                            <div class="package-path">.>jest>jest-cli>@jest/core>@jest/reporters>node-notifier</div>
+                        </div>
+                        <span class="severity-badge" style="background-color: #ffc107">moderate</span>
+                    </div>
+                    <div class="vulnerability-body">
+                        <h4>OS Command Injection in node-notifier</h4>
+                        <p><strong>Description:</strong> https://github.com/advisories/GHSA-5fw9-fq32-wv5p</p>
+                        <p><strong>Fix Available:</strong> Manual</p>
+                    </div>
+                </div>
+            
+                <div class="vulnerability-item">
+                    <div class="vulnerability-header">
+                        <div>
+                            <strong>.</strong>
+                            <span class="source-tag">pnpm-audit</span>
+                            <div class="package-path">.>ts-jest>yargs-parser</div>
+                        </div>
+                        <span class="severity-badge" style="background-color: #ffc107">moderate</span>
+                    </div>
+                    <div class="vulnerability-body">
+                        <h4>yargs-parser Vulnerable to Prototype Pollution</h4>
+                        <p><strong>Description:</strong> https://github.com/advisories/GHSA-p9pc-299p-vxgp</p>
+                        <p><strong>Fix Available:</strong> Manual</p>
+                    </div>
+                </div>
+            
+                <div class="vulnerability-item">
+                    <div class="vulnerability-header">
+                        <div>
+                            <strong>.</strong>
+                            <span class="source-tag">pnpm-audit</span>
+                            <div class="package-path">.>jest>jest-cli>jest-config>jest-environment-jsdom>jsdom>request</div>
+                        </div>
+                        <span class="severity-badge" style="background-color: #ffc107">moderate</span>
+                    </div>
+                    <div class="vulnerability-body">
+                        <h4>Server-Side Request Forgery in Request</h4>
+                        <p><strong>Description:</strong> https://github.com/advisories/GHSA-p8p7-x288-28g6</p>
+                        <p><strong>Fix Available:</strong> Manual</p>
+                    </div>
+                </div>
+            
+                <div class="vulnerability-item">
+                    <div class="vulnerability-header">
+                        <div>
+                            <strong>.</strong>
+                            <span class="source-tag">pnpm-audit</span>
+                            <div class="package-path">.>jest>jest-cli>jest-config>jest-environment-jsdom>jsdom>tough-cookie</div>
+                        </div>
+                        <span class="severity-badge" style="background-color: #ffc107">moderate</span>
+                    </div>
+                    <div class="vulnerability-body">
+                        <h4>tough-cookie Prototype Pollution vulnerability</h4>
+                        <p><strong>Description:</strong> https://github.com/advisories/GHSA-72xf-g2v4-qvf3</p>
+                        <p><strong>Fix Available:</strong> Manual</p>
+                    </div>
+                </div>
+            
+                <div class="vulnerability-item">
+                    <div class="vulnerability-header">
+                        <div>
+                            <strong>.</strong>
+                            <span class="source-tag">pnpm-audit</span>
+                            <div class="package-path">.>jest>jest-cli>@jest/core>micromatch</div>
+                        </div>
+                        <span class="severity-badge" style="background-color: #ffc107">moderate</span>
+                    </div>
+                    <div class="vulnerability-body">
+                        <h4>Regular Expression Denial of Service (ReDoS) in micromatch</h4>
+                        <p><strong>Description:</strong> https://github.com/advisories/GHSA-952p-6rrq-rcjv</p>
+                        <p><strong>Fix Available:</strong> Manual</p>
+                    </div>
+                </div>
+            
+                <div class="vulnerability-item">
+                    <div class="vulnerability-header">
+                        <div>
+                            <strong>.</strong>
+                            <span class="source-tag">pnpm-audit</span>
+                            <div class="package-path">.>koa</div>
+                        </div>
+                        <span class="severity-badge" style="background-color: #ffc107">moderate</span>
+                    </div>
+                    <div class="vulnerability-body">
+                        <h4>Koajs vulnerable to Cross-Site Scripting (XSS) at ctx.redirect() function</h4>
+                        <p><strong>Description:</strong> https://github.com/advisories/GHSA-x2rg-q646-7m2v</p>
+                        <p><strong>Fix Available:</strong> Manual</p>
+                    </div>
+                </div>
+            
+                <div class="vulnerability-item">
+                    <div class="vulnerability-header">
+                        <div>
+                            <strong>.</strong>
+                            <span class="source-tag">pnpm-audit</span>
+                            <div class="package-path">.>@aristocrattechnologiesinc/lone-star-platform>@aristocrattechnologiesinc/meta-service>class-validator>validator</div>
+                        </div>
+                        <span class="severity-badge" style="background-color: #ffc107">moderate</span>
+                    </div>
+                    <div class="vulnerability-body">
+                        <h4>validator.js has a URL validation bypass vulnerability in its isURL function</h4>
+                        <p><strong>Description:</strong> https://github.com/advisories/GHSA-9965-vmph-33xx</p>
+                        <p><strong>Fix Available:</strong> Manual</p>
+                    </div>
+                </div>
+            
+                <div class="vulnerability-item">
+                    <div class="vulnerability-header">
+                        <div>
+                            <strong>.</strong>
+                            <span class="source-tag">pnpm-audit</span>
+                            <div class="package-path">.>koa</div>
+                        </div>
+                        <span class="severity-badge" style="background-color: #28a745">low</span>
+                    </div>
+                    <div class="vulnerability-body">
+                        <h4>Koa Open Redirect via Referrer Header (User-Controlled)</h4>
+                        <p><strong>Description:</strong> https://github.com/advisories/GHSA-jgmv-j7ww-jx2x</p>
+                        <p><strong>Fix Available:</strong> Manual</p>
+                    </div>
+                </div>
+            
+            
+            
+        </div>
+        
+        <div class="footer">
+            <p>Generated by Security Scanner | Focus: Node.js, npm audit, better-npm-audit</p>
+            <p><small>Report includes results from: is-my-node-vulnerable, npm audit, better-npm-audit</small></p>
+        </div>
+    </div>
+</body>
+</html>

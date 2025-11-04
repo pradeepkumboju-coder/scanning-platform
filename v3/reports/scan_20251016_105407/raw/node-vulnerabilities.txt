@@ -1,0 +1,38 @@
+
+
+██████   █████  ███    ██  ██████  ███████ ███████
+██   ██ ██   ██ ████   ██ ██       ██      ██   ██
+██   ██ ███████ ██ ██  ██ ██   ███ █████   ███████
+██   ██ ██   ██ ██  ██ ██ ██    ██ ██      ██   ██
+██████  ██   ██ ██   ████  ██████  ███████ ██   ██
+
+
+[1mThe current Node.js version (v20.17.0) is vulnerable to the following CVEs:[22m
+
+[1mCVE-2025-23083[22m(high): With the aid of the diagnostics_channel utility, an event can be hooked into whenever a worker thread is created. This is not limited only to workers but also exposes internal workers, where an instance of them can be fetched, and its constructor can be grabbed and reinstated for malicious usage. 
+
+This vulnerability affects Permission Model users (--permission) on Node.js v20, v22, and v23.
+[1mPatched versions[22m: ^20.18.2 || ^22.13.1 || ^23.6.1
+=
+
+[1mCVE-2025-23085[22m(medium): A memory leak could occur when a remote peer abruptly closes the socket without sending a GOAWAY notification. Additionally, if an invalid header was detected by nghttp2, causing the connection to be terminated by the peer, the same leak was triggered. This flaw could lead to increased memory consumption and potential denial of service under certain conditions.
+
+This vulnerability affects HTTP/2 Server users on Node.js v18.x, v20.x, v22.x and v23.x.
+[1mPatched versions[22m: ^18.20.6 || ^20.18.2 || ^22.13.1 || ^23.6.1
+=
+
+[1mCVE-2025-23166[22m(high):  The C++ method SignTraits::DeriveBits() may incorrectly call ThrowException() based on user-supplied inputs when executing in a background thread, crashing the Node.js process. Such cryptographic operations are commonly applied to untrusted inputs. Thus, this mechanism potentially allows an adversary to remotely crash a Node.js runtime.
+[1mPatched versions[22m: ^20.19.2 || ^22.15.1 || ^23.11.1 || ^24.0.2
+=
+
+[1mCVE-2025-23167[22m(medium): A flaw in Node.js 20's HTTP parser allows improper termination of HTTP/1 headers using `\r\n\rX` instead of the required `\r\n\r\n`.
+This inconsistency enables request smuggling, allowing attackers to bypass proxy-based access controls and submit unauthorized requests.
+
+The issue was resolved by upgrading `llhttp` to version 9, which enforces correct header termination.
+
+Impact:
+* This vulnerability affects only Node.js 20.x users prior to the `llhttp` v9 upgrade.
+
+[1mPatched versions[22m: ^20.19.2
+=
+WARNING: is-my-node-vulnerable failed

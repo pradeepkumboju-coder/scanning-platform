@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Security Scan Summary</title>
+    <style>
+        body { font-family: Arial, sans-serif; margin: 40px; }
+        .header { color: #333; border-bottom: 2px solid #eee; padding-bottom: 10px; }
+        .section { margin: 20px 0; }
+        .error { color: #d73027; }
+        .success { color: #1a9850; }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <h1>Security Scan Summary</h1>
+        <p>Scan ID: scan_20250923_151730</p>
+        <p>Generated: Tue Sep 23 15:17:31 CDT 2025</p>
+    </div>
+    <div class="section">
+        <h2>Scans Completed:</h2>
+        <ul>
+            <li>Node.js Vulnerability Check</li>
+            <li>npm audit</li>
+            <li>better-npm-audit</li>
+            <li>pnpm audit (if applicable)</li>
+        </ul>
+    </div>
+    <div class="section">
+        <h2>Report Files:</h2>
+        <ul>
+            <li>Raw results: ../raw/</li>
+            <li>JSON results: ../json/</li>
+        </ul>
+    </div>
+</body>
+</html>

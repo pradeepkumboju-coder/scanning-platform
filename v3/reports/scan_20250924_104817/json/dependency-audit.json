@@ -1,0 +1,18 @@
+[36mPNPM audit report results:[0m
+{
+  "advisories": {},
+  "metadata": {
+    "vulnerabilities": {
+      "info": 0,
+      "low": 11,
+      "moderate": 7,
+      "high": 22,
+      "critical": 4
+    },
+    "dependencies": 1436,
+    "devDependencies": 0,
+    "optionalDependencies": 0,
+    "totalDependencies": 1436
+  }
+}
+[32mPassed pnpm security audit.[0m

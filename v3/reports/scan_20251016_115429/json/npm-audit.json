@@ -1,0 +1,1648 @@
+{
+  "auditReportVersion": 2,
+  "vulnerabilities": {
+    "@aristocrattechnologiesinc/local-storage-server": {
+      "name": "@aristocrattechnologiesinc/local-storage-server",
+      "severity": "critical",
+      "isDirect": false,
+      "via": [
+        "koa"
+      ],
+      "effects": [
+        "@aristocrattechnologiesinc/lone-star-platform"
+      ],
+      "range": "*",
+      "nodes": [
+        "node_modules/@aristocrattechnologiesinc/local-storage-server"
+      ],
+      "fixAvailable": false
+    },
+    "@aristocrattechnologiesinc/lone-star-platform": {
+      "name": "@aristocrattechnologiesinc/lone-star-platform",
+      "severity": "critical",
+      "isDirect": true,
+      "via": [
+        "@aristocrattechnologiesinc/local-storage-server",
+        "@aristocrattechnologiesinc/meta-service",
+        "@aristocrattechnologiesinc/plugins-terminate-round",
+        "koa",
+        "puppeteer"
+      ],
+      "effects": [],
+      "range": "*",
+      "nodes": [
+        "node_modules/@aristocrattechnologiesinc/lone-star-platform"
+      ],
+      "fixAvailable": false
+    },
+    "@aristocrattechnologiesinc/meta-service": {
+      "name": "@aristocrattechnologiesinc/meta-service",
+      "severity": "moderate",
+      "isDirect": false,
+      "via": [
+        "@nestjs/common",
+        "@nestjs/config",
+        "@nestjs/core",
+        "@nestjs/mongoose",
+        "@nestjs/swagger",
+        "@nestjs/terminus",
+        "class-validator",
+        "nest-openapi-tools"
+      ],
+      "effects": [
+        "@aristocrattechnologiesinc/lone-star-platform"
+      ],
+      "range": "*",
+      "nodes": [
+        "node_modules/@aristocrattechnologiesinc/meta-service"
+      ],
+      "fixAvailable": false
+    },
+    "@aristocrattechnologiesinc/plugins-terminate-round": {
+      "name": "@aristocrattechnologiesinc/plugins-terminate-round",
+      "severity": "critical",
+      "isDirect": false,
+      "via": [
+        "koa"
+      ],
+      "effects": [
+        "@aristocrattechnologiesinc/lone-star-platform"
+      ],
+      "range": ">=0.2.4",
+      "nodes": [
+        "node_modules/@aristocrattechnologiesinc/plugins-terminate-round"
+      ],
+      "fixAvailable": false
+    },
+    "@jest/core": {
+      "name": "@jest/core",
+      "severity": "moderate",
+      "isDirect": false,
+      "via": [
+        "@jest/reporters",
+        "@jest/transform",
+        "jest-config",
+        "jest-haste-map",
+        "jest-message-util",
+        "jest-resolve-dependencies",
+        "jest-runner",
+        "jest-runtime",
+        "jest-snapshot",
+        "jest-util",
+        "jest-watcher",
+        "micromatch"
+      ],
+      "effects": [
+        "jest-cli"
+      ],
+      "range": "<=25.5.4 || 30.0.0-alpha.1 - 30.0.0-beta.2",
+      "nodes": [
+        "node_modules/@jest/core"
+      ],
+      "fixAvailable": {
+        "name": "jest",
+        "version": "30.2.0",
+        "isSemVerMajor": true
+      }
+    },
+    "@jest/environment": {
+      "name": "@jest/environment",
+      "severity": "moderate",
+      "isDirect": false,
+      "via": [
+        "@jest/fake-timers",
+        "@jest/transform"
+      ],
+      "effects": [
+        "jest-environment-jsdom",
+        "jest-environment-node",
+        "jest-jasmine2",
+        "jest-runner"
+      ],
+      "range": "<=24.9.0 || 30.0.0-alpha.1 - 30.0.0-beta.2",
+      "nodes": [
+        "node_modules/@jest/environment"
+      ],
+      "fixAvailable": {
+        "name": "jest",
+        "version": "30.2.0",
+        "isSemVerMajor": true
+      }
+    },
+    "@jest/fake-timers": {
+      "name": "@jest/fake-timers",
+      "severity": "moderate",
+      "isDirect": false,
+      "via": [
+        "jest-message-util"
+      ],
+      "effects": [
+        "@jest/environment",
+        "jest-environment-node",
+        "jest-util"
+      ],
+      "range": "<=24.9.0 || 30.0.0-alpha.1 - 30.0.0-beta.2",
+      "nodes": [
+        "node_modules/@jest/fake-timers"
+      ],
+      "fixAvailable": {
+        "name": "jest",
+        "version": "30.2.0",
+        "isSemVerMajor": true
+      }
+    },
+    "@jest/reporters": {
+      "name": "@jest/reporters",
+      "severity": "moderate",
+      "isDirect": false,
+      "via": [
+        "@jest/environment",
+        "@jest/transform",
+        "jest-haste-map",
+        "jest-runtime",
+        "jest-util",
+        "node-notifier"
+      ],
+      "effects": [
+        "@jest/core"
+      ],
+      "range": "<=26.4.0 || 30.0.0-alpha.1 - 30.0.0-beta.2",
+      "nodes": [
+        "node_modules/@jest/reporters"
+      ],
+      "fixAvailable": {
+        "name": "jest",
+        "version": "30.2.0",
+        "isSemVerMajor": true
+      }
+    },
+    "@jest/test-sequencer": {
+      "name": "@jest/test-sequencer",
+      "severity": "moderate",
+      "isDirect": false,
+      "via": [
+        "jest-haste-map",
+        "jest-runner",
+        "jest-runtime"
+      ],
+      "effects": [
+        "jest-config"
+      ],
+      "range": "<=24.9.0",
+      "nodes": [
+        "node_modules/@jest/test-sequencer"
+      ],
+      "fixAvailable": {
+        "name": "jest",
+        "version": "30.2.0",
+        "isSemVerMajor": true
+      }
+    },
+    "@jest/transform": {
+      "name": "@jest/transform",
+      "severity": "moderate",
+      "isDirect": false,
+      "via": [
+        "jest-haste-map",
+        "jest-util",
+        "micromatch"
+      ],
+      "effects": [
+        "@jest/environment",
+        "@jest/reporters",
+        "babel-jest",
+        "jest-runtime"
+      ],
+      "range": "<=24.9.0 || 30.0.0-alpha.1 - 30.0.0-beta.2",
+      "nodes": [
+        "node_modules/@jest/transform"
+      ],
+      "fixAvailable": {
+        "name": "jest",
+        "version": "30.2.0",
+        "isSemVerMajor": true
+      }
+    },
+    "@nestjs/axios": {
+      "name": "@nestjs/axios",
+      "severity": "moderate",
+      "isDirect": false,
+      "via": [
+        "@nestjs/common"
+      ],
+      "effects": [
+        "@openapitools/openapi-generator-cli"
+      ],
+      "range": ">=4.0.0",
+      "nodes": [
+        "node_modules/@openapitools/openapi-generator-cli/node_modules/@nestjs/axios"
+      ],
+      "fixAvailable": true
+    },
+    "@nestjs/common": {
+      "name": "@nestjs/common",
+      "severity": "moderate",
+      "isDirect": false,
+      "via": [
+        "class-validator"
+      ],
+      "effects": [
+        "@nestjs/axios",
+        "@nestjs/config",
+        "@nestjs/core",
+        "@nestjs/mapped-types",
+        "@nestjs/mongoose",
+        "@nestjs/platform-express",
+        "@nestjs/swagger",
+        "@nestjs/terminus",
+        "@openapitools/openapi-generator-cli",
+        "nest-openapi-tools"
+      ],
+      "range": "4.3.0 - 5.0.0-rc.4 || >=7.6.0-next.1",
+      "nodes": [
+        "node_modules/@nestjs/common",
+        "node_modules/@openapitools/openapi-generator-cli/node_modules/@nestjs/common"
+      ],
+      "fixAvailable": false
+    },
+    "@nestjs/config": {
+      "name": "@nestjs/config",
+      "severity": "moderate",
+      "isDirect": false,
+      "via": [
+        "@nestjs/common"
+      ],
+      "effects": [],
+      "range": ">=3.0.0",
+      "nodes": [
+        "node_modules/@nestjs/config"
+      ],
+      "fixAvailable": true
+    },
+    "@nestjs/core": {
+      "name": "@nestjs/core",
+      "severity": "moderate",
+      "isDirect": false,
+      "via": [
+        "@nestjs/common"
+      ],
+      "effects": [
+        "@nestjs/mongoose",
+        "@nestjs/swagger",
+        "@openapitools/openapi-generator-cli"
+      ],
+      "range": ">=8.0.0-alpha.1",
+      "nodes": [
+        "node_modules/@nestjs/core",
+        "node_modules/@openapitools/openapi-generator-cli/node_modules/@nestjs/core"
+      ],
+      "fixAvailable": false
+    },
+    "@nestjs/mapped-types": {
+      "name": "@nestjs/mapped-types",
+      "severity": "moderate",
+      "isDirect": false,
+      "via": [
+        "@nestjs/common",
+        "class-validator"
+      ],
+      "effects": [
+        "@nestjs/swagger"
+      ],
+      "range": "*",
+      "nodes": [
+        "node_modules/@aristocrattechnologiesinc/meta-service/node_modules/@nestjs/mapped-types",
+        "node_modules/@nestjs/mapped-types"
+      ],
+      "fixAvailable": false
+    },
+    "@nestjs/mongoose": {
+      "name": "@nestjs/mongoose",
+      "severity": "moderate",
+      "isDirect": false,
+      "via": [
+        "@nestjs/common",
+        "@nestjs/core"
+      ],
+      "effects": [],
+      "range": "<=3.0.1 || >=9.2.0",
+      "nodes": [
+        "node_modules/@nestjs/mongoose"
+      ],
+      "fixAvailable": true
+    },
+    "@nestjs/platform-express": {
+      "name": "@nestjs/platform-express",
+      "severity": "high",
+      "isDirect": false,
+      "via": [
+        "@nestjs/common",
+        "@nestjs/core",
+        "multer"
+      ],
+      "effects": [],
+      "range": ">=8.0.0-alpha.1",
+      "nodes": [
+        "node_modules/@nestjs/platform-express",
+        "node_modules/@openapitools/openapi-generator-cli/node_modules/@nestjs/platform-express"
+      ],
+      "fixAvailable": true
+    },
+    "@nestjs/swagger": {
+      "name": "@nestjs/swagger",
+      "severity": "moderate",
+      "isDirect": false,
+      "via": [
+        "@nestjs/common",
+        "@nestjs/core",
+        "@nestjs/mapped-types",
+        "class-validator"
+      ],
+      "effects": [
+        "nest-openapi-tools"
+      ],
+      "range": "1.2.0 - 1.3.1 || >=4.5.2",
+      "nodes": [
+        "node_modules/@aristocrattechnologiesinc/meta-service/node_modules/@nestjs/swagger",
+        "node_modules/@nestjs/swagger"
+      ],
+      "fixAvailable": false
+    },
+    "@nestjs/terminus": {
+      "name": "@nestjs/terminus",
+      "severity": "moderate",
+      "isDirect": false,
+      "via": [
+        "@nestjs/common",
+        "@nestjs/core"
+      ],
+      "effects": [
+        "@aristocrattechnologiesinc/meta-service"
+      ],
+      "range": ">=8.0.0-next.0",
+      "nodes": [
+        "node_modules/@nestjs/terminus"
+      ],
+      "fixAvailable": false
+    },
+    "@openapitools/openapi-generator-cli": {
+      "name": "@openapitools/openapi-generator-cli",
+      "severity": "high",
+      "isDirect": false,
+      "via": [
+        "@nestjs/axios",
+        "@nestjs/common",
+        "@nestjs/core",
+        "axios",
+        "inquirer"
+      ],
+      "effects": [],
+      "range": ">=0.0.7-3.0.0",
+      "nodes": [
+        "node_modules/@openapitools/openapi-generator-cli"
+      ],
+      "fixAvailable": true
+    },
+    "anymatch": {
+      "name": "anymatch",
+      "severity": "moderate",
+      "isDirect": false,
+      "via": [
+        "micromatch"
+      ],
+      "effects": [
+        "jest-haste-map",
+        "sane"
+      ],
+      "range": "1.2.0 - 2.0.0",
+      "nodes": [
+        "node_modules/anymatch"
+      ],
+      "fixAvailable": {
+        "name": "jest",
+        "version": "30.2.0",
+        "isSemVerMajor": true
+      }
+    },
+    "axios": {
+      "name": "axios",
+      "severity": "high",
+      "isDirect": false,
+      "via": [
+        {
+          "source": 1108263,
+          "name": "axios",
+          "dependency": "axios",
+          "title": "Axios is vulnerable to DoS attack through lack of data size check",
+          "url": "https://github.com/advisories/GHSA-4hjh-wcwx-xvwj",
+          "severity": "high",
+          "cwe": [
+            "CWE-770"
+          ],
+          "cvss": {
+            "score": 7.5,
+            "vectorString": "CVSS:3.1/AV:N/AC:L/PR:N/UI:N/S:U/C:N/I:N/A:H"
+          },
+          "range": ">=1.0.0 <1.12.0"
+        }
+      ],
+      "effects": [
+        "@openapitools/openapi-generator-cli"
+      ],
+      "range": "1.0.0 - 1.11.0",
+      "nodes": [
+        "node_modules/@openapitools/openapi-generator-cli/node_modules/axios",
+        "node_modules/axios"
+      ],
+      "fixAvailable": true
+    },
+    "babel-jest": {
+      "name": "babel-jest",
+      "severity": "moderate",
+      "isDirect": false,
+      "via": [
+        "@jest/transform"
+      ],
+      "effects": [
+        "jest-config"
+      ],
+      "range": "24.2.0-alpha.0 - 24.9.0",
+      "nodes": [
+        "node_modules/babel-jest"
+      ],
+      "fixAvailable": {
+        "name": "jest",
+        "version": "30.2.0",
+        "isSemVerMajor": true
+      }
+    },
+    "braces": {
+      "name": "braces",
+      "severity": "high",
+      "isDirect": false,
+      "via": [
+        {
+          "source": 1098094,
+          "name": "braces",
+          "dependency": "braces",
+          "title": "Uncontrolled resource consumption in braces",
+          "url": "https://github.com/advisories/GHSA-grv7-fg5c-xmjg",
+          "severity": "high",
+          "cwe": [
+            "CWE-400",
+            "CWE-1050"
+          ],
+          "cvss": {
+            "score": 7.5,
+            "vectorString": "CVSS:3.1/AV:N/AC:L/PR:N/UI:N/S:U/C:N/I:N/A:H"
+          },
+          "range": "<3.0.3"
+        }
+      ],
+      "effects": [
+        "micromatch"
+      ],
+      "range": "<3.0.3",
+      "nodes": [
+        "node_modules/@jest/core/node_modules/braces",
+        "node_modules/@jest/transform/node_modules/braces",
+        "node_modules/anymatch/node_modules/braces",
+        "node_modules/jest-config/node_modules/braces",
+        "node_modules/jest-haste-map/node_modules/braces",
+        "node_modules/jest-message-util/node_modules/braces",
+        "node_modules/sane/node_modules/braces"
+      ],
+      "fixAvailable": {
+        "name": "jest",
+        "version": "30.2.0",
+        "isSemVerMajor": true
+      }
+    },
+    "class-validator": {
+      "name": "class-validator",
+      "severity": "moderate",
+      "isDirect": false,
+      "via": [
+        "validator"
+      ],
+      "effects": [
+        "@aristocrattechnologiesinc/meta-service",
+        "@nestjs/common",
+        "@nestjs/mapped-types",
+        "@nestjs/swagger"
+      ],
+      "range": "*",
+      "nodes": [
+        "node_modules/class-validator"
+      ],
+      "fixAvailable": false
+    },
+    "expect": {
+      "name": "expect",
+      "severity": "moderate",
+      "isDirect": false,
+      "via": [
+        "jest-message-util"
+      ],
+      "effects": [
+        "jest-jasmine2",
+        "jest-snapshot"
+      ],
+      "range": "21.0.0-beta.1 - 24.9.0 || 30.0.0-alpha.1 - 30.0.0-beta.2",
+      "nodes": [
+        "node_modules/expect"
+      ],
+      "fixAvailable": {
+        "name": "jest",
+        "version": "30.2.0",
+        "isSemVerMajor": true
+      }
+    },
+    "external-editor": {
+      "name": "external-editor",
+      "severity": "low",
+      "isDirect": false,
+      "via": [
+        "tmp"
+      ],
+      "effects": [
+        "inquirer"
+      ],
+      "range": ">=1.1.1",
+      "nodes": [
+        "node_modules/external-editor"
+      ],
+      "fixAvailable": true
+    },
+    "form-data": {
+      "name": "form-data",
+      "severity": "critical",
+      "isDirect": false,
+      "via": [
+        {
+          "source": 1106507,
+          "name": "form-data",
+          "dependency": "form-data",
+          "title": "form-data uses unsafe random function in form-data for choosing boundary",
+          "url": "https://github.com/advisories/GHSA-fjxv-7rqg-78g4",
+          "severity": "critical",
+          "cwe": [
+            "CWE-330"
+          ],
+          "cvss": {
+            "score": 0,
+            "vectorString": null
+          },
+          "range": ">=4.0.0 <4.0.4"
+        },
+        {
+          "source": 1106509,
+          "name": "form-data",
+          "dependency": "form-data",
+          "title": "form-data uses unsafe random function in form-data for choosing boundary",
+          "url": "https://github.com/advisories/GHSA-fjxv-7rqg-78g4",
+          "severity": "critical",
+          "cwe": [
+            "CWE-330"
+          ],
+          "cvss": {
+            "score": 0,
+            "vectorString": null
+          },
+          "range": "<2.5.4"
+        }
+      ],
+      "effects": [
+        "request"
+      ],
+      "range": ">=4.0.0 <4.0.4 || <2.5.4",
+      "nodes": [
+        "node_modules/@types/request/node_modules/form-data",
+        "node_modules/form-data",
+        "node_modules/request/node_modules/form-data",
+        "node_modules/then-request/node_modules/form-data"
+      ],
+      "fixAvailable": {
+        "name": "jest",
+        "version": "30.2.0",
+        "isSemVerMajor": true
+      }
+    },
+    "inquirer": {
+      "name": "inquirer",
+      "severity": "low",
+      "isDirect": false,
+      "via": [
+        "external-editor"
+      ],
+      "effects": [
+        "@openapitools/openapi-generator-cli"
+      ],
+      "range": "3.0.0 - 8.2.6 || 9.0.0 - 9.3.7",
+      "nodes": [
+        "node_modules/inquirer"
+      ],
+      "fixAvailable": true
+    },
+    "jest": {
+      "name": "jest",
+      "severity": "moderate",
+      "isDirect": true,
+      "via": [
+        "jest-cli"
+      ],
+      "effects": [
+        "ts-jest"
+      ],
+      "range": "23.5.0 - 24.9.0",
+      "nodes": [
+        "node_modules/jest"
+      ],
+      "fixAvailable": {
+        "name": "jest",
+        "version": "30.2.0",
+        "isSemVerMajor": true
+      }
+    },
+    "jest-cli": {
+      "name": "jest-cli",
+      "severity": "moderate",
+      "isDirect": false,
+      "via": [
+        "@jest/core",
+        "jest-config",
+        "jest-util"
+      ],
+      "effects": [
+        "jest"
+      ],
+      "range": "23.5.0 - 24.9.0 || 30.0.0-alpha.1 - 30.0.0-beta.2",
+      "nodes": [
+        "node_modules/jest-cli"
+      ],
+      "fixAvailable": {
+        "name": "jest",
+        "version": "30.2.0",
+        "isSemVerMajor": true
+      }
+    },
+    "jest-config": {
+      "name": "jest-config",
+      "severity": "moderate",
+      "isDirect": false,
+      "via": [
+        "@jest/test-sequencer",
+        "babel-jest",
+        "jest-environment-jsdom",
+        "jest-environment-node",
+        "jest-jasmine2",
+        "jest-util",
+        "micromatch"
+      ],
+      "effects": [
+        "jest-cli",
+        "jest-runner",
+        "jest-runtime"
+      ],
+      "range": "12.1.1-alpha.2935e14d - 25.5.4 || 30.0.0-alpha.1 - 30.0.0-beta.2",
+      "nodes": [
+        "node_modules/jest-config"
+      ],
+      "fixAvailable": {
+        "name": "jest",
+        "version": "30.2.0",
+        "isSemVerMajor": true
+      }
+    },
+    "jest-each": {
+      "name": "jest-each",
+      "severity": "moderate",
+      "isDirect": false,
+      "via": [
+        "jest-util"
+      ],
+      "effects": [],
+      "range": "24.2.0-alpha.0 - 24.9.0 || 30.0.0-alpha.1 - 30.0.0-beta.2",
+      "nodes": [
+        "node_modules/jest-each"
+      ],
+      "fixAvailable": true
+    },
+    "jest-environment-jsdom": {
+      "name": "jest-environment-jsdom",
+      "severity": "moderate",
+      "isDirect": false,
+      "via": [
+        "@jest/environment",
+        "@jest/fake-timers",
+        "jest-util",
+        "jsdom"
+      ],
+      "effects": [
+        "jest-config"
+      ],
+      "range": "10.0.2 - 25.5.0",
+      "nodes": [
+        "node_modules/jest-environment-jsdom"
+      ],
+      "fixAvailable": {
+        "name": "jest",
+        "version": "30.2.0",
+        "isSemVerMajor": true
+      }
+    },
+    "jest-environment-node": {
+      "name": "jest-environment-node",
+      "severity": "moderate",
+      "isDirect": false,
+      "via": [
+        "@jest/environment",
+        "@jest/fake-timers",
+        "jest-util"
+      ],
+      "effects": [],
+      "range": "24.2.0-alpha.0 - 24.9.0 || 30.0.0-alpha.1 - 30.0.0-beta.2",
+      "nodes": [
+        "node_modules/jest-environment-node"
+      ],
+      "fixAvailable": true
+    },
+    "jest-haste-map": {
+      "name": "jest-haste-map",
+      "severity": "moderate",
+      "isDirect": false,
+      "via": [
+        "anymatch",
+        "jest-util",
+        "micromatch",
+        "sane"
+      ],
+      "effects": [
+        "@jest/test-sequencer",
+        "jest-runner",
+        "jest-runtime"
+      ],
+      "range": "18.1.0 - 26.6.2 || 30.0.0-alpha.1 - 30.0.0-beta.2",
+      "nodes": [
+        "node_modules/jest-haste-map"
+      ],
+      "fixAvailable": {
+        "name": "jest",
+        "version": "30.2.0",
+        "isSemVerMajor": true
+      }
+    },
+    "jest-jasmine2": {
+      "name": "jest-jasmine2",
+      "severity": "moderate",
+      "isDirect": false,
+      "via": [
+        "@jest/environment",
+        "expect",
+        "jest-each",
+        "jest-message-util",
+        "jest-runtime",
+        "jest-snapshot",
+        "jest-util"
+      ],
+      "effects": [
+        "jest-config"
+      ],
+      "range": "18.5.0-alpha.7da3df39 - 24.9.0 || 30.0.0-alpha.1 - 30.0.0-beta.2",
+      "nodes": [
+        "node_modules/jest-jasmine2"
+      ],
+      "fixAvailable": {
+        "name": "jest",
+        "version": "30.2.0",
+        "isSemVerMajor": true
+      }
+    },
+    "jest-message-util": {
+      "name": "jest-message-util",
+      "severity": "moderate",
+      "isDirect": false,
+      "via": [
+        "micromatch"
+      ],
+      "effects": [
+        "@jest/core",
+        "@jest/fake-timers",
+        "expect",
+        "jest-jasmine2",
+        "jest-runner",
+        "jest-runtime",
+        "jest-snapshot"
+      ],
+      "range": "18.5.0-alpha.7da3df39 - 24.9.0",
+      "nodes": [
+        "node_modules/jest-message-util"
+      ],
+      "fixAvailable": {
+        "name": "jest",
+        "version": "30.2.0",
+        "isSemVerMajor": true
+      }
+    },
+    "jest-resolve-dependencies": {
+      "name": "jest-resolve-dependencies",
+      "severity": "moderate",
+      "isDirect": false,
+      "via": [
+        "jest-snapshot"
+      ],
+      "effects": [],
+      "range": "23.3.0 - 24.9.0 || 30.0.0-alpha.1 - 30.0.0-beta.2",
+      "nodes": [
+        "node_modules/jest-resolve-dependencies"
+      ],
+      "fixAvailable": true
+    },
+    "jest-runner": {
+      "name": "jest-runner",
+      "severity": "moderate",
+      "isDirect": false,
+      "via": [
+        "@jest/environment",
+        "jest-config",
+        "jest-haste-map",
+        "jest-jasmine2",
+        "jest-message-util",
+        "jest-runtime",
+        "jest-util"
+      ],
+      "effects": [],
+      "range": "21.0.0-alpha.1 - 24.9.0 || 30.0.0-alpha.1 - 30.0.0-beta.2",
+      "nodes": [
+        "node_modules/jest-runner"
+      ],
+      "fixAvailable": true
+    },
+    "jest-runtime": {
+      "name": "jest-runtime",
+      "severity": "moderate",
+      "isDirect": false,
+      "via": [
+        "@jest/environment",
+        "@jest/transform",
+        "jest-config",
+        "jest-haste-map",
+        "jest-message-util",
+        "jest-snapshot",
+        "jest-util"
+      ],
+      "effects": [],
+      "range": "18.1.0 - 24.9.0 || 30.0.0-alpha.1 - 30.0.0-beta.2",
+      "nodes": [
+        "node_modules/jest-runtime"
+      ],
+      "fixAvailable": true
+    },
+    "jest-snapshot": {
+      "name": "jest-snapshot",
+      "severity": "moderate",
+      "isDirect": false,
+      "via": [
+        "expect",
+        "jest-message-util"
+      ],
+      "effects": [
+        "jest-jasmine2",
+        "jest-resolve-dependencies",
+        "jest-runtime"
+      ],
+      "range": "23.3.0 - 24.9.0 || 30.0.0-alpha.1 - 30.0.0-beta.2",
+      "nodes": [
+        "node_modules/jest-snapshot"
+      ],
+      "fixAvailable": {
+        "name": "jest",
+        "version": "30.2.0",
+        "isSemVerMajor": true
+      }
+    },
+    "jest-util": {
+      "name": "jest-util",
+      "severity": "moderate",
+      "isDirect": false,
+      "via": [
+        "@jest/fake-timers"
+      ],
+      "effects": [
+        "@jest/reporters",
+        "@jest/transform",
+        "jest-cli",
+        "jest-config",
+        "jest-each",
+        "jest-haste-map",
+        "jest-jasmine2",
+        "jest-runner",
+        "jest-runtime",
+        "jest-watcher"
+      ],
+      "range": "24.2.0-alpha.0 - 24.9.0",
+      "nodes": [
+        "node_modules/jest-util"
+      ],
+      "fixAvailable": {
+        "name": "jest",
+        "version": "30.2.0",
+        "isSemVerMajor": true
+      }
+    },
+    "jest-watcher": {
+      "name": "jest-watcher",
+      "severity": "moderate",
+      "isDirect": false,
+      "via": [
+        "jest-util"
+      ],
+      "effects": [],
+      "range": "24.2.0-alpha.0 - 24.9.0 || 30.0.0-alpha.1 - 30.0.0-beta.2",
+      "nodes": [
+        "node_modules/jest-watcher"
+      ],
+      "fixAvailable": true
+    },
+    "jsdom": {
+      "name": "jsdom",
+      "severity": "moderate",
+      "isDirect": false,
+      "via": [
+        "request",
+        "request-promise-native",
+        "tough-cookie"
+      ],
+      "effects": [
+        "jest-environment-jsdom"
+      ],
+      "range": "0.1.20 || 0.2.0 - 16.5.3",
+      "nodes": [
+        "node_modules/jsdom"
+      ],
+      "fixAvailable": {
+        "name": "jest",
+        "version": "30.2.0",
+        "isSemVerMajor": true
+      }
+    },
+    "koa": {
+      "name": "koa",
+      "severity": "critical",
+      "isDirect": true,
+      "via": [
+        {
+          "source": 1102314,
+          "name": "koa",
+          "dependency": "koa",
+          "title": "Inefficient Regular Expression Complexity in koa",
+          "url": "https://github.com/advisories/GHSA-593f-38f6-jp5m",
+          "severity": "critical",
+          "cwe": [
+            "CWE-1333"
+          ],
+          "cvss": {
+            "score": 0,
+            "vectorString": null
+          },
+          "range": ">=2.0.0 <2.15.4"
+        },
+        {
+          "source": 1106835,
+          "name": "koa",
+          "dependency": "koa",
+          "title": "Koa Open Redirect via Referrer Header (User-Controlled)",
+          "url": "https://github.com/advisories/GHSA-jgmv-j7ww-jx2x",
+          "severity": "low",
+          "cwe": [
+            "CWE-601"
+          ],
+          "cvss": {
+            "score": 3.5,
+            "vectorString": "CVSS:3.1/AV:N/AC:L/PR:L/UI:R/S:U/C:N/I:L/A:N"
+          },
+          "range": ">=2.0.0 <2.16.2"
+        },
+        {
+          "source": 1108441,
+          "name": "koa",
+          "dependency": "koa",
+          "title": "Koajs vulnerable to Cross-Site Scripting (XSS) at ctx.redirect() function",
+          "url": "https://github.com/advisories/GHSA-x2rg-q646-7m2v",
+          "severity": "moderate",
+          "cwe": [
+            "CWE-79"
+          ],
+          "cvss": {
+            "score": 5,
+            "vectorString": "CVSS:3.1/AV:N/AC:H/PR:N/UI:R/S:U/C:L/I:L/A:L"
+          },
+          "range": "<2.16.1"
+        }
+      ],
+      "effects": [
+        "@aristocrattechnologiesinc/local-storage-server",
+        "@aristocrattechnologiesinc/lone-star-platform",
+        "@aristocrattechnologiesinc/plugins-terminate-round"
+      ],
+      "range": "<=2.16.1",
+      "nodes": [
+        "node_modules/koa"
+      ],
+      "fixAvailable": false
+    },
+    "micromatch": {
+      "name": "micromatch",
+      "severity": "high",
+      "isDirect": false,
+      "via": [
+        {
+          "source": 1098681,
+          "name": "micromatch",
+          "dependency": "micromatch",
+          "title": "Regular Expression Denial of Service (ReDoS) in micromatch",
+          "url": "https://github.com/advisories/GHSA-952p-6rrq-rcjv",
+          "severity": "moderate",
+          "cwe": [
+            "CWE-1333"
+          ],
+          "cvss": {
+            "score": 5.3,
+            "vectorString": "CVSS:3.1/AV:N/AC:L/PR:N/UI:N/S:U/C:N/I:N/A:L"
+          },
+          "range": "<4.0.8"
+        },
+        "braces"
+      ],
+      "effects": [
+        "@jest/core",
+        "@jest/transform",
+        "anymatch",
+        "jest-config",
+        "jest-haste-map",
+        "jest-message-util",
+        "sane"
+      ],
+      "range": "<=4.0.7",
+      "nodes": [
+        "node_modules/@jest/core/node_modules/micromatch",
+        "node_modules/@jest/transform/node_modules/micromatch",
+        "node_modules/anymatch/node_modules/micromatch",
+        "node_modules/jest-config/node_modules/micromatch",
+        "node_modules/jest-haste-map/node_modules/micromatch",
+        "node_modules/jest-message-util/node_modules/micromatch",
+        "node_modules/sane/node_modules/micromatch"
+      ],
+      "fixAvailable": {
+        "name": "jest",
+        "version": "30.2.0",
+        "isSemVerMajor": true
+      }
+    },
+    "multer": {
+      "name": "multer",
+      "severity": "high",
+      "isDirect": false,
+      "via": [
+        {
+          "source": 1106463,
+          "name": "multer",
+          "dependency": "multer",
+          "title": "Multer vulnerable to Denial of Service via unhandled exception from malformed request",
+          "url": "https://github.com/advisories/GHSA-fjgf-rc76-4x9p",
+          "severity": "high",
+          "cwe": [
+            "CWE-248"
+          ],
+          "cvss": {
+            "score": 7.5,
+            "vectorString": "CVSS:3.1/AV:N/AC:L/PR:N/UI:N/S:U/C:N/I:N/A:H"
+          },
+          "range": ">=1.4.4-lts.1 <2.0.2"
+        }
+      ],
+      "effects": [
+        "@nestjs/platform-express"
+      ],
+      "range": "1.4.4-lts.1 - 2.0.1",
+      "nodes": [
+        "node_modules/multer"
+      ],
+      "fixAvailable": true
+    },
+    "nest-openapi-tools": {
+      "name": "nest-openapi-tools",
+      "severity": "moderate",
+      "isDirect": false,
+      "via": [
+        "@nestjs/common",
+        "@nestjs/core",
+        "@nestjs/swagger"
+      ],
+      "effects": [
+        "@aristocrattechnologiesinc/meta-service"
+      ],
+      "range": ">=3.0.2",
+      "nodes": [
+        "node_modules/nest-openapi-tools"
+      ],
+      "fixAvailable": false
+    },
+    "node-notifier": {
+      "name": "node-notifier",
+      "severity": "moderate",
+      "isDirect": false,
+      "via": [
+        {
+          "source": 1086436,
+          "name": "node-notifier",
+          "dependency": "node-notifier",
+          "title": "OS Command Injection in node-notifier",
+          "url": "https://github.com/advisories/GHSA-5fw9-fq32-wv5p",
+          "severity": "moderate",
+          "cwe": [
+            "CWE-78"
+          ],
+          "cvss": {
+            "score": 5.6,
+            "vectorString": "CVSS:3.1/AV:N/AC:H/PR:N/UI:N/S:U/C:L/I:L/A:L"
+          },
+          "range": "<8.0.1"
+        }
+      ],
+      "effects": [
+        "@jest/reporters"
+      ],
+      "range": "<8.0.1",
+      "nodes": [
+        "node_modules/node-notifier"
+      ],
+      "fixAvailable": {
+        "name": "jest",
+        "version": "30.2.0",
+        "isSemVerMajor": true
+      }
+    },
+    "pbkdf2": {
+      "name": "pbkdf2",
+      "severity": "critical",
+      "isDirect": false,
+      "via": [
+        {
+          "source": 1105691,
+          "name": "pbkdf2",
+          "dependency": "pbkdf2",
+          "title": "pbkdf2 silently disregards Uint8Array input, returning static keys",
+          "url": "https://github.com/advisories/GHSA-v62p-rq8g-8h59",
+          "severity": "critical",
+          "cwe": [
+            "CWE-20"
+          ],
+          "cvss": {
+            "score": 0,
+            "vectorString": null
+          },
+          "range": "<=3.1.2"
+        },
+        {
+          "source": 1105692,
+          "name": "pbkdf2",
+          "dependency": "pbkdf2",
+          "title": "pbkdf2 returns predictable uninitialized/zero-filled memory for non-normalized or unimplemented algos",
+          "url": "https://github.com/advisories/GHSA-h7cp-r72f-jxh6",
+          "severity": "critical",
+          "cwe": [
+            "CWE-20"
+          ],
+          "cvss": {
+            "score": 0,
+            "vectorString": null
+          },
+          "range": ">=3.0.10 <=3.1.2"
+        }
+      ],
+      "effects": [],
+      "range": "<=3.1.2",
+      "nodes": [
+        "node_modules/pbkdf2"
+      ],
+      "fixAvailable": true
+    },
+    "puppeteer": {
+      "name": "puppeteer",
+      "severity": "high",
+      "isDirect": false,
+      "via": [
+        "tar-fs",
+        "ws"
+      ],
+      "effects": [
+        "@aristocrattechnologiesinc/lone-star-platform"
+      ],
+      "range": "10.0.0 - 18.1.0",
+      "nodes": [
+        "node_modules/puppeteer"
+      ],
+      "fixAvailable": false
+    },
+    "request": {
+      "name": "request",
+      "severity": "critical",
+      "isDirect": false,
+      "via": [
+        {
+          "source": 1096727,
+          "name": "request",
+          "dependency": "request",
+          "title": "Server-Side Request Forgery in Request",
+          "url": "https://github.com/advisories/GHSA-p8p7-x288-28g6",
+          "severity": "moderate",
+          "cwe": [
+            "CWE-918"
+          ],
+          "cvss": {
+            "score": 6.1,
+            "vectorString": "CVSS:3.1/AV:N/AC:L/PR:N/UI:R/S:C/C:L/I:L/A:N"
+          },
+          "range": "<=2.88.2"
+        },
+        "form-data",
+        "tough-cookie"
+      ],
+      "effects": [
+        "jsdom",
+        "request-promise-core",
+        "request-promise-native"
+      ],
+      "range": "*",
+      "nodes": [
+        "node_modules/request"
+      ],
+      "fixAvailable": {
+        "name": "jest",
+        "version": "30.2.0",
+        "isSemVerMajor": true
+      }
+    },
+    "request-promise-core": {
+      "name": "request-promise-core",
+      "severity": "moderate",
+      "isDirect": false,
+      "via": [
+        "request"
+      ],
+      "effects": [
+        "request-promise-native"
+      ],
+      "range": "*",
+      "nodes": [
+        "node_modules/request-promise-core"
+      ],
+      "fixAvailable": {
+        "name": "jest",
+        "version": "30.2.0",
+        "isSemVerMajor": true
+      }
+    },
+    "request-promise-native": {
+      "name": "request-promise-native",
+      "severity": "moderate",
+      "isDirect": false,
+      "via": [
+        "request",
+        "request-promise-core",
+        "tough-cookie"
+      ],
+      "effects": [
+        "jsdom"
+      ],
+      "range": ">=1.0.0",
+      "nodes": [
+        "node_modules/request-promise-native"
+      ],
+      "fixAvailable": {
+        "name": "jest",
+        "version": "30.2.0",
+        "isSemVerMajor": true
+      }
+    },
+    "sane": {
+      "name": "sane",
+      "severity": "moderate",
+      "isDirect": false,
+      "via": [
+        "anymatch",
+        "micromatch"
+      ],
+      "effects": [
+        "jest-haste-map"
+      ],
+      "range": "1.5.0 - 4.1.0",
+      "nodes": [
+        "node_modules/sane"
+      ],
+      "fixAvailable": {
+        "name": "jest",
+        "version": "30.2.0",
+        "isSemVerMajor": true
+      }
+    },
+    "sha.js": {
+      "name": "sha.js",
+      "severity": "critical",
+      "isDirect": false,
+      "via": [
+        {
+          "source": 1107537,
+          "name": "sha.js",
+          "dependency": "sha.js",
+          "title": "sha.js is missing type checks leading to hash rewind and passing on crafted data",
+          "url": "https://github.com/advisories/GHSA-95m3-7q98-8xr5",
+          "severity": "critical",
+          "cwe": [
+            "CWE-20"
+          ],
+          "cvss": {
+            "score": 9.1,
+            "vectorString": "CVSS:3.1/AV:N/AC:L/PR:N/UI:N/S:U/C:N/I:H/A:H"
+          },
+          "range": "<=2.4.11"
+        }
+      ],
+      "effects": [],
+      "range": "<=2.4.11",
+      "nodes": [
+        "node_modules/sha.js"
+      ],
+      "fixAvailable": true
+    },
+    "tar-fs": {
+      "name": "tar-fs",
+      "severity": "high",
+      "isDirect": false,
+      "via": [
+        {
+          "source": 1106930,
+          "name": "tar-fs",
+          "dependency": "tar-fs",
+          "title": "tar-fs can extract outside the specified dir with a specific tarball",
+          "url": "https://github.com/advisories/GHSA-8cj5-5rvv-wf4v",
+          "severity": "high",
+          "cwe": [
+            "CWE-22"
+          ],
+          "cvss": {
+            "score": 0,
+            "vectorString": null
+          },
+          "range": ">=2.0.0 <2.1.3"
+        },
+        {
+          "source": 1108293,
+          "name": "tar-fs",
+          "dependency": "tar-fs",
+          "title": "tar-fs has a symlink validation bypass if destination directory is predictable with a specific tarball",
+          "url": "https://github.com/advisories/GHSA-vj76-c3g6-qr5v",
+          "severity": "high",
+          "cwe": [
+            "CWE-22",
+            "CWE-61"
+          ],
+          "cvss": {
+            "score": 0,
+            "vectorString": null
+          },
+          "range": ">=2.0.0 <2.1.4"
+        },
+        {
+          "source": 1108411,
+          "name": "tar-fs",
+          "dependency": "tar-fs",
+          "title": "tar-fs Vulnerable to Link Following and Path Traversal via Extracting a Crafted tar File",
+          "url": "https://github.com/advisories/GHSA-pq67-2wwv-3xjx",
+          "severity": "high",
+          "cwe": [
+            "CWE-22"
+          ],
+          "cvss": {
+            "score": 7.5,
+            "vectorString": "CVSS:3.1/AV:N/AC:L/PR:N/UI:N/S:U/C:N/I:H/A:N"
+          },
+          "range": ">=2.0.0 <2.1.2"
+        }
+      ],
+      "effects": [
+        "puppeteer"
+      ],
+      "range": "2.0.0 - 2.1.3",
+      "nodes": [
+        "node_modules/puppeteer/node_modules/tar-fs",
+        "node_modules/tar-fs"
+      ],
+      "fixAvailable": false
+    },
+    "tmp": {
+      "name": "tmp",
+      "severity": "low",
+      "isDirect": false,
+      "via": [
+        {
+          "source": 1106849,
+          "name": "tmp",
+          "dependency": "tmp",
+          "title": "tmp allows arbitrary temporary file / directory write via symbolic link `dir` parameter",
+          "url": "https://github.com/advisories/GHSA-52f5-9888-hmc6",
+          "severity": "low",
+          "cwe": [
+            "CWE-59"
+          ],
+          "cvss": {
+            "score": 2.5,
+            "vectorString": "CVSS:3.1/AV:L/AC:H/PR:L/UI:N/S:U/C:N/I:L/A:N"
+          },
+          "range": "<=0.2.3"
+        }
+      ],
+      "effects": [
+        "external-editor"
+      ],
+      "range": "<=0.2.3",
+      "nodes": [
+        "node_modules/tmp"
+      ],
+      "fixAvailable": true
+    },
+    "tough-cookie": {
+      "name": "tough-cookie",
+      "severity": "moderate",
+      "isDirect": false,
+      "via": [
+        {
+          "source": 1097682,
+          "name": "tough-cookie",
+          "dependency": "tough-cookie",
+          "title": "tough-cookie Prototype Pollution vulnerability",
+          "url": "https://github.com/advisories/GHSA-72xf-g2v4-qvf3",
+          "severity": "moderate",
+          "cwe": [
+            "CWE-1321"
+          ],
+          "cvss": {
+            "score": 6.5,
+            "vectorString": "CVSS:3.1/AV:N/AC:L/PR:N/UI:N/S:U/C:L/I:L/A:N"
+          },
+          "range": "<4.1.3"
+        }
+      ],
+      "effects": [
+        "jsdom",
+        "request",
+        "request-promise-native"
+      ],
+      "range": "<4.1.3",
+      "nodes": [
+        "node_modules/tough-cookie"
+      ],
+      "fixAvailable": {
+        "name": "jest",
+        "version": "30.2.0",
+        "isSemVerMajor": true
+      }
+    },
+    "ts-jest": {
+      "name": "ts-jest",
+      "severity": "moderate",
+      "isDirect": true,
+      "via": [
+        "jest",
+        "yargs-parser"
+      ],
+      "effects": [],
+      "range": "23.10.0-beta.1 - 25.2.0",
+      "nodes": [
+        "node_modules/ts-jest"
+      ],
+      "fixAvailable": {
+        "name": "ts-jest",
+        "version": "29.4.5",
+        "isSemVerMajor": true
+      }
+    },
+    "validator": {
+      "name": "validator",
+      "severity": "moderate",
+      "isDirect": false,
+      "via": [
+        {
+          "source": 1108959,
+          "name": "validator",
+          "dependency": "validator",
+          "title": "validator.js has a URL validation bypass vulnerability in its isURL function",
+          "url": "https://github.com/advisories/GHSA-9965-vmph-33xx",
+          "severity": "moderate",
+          "cwe": [
+            "CWE-79"
+          ],
+          "cvss": {
+            "score": 6.1,
+            "vectorString": "CVSS:3.1/AV:N/AC:L/PR:N/UI:R/S:C/C:L/I:L/A:N"
+          },
+          "range": "<=13.15.15"
+        }
+      ],
+      "effects": [
+        "class-validator"
+      ],
+      "range": "*",
+      "nodes": [
+        "node_modules/validator"
+      ],
+      "fixAvailable": false
+    },
+    "ws": {
+      "name": "ws",
+      "severity": "high",
+      "isDirect": false,
+      "via": [
+        {
+          "source": 1098392,
+          "name": "ws",
+          "dependency": "ws",
+          "title": "ws affected by a DoS when handling a request with many HTTP headers",
+          "url": "https://github.com/advisories/GHSA-3h5v-q93c-6h6q",
+          "severity": "high",
+          "cwe": [
+            "CWE-476"
+          ],
+          "cvss": {
+            "score": 7.5,
+            "vectorString": "CVSS:3.1/AV:N/AC:L/PR:N/UI:N/S:U/C:N/I:N/A:H"
+          },
+          "range": ">=8.0.0 <8.17.1"
+        }
+      ],
+      "effects": [
+        "puppeteer"
+      ],
+      "range": "8.0.0 - 8.17.0",
+      "nodes": [
+        "node_modules/puppeteer/node_modules/ws"
+      ],
+      "fixAvailable": false
+    },
+    "yargs-parser": {
+      "name": "yargs-parser",
+      "severity": "moderate",
+      "isDirect": false,
+      "via": [
+        {
+          "source": 1088811,
+          "name": "yargs-parser",
+          "dependency": "yargs-parser",
+          "title": "yargs-parser Vulnerable to Prototype Pollution",
+          "url": "https://github.com/advisories/GHSA-p9pc-299p-vxgp",
+          "severity": "moderate",
+          "cwe": [
+            "CWE-915",
+            "CWE-1321"
+          ],
+          "cvss": {
+            "score": 5.3,
+            "vectorString": "CVSS:3.1/AV:L/AC:L/PR:L/UI:N/S:U/C:L/I:L/A:L"
+          },
+          "range": ">=6.0.0 <13.1.2"
+        }
+      ],
+      "effects": [
+        "ts-jest"
+      ],
+      "range": "6.0.0 - 13.1.1",
+      "nodes": [
+        "node_modules/yargs-parser"
+      ],
+      "fixAvailable": {
+        "name": "ts-jest",
+        "version": "29.4.5",
+        "isSemVerMajor": true
+      }
+    }
+  },
+  "metadata": {
+    "vulnerabilities": {
+      "info": 0,
+      "low": 3,
+      "moderate": 44,
+      "high": 9,
+      "critical": 8,
+      "total": 64
+    },
+    "dependencies": {
+      "prod": 1003,
+      "dev": 1054,
+      "optional": 11,
+      "peer": 34,
+      "peerOptional": 0,
+      "total": 2093
+    }
+  }
+}

@@ -1,0 +1,1132 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Security Scan Report - scan_20250924_131318</title>
+    <style>
+        * { box-sizing: border-box; }
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            margin: 0;
+            padding: 20px;
+            background-color: #f8f9fa;
+            color: #333;
+            line-height: 1.6;
+        }
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            overflow: hidden;
+        }
+        .header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 30px;
+            text-align: center;
+        }
+        .header h1 {
+            margin: 0;
+            font-size: 2.5em;
+            font-weight: 300;
+        }
+        .header p {
+            margin: 10px 0 0;
+            opacity: 0.9;
+            font-size: 1.1em;
+        }
+        .node-status {
+            padding: 20px 30px;
+            border-left: 4px solid;
+            margin: 20px 30px;
+            border-radius: 4px;
+        }
+        .node-status.safe {
+            background: #d4edda;
+            border-color: #28a745;
+            color: #155724;
+        }
+        .node-status.vulnerable {
+            background: #f8d7da;
+            border-color: #dc3545;
+            color: #721c24;
+        }
+        .node-status.unknown {
+            background: #fff3cd;
+            border-color: #ffc107;
+            color: #856404;
+        }
+        .summary {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+            gap: 15px;
+            padding: 30px;
+            background: #f8f9fa;
+        }
+        .summary-card {
+            background: white;
+            padding: 20px;
+            border-radius: 8px;
+            text-align: center;
+            border-left: 4px solid;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            transition: transform 0.2s;
+        }
+        .summary-card:hover {
+            transform: translateY(-2px);
+        }
+        .summary-card h3 {
+            margin: 0;
+            font-size: 2em;
+            font-weight: 600;
+        }
+        .summary-card p {
+            margin: 5px 0 0;
+            color: #666;
+            text-transform: uppercase;
+            font-size: 0.8em;
+            font-weight: bold;
+            letter-spacing: 0.5px;
+        }
+        .metrics-section {
+            padding: 30px;
+        }
+        .metrics-section h2 {
+            color: #333;
+            border-bottom: 2px solid #e9ecef;
+            padding-bottom: 10px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        .table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 15px;
+        }
+        .table th,
+        .table td {
+            padding: 12px 15px;
+            text-align: left;
+            border-bottom: 1px solid #e9ecef;
+        }
+        .table th {
+            background-color: #f8f9fa;
+            font-weight: 600;
+            color: #333;
+        }
+        .table tr:hover {
+            background-color: #f8f9fa;
+        }
+        .severity-badge {
+            padding: 4px 12px;
+            border-radius: 20px;
+            color: white;
+            font-size: 0.8em;
+            font-weight: bold;
+            text-transform: uppercase;
+            white-space: nowrap;
+        }
+        .vulnerability-details {
+            padding: 30px;
+        }
+        .vulnerability-item {
+            background: white;
+            border: 1px solid #e9ecef;
+            border-radius: 8px;
+            margin-bottom: 15px;
+            overflow: hidden;
+            transition: box-shadow 0.2s;
+        }
+        .vulnerability-item:hover {
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+        }
+        .vulnerability-header {
+            padding: 15px 20px;
+            background: #f8f9fa;
+            border-bottom: 1px solid #e9ecef;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 10px;
+        }
+        .vulnerability-body {
+            padding: 20px;
+        }
+        .source-tag {
+            background: #6c757d;
+            color: white;
+            padding: 2px 8px;
+            border-radius: 4px;
+            font-size: 0.7em;
+            margin-left: 10px;
+        }
+        .package-path {
+            color: #6c757d;
+            font-size: 0.9em;
+            margin-top: 5px;
+        }
+        .footer {
+            background: #343a40;
+            color: white;
+            padding: 20px 30px;
+            text-align: center;
+            font-size: 0.9em;
+        }
+        .pass { color: #28a745; font-weight: bold; }
+        .fail { color: #dc3545; font-weight: bold; }
+        .warn { color: #fd7e14; font-weight: bold; }
+        .recommendations {
+            background: #f8f9fa;
+            padding: 20px;
+            border-radius: 8px;
+            margin-top: 20px;
+        }
+        .recommendation-item {
+            padding: 10px 0;
+            border-bottom: 1px solid #e9ecef;
+        }
+        .recommendation-item:last-child {
+            border-bottom: none;
+        }
+        .priority-critical { color: #dc3545; font-weight: bold; }
+        .priority-high { color: #fd7e14; font-weight: bold; }
+        .priority-medium { color: #ffc107; font-weight: bold; }
+        .priority-low { color: #28a745; font-weight: bold; }
+        .empty-state {
+            text-align: center;
+            padding: 40px;
+            color: #6c757d;
+        }
+        .empty-state h3 {
+            color: #28a745;
+            font-size: 1.5em;
+            margin-bottom: 10px;
+        }
+        @media (max-width: 768px) {
+            .summary {
+                grid-template-columns: repeat(2, 1fr);
+            }
+            .vulnerability-header {
+                flex-direction: column;
+                align-items: flex-start;
+            }
+            .table {
+                font-size: 0.9em;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>🛡️ Security Scan Report</h1>
+            <p>Scan ID: scan_20250924_131318 | Generated: 9/24/2025, 1:14:52 PM</p>
+        </div>
+        
+        <div class="node-status unknown">
+            <strong>Node.js Security Status:</strong> Node.js vulnerability check not available
+            
+        </div>
+        
+        <div class="summary">
+            
+                <div class="summary-card" style="border-left-color: #dc3545">
+                    <h3 style="color: #dc3545">8</h3>
+                    <p>critical</p>
+                </div>
+              
+                <div class="summary-card" style="border-left-color: #fd7e14">
+                    <h3 style="color: #fd7e14">9</h3>
+                    <p>high</p>
+                </div>
+              
+                <div class="summary-card" style="border-left-color: #ffc107">
+                    <h3 style="color: #ffc107">32</h3>
+                    <p>moderate</p>
+                </div>
+              
+                <div class="summary-card" style="border-left-color: #ffc107">
+                    <h3 style="color: #ffc107">0</h3>
+                    <p>medium</p>
+                </div>
+              
+                <div class="summary-card" style="border-left-color: #28a745">
+                    <h3 style="color: #28a745">3</h3>
+                    <p>low</p>
+                </div>
+              
+                <div class="summary-card" style="border-left-color: #17a2b8">
+                    <h3 style="color: #17a2b8">0</h3>
+                    <p>info</p>
+                </div>
+              
+        </div>
+        
+        <div class="metrics-section">
+            <h2>📊 Security Targets</h2>
+            <table class="table">
+                <thead>
+                    <tr>
+                        <th>Metric</th>
+                        <th>Current</th>
+                        <th>Target</th>
+                        <th>Status</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>Critical Vulnerabilities</td>
+                        <td>8</td>
+                        <td>0</td>
+                        <td class="fail">FAIL</td>
+                    </tr>
+                    <tr>
+                        <td>High Vulnerabilities</td>
+                        <td>9</td>
+                        <td>&lt; 5</td>
+                        <td class="fail">FAIL</td>
+                    </tr>
+                    <tr>
+                        <td>Medium/Moderate Vulnerabilities</td>
+                        <td>32</td>
+                        <td>&lt; 20</td>
+                        <td class="fail">FAIL</td>
+                    </tr>
+                    <tr>
+                        <td>Node.js Security</td>
+                        <td>Unknown</td>
+                        <td>Safe</td>
+                        <td class="warn">WARN</td>
+                    </tr>
+                </tbody>
+            </table>
+            
+            
+        </div>
+        
+        <div class="vulnerability-details">
+            <h2>🔍 Vulnerability Details</h2>
+            
+            
+                <div class="vulnerability-item">
+                    <div class="vulnerability-header">
+                        <div>
+                            <strong>@aristocrattechnologiesinc/local-storage-server</strong>
+                            <span class="source-tag">npm-audit</span>
+                            <div class="package-path">node_modules/@aristocrattechnologiesinc/local-storage-server</div>
+                        </div>
+                        <span class="severity-badge" style="background-color: #dc3545">critical</span>
+                    </div>
+                    <div class="vulnerability-body">
+                        <h4>Unknown vulnerability</h4>
+                        <p><strong>Description:</strong> No description available</p>
+                        <p><strong>Fix Available:</strong> No</p>
+                    </div>
+                </div>
+            
+                <div class="vulnerability-item">
+                    <div class="vulnerability-header">
+                        <div>
+                            <strong>@aristocrattechnologiesinc/lone-star-platform</strong>
+                            <span class="source-tag">npm-audit</span>
+                            <div class="package-path">node_modules/@aristocrattechnologiesinc/lone-star-platform</div>
+                        </div>
+                        <span class="severity-badge" style="background-color: #dc3545">critical</span>
+                    </div>
+                    <div class="vulnerability-body">
+                        <h4>Unknown vulnerability</h4>
+                        <p><strong>Description:</strong> No description available</p>
+                        <p><strong>Fix Available:</strong> No</p>
+                    </div>
+                </div>
+            
+                <div class="vulnerability-item">
+                    <div class="vulnerability-header">
+                        <div>
+                            <strong>@aristocrattechnologiesinc/plugins-terminate-round</strong>
+                            <span class="source-tag">npm-audit</span>
+                            <div class="package-path">node_modules/@aristocrattechnologiesinc/plugins-terminate-round</div>
+                        </div>
+                        <span class="severity-badge" style="background-color: #dc3545">critical</span>
+                    </div>
+                    <div class="vulnerability-body">
+                        <h4>Unknown vulnerability</h4>
+                        <p><strong>Description:</strong> No description available</p>
+                        <p><strong>Fix Available:</strong> No</p>
+                    </div>
+                </div>
+            
+                <div class="vulnerability-item">
+                    <div class="vulnerability-header">
+                        <div>
+                            <strong>form-data</strong>
+                            <span class="source-tag">npm-audit</span>
+                            <div class="package-path">node_modules/@types/request/node_modules/form-data → node_modules/form-data → node_modules/request/node_modules/form-data → node_modules/then-request/node_modules/form-data</div>
+                        </div>
+                        <span class="severity-badge" style="background-color: #dc3545">critical</span>
+                    </div>
+                    <div class="vulnerability-body">
+                        <h4>form-data uses unsafe random function in form-data for choosing boundary</h4>
+                        <p><strong>Description:</strong> https://github.com/advisories/GHSA-fjxv-7rqg-78g4</p>
+                        <p><strong>Fix Available:</strong> Yes</p>
+                    </div>
+                </div>
+            
+                <div class="vulnerability-item">
+                    <div class="vulnerability-header">
+                        <div>
+                            <strong>koa</strong>
+                            <span class="source-tag">npm-audit</span>
+                            <div class="package-path">node_modules/koa</div>
+                        </div>
+                        <span class="severity-badge" style="background-color: #dc3545">critical</span>
+                    </div>
+                    <div class="vulnerability-body">
+                        <h4>Inefficient Regular Expression Complexity in koa</h4>
+                        <p><strong>Description:</strong> https://github.com/advisories/GHSA-593f-38f6-jp5m</p>
+                        <p><strong>Fix Available:</strong> No</p>
+                    </div>
+                </div>
+            
+                <div class="vulnerability-item">
+                    <div class="vulnerability-header">
+                        <div>
+                            <strong>pbkdf2</strong>
+                            <span class="source-tag">npm-audit</span>
+                            <div class="package-path">node_modules/pbkdf2</div>
+                        </div>
+                        <span class="severity-badge" style="background-color: #dc3545">critical</span>
+                    </div>
+                    <div class="vulnerability-body">
+                        <h4>pbkdf2 silently disregards Uint8Array input, returning static keys</h4>
+                        <p><strong>Description:</strong> https://github.com/advisories/GHSA-v62p-rq8g-8h59</p>
+                        <p><strong>Fix Available:</strong> Yes</p>
+                    </div>
+                </div>
+            
+                <div class="vulnerability-item">
+                    <div class="vulnerability-header">
+                        <div>
+                            <strong>request</strong>
+                            <span class="source-tag">npm-audit</span>
+                            <div class="package-path">node_modules/request</div>
+                        </div>
+                        <span class="severity-badge" style="background-color: #dc3545">critical</span>
+                    </div>
+                    <div class="vulnerability-body">
+                        <h4>Server-Side Request Forgery in Request</h4>
+                        <p><strong>Description:</strong> https://github.com/advisories/GHSA-p8p7-x288-28g6</p>
+                        <p><strong>Fix Available:</strong> Yes</p>
+                    </div>
+                </div>
+            
+                <div class="vulnerability-item">
+                    <div class="vulnerability-header">
+                        <div>
+                            <strong>sha.js</strong>
+                            <span class="source-tag">npm-audit</span>
+                            <div class="package-path">node_modules/sha.js</div>
+                        </div>
+                        <span class="severity-badge" style="background-color: #dc3545">critical</span>
+                    </div>
+                    <div class="vulnerability-body">
+                        <h4>sha.js is missing type checks leading to hash rewind and passing on crafted data</h4>
+                        <p><strong>Description:</strong> https://github.com/advisories/GHSA-95m3-7q98-8xr5</p>
+                        <p><strong>Fix Available:</strong> Yes</p>
+                    </div>
+                </div>
+            
+                <div class="vulnerability-item">
+                    <div class="vulnerability-header">
+                        <div>
+                            <strong>@nestjs/platform-express</strong>
+                            <span class="source-tag">npm-audit</span>
+                            <div class="package-path">node_modules/@nestjs/platform-express → node_modules/@openapitools/openapi-generator-cli/node_modules/@nestjs/platform-express</div>
+                        </div>
+                        <span class="severity-badge" style="background-color: #fd7e14">high</span>
+                    </div>
+                    <div class="vulnerability-body">
+                        <h4>Unknown vulnerability</h4>
+                        <p><strong>Description:</strong> No description available</p>
+                        <p><strong>Fix Available:</strong> Yes</p>
+                    </div>
+                </div>
+            
+                <div class="vulnerability-item">
+                    <div class="vulnerability-header">
+                        <div>
+                            <strong>@openapitools/openapi-generator-cli</strong>
+                            <span class="source-tag">npm-audit</span>
+                            <div class="package-path">node_modules/@openapitools/openapi-generator-cli</div>
+                        </div>
+                        <span class="severity-badge" style="background-color: #fd7e14">high</span>
+                    </div>
+                    <div class="vulnerability-body">
+                        <h4>Unknown vulnerability</h4>
+                        <p><strong>Description:</strong> No description available</p>
+                        <p><strong>Fix Available:</strong> Yes</p>
+                    </div>
+                </div>
+            
+                <div class="vulnerability-item">
+                    <div class="vulnerability-header">
+                        <div>
+                            <strong>axios</strong>
+                            <span class="source-tag">npm-audit</span>
+                            <div class="package-path">node_modules/@openapitools/openapi-generator-cli/node_modules/axios → node_modules/axios</div>
+                        </div>
+                        <span class="severity-badge" style="background-color: #fd7e14">high</span>
+                    </div>
+                    <div class="vulnerability-body">
+                        <h4>Axios is vulnerable to DoS attack through lack of data size check</h4>
+                        <p><strong>Description:</strong> https://github.com/advisories/GHSA-4hjh-wcwx-xvwj</p>
+                        <p><strong>Fix Available:</strong> Yes</p>
+                    </div>
+                </div>
+            
+                <div class="vulnerability-item">
+                    <div class="vulnerability-header">
+                        <div>
+                            <strong>braces</strong>
+                            <span class="source-tag">npm-audit</span>
+                            <div class="package-path">node_modules/@jest/core/node_modules/braces → node_modules/@jest/transform/node_modules/braces → node_modules/anymatch/node_modules/braces → node_modules/jest-config/node_modules/braces → node_modules/jest-haste-map/node_modules/braces → node_modules/jest-message-util/node_modules/braces → node_modules/sane/node_modules/braces</div>
+                        </div>
+                        <span class="severity-badge" style="background-color: #fd7e14">high</span>
+                    </div>
+                    <div class="vulnerability-body">
+                        <h4>Uncontrolled resource consumption in braces</h4>
+                        <p><strong>Description:</strong> https://github.com/advisories/GHSA-grv7-fg5c-xmjg</p>
+                        <p><strong>Fix Available:</strong> Yes</p>
+                    </div>
+                </div>
+            
+                <div class="vulnerability-item">
+                    <div class="vulnerability-header">
+                        <div>
+                            <strong>micromatch</strong>
+                            <span class="source-tag">npm-audit</span>
+                            <div class="package-path">node_modules/@jest/core/node_modules/micromatch → node_modules/@jest/transform/node_modules/micromatch → node_modules/anymatch/node_modules/micromatch → node_modules/jest-config/node_modules/micromatch → node_modules/jest-haste-map/node_modules/micromatch → node_modules/jest-message-util/node_modules/micromatch → node_modules/sane/node_modules/micromatch</div>
+                        </div>
+                        <span class="severity-badge" style="background-color: #fd7e14">high</span>
+                    </div>
+                    <div class="vulnerability-body">
+                        <h4>Regular Expression Denial of Service (ReDoS) in micromatch</h4>
+                        <p><strong>Description:</strong> https://github.com/advisories/GHSA-952p-6rrq-rcjv</p>
+                        <p><strong>Fix Available:</strong> Yes</p>
+                    </div>
+                </div>
+            
+                <div class="vulnerability-item">
+                    <div class="vulnerability-header">
+                        <div>
+                            <strong>multer</strong>
+                            <span class="source-tag">npm-audit</span>
+                            <div class="package-path">node_modules/multer</div>
+                        </div>
+                        <span class="severity-badge" style="background-color: #fd7e14">high</span>
+                    </div>
+                    <div class="vulnerability-body">
+                        <h4>Multer vulnerable to Denial of Service via unhandled exception from malformed request</h4>
+                        <p><strong>Description:</strong> https://github.com/advisories/GHSA-fjgf-rc76-4x9p</p>
+                        <p><strong>Fix Available:</strong> Yes</p>
+                    </div>
+                </div>
+            
+                <div class="vulnerability-item">
+                    <div class="vulnerability-header">
+                        <div>
+                            <strong>puppeteer</strong>
+                            <span class="source-tag">npm-audit</span>
+                            <div class="package-path">node_modules/puppeteer</div>
+                        </div>
+                        <span class="severity-badge" style="background-color: #fd7e14">high</span>
+                    </div>
+                    <div class="vulnerability-body">
+                        <h4>Unknown vulnerability</h4>
+                        <p><strong>Description:</strong> No description available</p>
+                        <p><strong>Fix Available:</strong> No</p>
+                    </div>
+                </div>
+            
+                <div class="vulnerability-item">
+                    <div class="vulnerability-header">
+                        <div>
+                            <strong>tar-fs</strong>
+                            <span class="source-tag">npm-audit</span>
+                            <div class="package-path">node_modules/puppeteer/node_modules/tar-fs</div>
+                        </div>
+                        <span class="severity-badge" style="background-color: #fd7e14">high</span>
+                    </div>
+                    <div class="vulnerability-body">
+                        <h4>tar-fs Vulnerable to Link Following and Path Traversal via Extracting a Crafted tar File</h4>
+                        <p><strong>Description:</strong> https://github.com/advisories/GHSA-pq67-2wwv-3xjx</p>
+                        <p><strong>Fix Available:</strong> No</p>
+                    </div>
+                </div>
+            
+                <div class="vulnerability-item">
+                    <div class="vulnerability-header">
+                        <div>
+                            <strong>ws</strong>
+                            <span class="source-tag">npm-audit</span>
+                            <div class="package-path">node_modules/puppeteer/node_modules/ws</div>
+                        </div>
+                        <span class="severity-badge" style="background-color: #fd7e14">high</span>
+                    </div>
+                    <div class="vulnerability-body">
+                        <h4>ws affected by a DoS when handling a request with many HTTP headers</h4>
+                        <p><strong>Description:</strong> https://github.com/advisories/GHSA-3h5v-q93c-6h6q</p>
+                        <p><strong>Fix Available:</strong> No</p>
+                    </div>
+                </div>
+            
+                <div class="vulnerability-item">
+                    <div class="vulnerability-header">
+                        <div>
+                            <strong>@jest/core</strong>
+                            <span class="source-tag">npm-audit</span>
+                            <div class="package-path">node_modules/@jest/core</div>
+                        </div>
+                        <span class="severity-badge" style="background-color: #ffc107">moderate</span>
+                    </div>
+                    <div class="vulnerability-body">
+                        <h4>Unknown vulnerability</h4>
+                        <p><strong>Description:</strong> No description available</p>
+                        <p><strong>Fix Available:</strong> Yes</p>
+                    </div>
+                </div>
+            
+                <div class="vulnerability-item">
+                    <div class="vulnerability-header">
+                        <div>
+                            <strong>@jest/environment</strong>
+                            <span class="source-tag">npm-audit</span>
+                            <div class="package-path">node_modules/@jest/environment</div>
+                        </div>
+                        <span class="severity-badge" style="background-color: #ffc107">moderate</span>
+                    </div>
+                    <div class="vulnerability-body">
+                        <h4>Unknown vulnerability</h4>
+                        <p><strong>Description:</strong> No description available</p>
+                        <p><strong>Fix Available:</strong> Yes</p>
+                    </div>
+                </div>
+            
+                <div class="vulnerability-item">
+                    <div class="vulnerability-header">
+                        <div>
+                            <strong>@jest/fake-timers</strong>
+                            <span class="source-tag">npm-audit</span>
+                            <div class="package-path">node_modules/@jest/fake-timers</div>
+                        </div>
+                        <span class="severity-badge" style="background-color: #ffc107">moderate</span>
+                    </div>
+                    <div class="vulnerability-body">
+                        <h4>Unknown vulnerability</h4>
+                        <p><strong>Description:</strong> No description available</p>
+                        <p><strong>Fix Available:</strong> Yes</p>
+                    </div>
+                </div>
+            
+                <div class="vulnerability-item">
+                    <div class="vulnerability-header">
+                        <div>
+                            <strong>@jest/reporters</strong>
+                            <span class="source-tag">npm-audit</span>
+                            <div class="package-path">node_modules/@jest/reporters</div>
+                        </div>
+                        <span class="severity-badge" style="background-color: #ffc107">moderate</span>
+                    </div>
+                    <div class="vulnerability-body">
+                        <h4>Unknown vulnerability</h4>
+                        <p><strong>Description:</strong> No description available</p>
+                        <p><strong>Fix Available:</strong> Yes</p>
+                    </div>
+                </div>
+            
+                <div class="vulnerability-item">
+                    <div class="vulnerability-header">
+                        <div>
+                            <strong>@jest/test-sequencer</strong>
+                            <span class="source-tag">npm-audit</span>
+                            <div class="package-path">node_modules/@jest/test-sequencer</div>
+                        </div>
+                        <span class="severity-badge" style="background-color: #ffc107">moderate</span>
+                    </div>
+                    <div class="vulnerability-body">
+                        <h4>Unknown vulnerability</h4>
+                        <p><strong>Description:</strong> No description available</p>
+                        <p><strong>Fix Available:</strong> Yes</p>
+                    </div>
+                </div>
+            
+                <div class="vulnerability-item">
+                    <div class="vulnerability-header">
+                        <div>
+                            <strong>@jest/transform</strong>
+                            <span class="source-tag">npm-audit</span>
+                            <div class="package-path">node_modules/@jest/transform</div>
+                        </div>
+                        <span class="severity-badge" style="background-color: #ffc107">moderate</span>
+                    </div>
+                    <div class="vulnerability-body">
+                        <h4>Unknown vulnerability</h4>
+                        <p><strong>Description:</strong> No description available</p>
+                        <p><strong>Fix Available:</strong> Yes</p>
+                    </div>
+                </div>
+            
+                <div class="vulnerability-item">
+                    <div class="vulnerability-header">
+                        <div>
+                            <strong>anymatch</strong>
+                            <span class="source-tag">npm-audit</span>
+                            <div class="package-path">node_modules/anymatch</div>
+                        </div>
+                        <span class="severity-badge" style="background-color: #ffc107">moderate</span>
+                    </div>
+                    <div class="vulnerability-body">
+                        <h4>Unknown vulnerability</h4>
+                        <p><strong>Description:</strong> No description available</p>
+                        <p><strong>Fix Available:</strong> Yes</p>
+                    </div>
+                </div>
+            
+                <div class="vulnerability-item">
+                    <div class="vulnerability-header">
+                        <div>
+                            <strong>babel-jest</strong>
+                            <span class="source-tag">npm-audit</span>
+                            <div class="package-path">node_modules/babel-jest</div>
+                        </div>
+                        <span class="severity-badge" style="background-color: #ffc107">moderate</span>
+                    </div>
+                    <div class="vulnerability-body">
+                        <h4>Unknown vulnerability</h4>
+                        <p><strong>Description:</strong> No description available</p>
+                        <p><strong>Fix Available:</strong> Yes</p>
+                    </div>
+                </div>
+            
+                <div class="vulnerability-item">
+                    <div class="vulnerability-header">
+                        <div>
+                            <strong>expect</strong>
+                            <span class="source-tag">npm-audit</span>
+                            <div class="package-path">node_modules/expect</div>
+                        </div>
+                        <span class="severity-badge" style="background-color: #ffc107">moderate</span>
+                    </div>
+                    <div class="vulnerability-body">
+                        <h4>Unknown vulnerability</h4>
+                        <p><strong>Description:</strong> No description available</p>
+                        <p><strong>Fix Available:</strong> Yes</p>
+                    </div>
+                </div>
+            
+                <div class="vulnerability-item">
+                    <div class="vulnerability-header">
+                        <div>
+                            <strong>jest</strong>
+                            <span class="source-tag">npm-audit</span>
+                            <div class="package-path">node_modules/jest</div>
+                        </div>
+                        <span class="severity-badge" style="background-color: #ffc107">moderate</span>
+                    </div>
+                    <div class="vulnerability-body">
+                        <h4>Unknown vulnerability</h4>
+                        <p><strong>Description:</strong> No description available</p>
+                        <p><strong>Fix Available:</strong> Yes</p>
+                    </div>
+                </div>
+            
+                <div class="vulnerability-item">
+                    <div class="vulnerability-header">
+                        <div>
+                            <strong>jest-cli</strong>
+                            <span class="source-tag">npm-audit</span>
+                            <div class="package-path">node_modules/jest-cli</div>
+                        </div>
+                        <span class="severity-badge" style="background-color: #ffc107">moderate</span>
+                    </div>
+                    <div class="vulnerability-body">
+                        <h4>Unknown vulnerability</h4>
+                        <p><strong>Description:</strong> No description available</p>
+                        <p><strong>Fix Available:</strong> Yes</p>
+                    </div>
+                </div>
+            
+                <div class="vulnerability-item">
+                    <div class="vulnerability-header">
+                        <div>
+                            <strong>jest-config</strong>
+                            <span class="source-tag">npm-audit</span>
+                            <div class="package-path">node_modules/jest-config</div>
+                        </div>
+                        <span class="severity-badge" style="background-color: #ffc107">moderate</span>
+                    </div>
+                    <div class="vulnerability-body">
+                        <h4>Unknown vulnerability</h4>
+                        <p><strong>Description:</strong> No description available</p>
+                        <p><strong>Fix Available:</strong> Yes</p>
+                    </div>
+                </div>
+            
+                <div class="vulnerability-item">
+                    <div class="vulnerability-header">
+                        <div>
+                            <strong>jest-each</strong>
+                            <span class="source-tag">npm-audit</span>
+                            <div class="package-path">node_modules/jest-each</div>
+                        </div>
+                        <span class="severity-badge" style="background-color: #ffc107">moderate</span>
+                    </div>
+                    <div class="vulnerability-body">
+                        <h4>Unknown vulnerability</h4>
+                        <p><strong>Description:</strong> No description available</p>
+                        <p><strong>Fix Available:</strong> Yes</p>
+                    </div>
+                </div>
+            
+                <div class="vulnerability-item">
+                    <div class="vulnerability-header">
+                        <div>
+                            <strong>jest-environment-jsdom</strong>
+                            <span class="source-tag">npm-audit</span>
+                            <div class="package-path">node_modules/jest-environment-jsdom</div>
+                        </div>
+                        <span class="severity-badge" style="background-color: #ffc107">moderate</span>
+                    </div>
+                    <div class="vulnerability-body">
+                        <h4>Unknown vulnerability</h4>
+                        <p><strong>Description:</strong> No description available</p>
+                        <p><strong>Fix Available:</strong> Yes</p>
+                    </div>
+                </div>
+            
+                <div class="vulnerability-item">
+                    <div class="vulnerability-header">
+                        <div>
+                            <strong>jest-environment-node</strong>
+                            <span class="source-tag">npm-audit</span>
+                            <div class="package-path">node_modules/jest-environment-node</div>
+                        </div>
+                        <span class="severity-badge" style="background-color: #ffc107">moderate</span>
+                    </div>
+                    <div class="vulnerability-body">
+                        <h4>Unknown vulnerability</h4>
+                        <p><strong>Description:</strong> No description available</p>
+                        <p><strong>Fix Available:</strong> Yes</p>
+                    </div>
+                </div>
+            
+                <div class="vulnerability-item">
+                    <div class="vulnerability-header">
+                        <div>
+                            <strong>jest-haste-map</strong>
+                            <span class="source-tag">npm-audit</span>
+                            <div class="package-path">node_modules/jest-haste-map</div>
+                        </div>
+                        <span class="severity-badge" style="background-color: #ffc107">moderate</span>
+                    </div>
+                    <div class="vulnerability-body">
+                        <h4>Unknown vulnerability</h4>
+                        <p><strong>Description:</strong> No description available</p>
+                        <p><strong>Fix Available:</strong> Yes</p>
+                    </div>
+                </div>
+            
+                <div class="vulnerability-item">
+                    <div class="vulnerability-header">
+                        <div>
+                            <strong>jest-jasmine2</strong>
+                            <span class="source-tag">npm-audit</span>
+                            <div class="package-path">node_modules/jest-jasmine2</div>
+                        </div>
+                        <span class="severity-badge" style="background-color: #ffc107">moderate</span>
+                    </div>
+                    <div class="vulnerability-body">
+                        <h4>Unknown vulnerability</h4>
+                        <p><strong>Description:</strong> No description available</p>
+                        <p><strong>Fix Available:</strong> Yes</p>
+                    </div>
+                </div>
+            
+                <div class="vulnerability-item">
+                    <div class="vulnerability-header">
+                        <div>
+                            <strong>jest-message-util</strong>
+                            <span class="source-tag">npm-audit</span>
+                            <div class="package-path">node_modules/jest-message-util</div>
+                        </div>
+                        <span class="severity-badge" style="background-color: #ffc107">moderate</span>
+                    </div>
+                    <div class="vulnerability-body">
+                        <h4>Unknown vulnerability</h4>
+                        <p><strong>Description:</strong> No description available</p>
+                        <p><strong>Fix Available:</strong> Yes</p>
+                    </div>
+                </div>
+            
+                <div class="vulnerability-item">
+                    <div class="vulnerability-header">
+                        <div>
+                            <strong>jest-resolve-dependencies</strong>
+                            <span class="source-tag">npm-audit</span>
+                            <div class="package-path">node_modules/jest-resolve-dependencies</div>
+                        </div>
+                        <span class="severity-badge" style="background-color: #ffc107">moderate</span>
+                    </div>
+                    <div class="vulnerability-body">
+                        <h4>Unknown vulnerability</h4>
+                        <p><strong>Description:</strong> No description available</p>
+                        <p><strong>Fix Available:</strong> Yes</p>
+                    </div>
+                </div>
+            
+                <div class="vulnerability-item">
+                    <div class="vulnerability-header">
+                        <div>
+                            <strong>jest-runner</strong>
+                            <span class="source-tag">npm-audit</span>
+                            <div class="package-path">node_modules/jest-runner</div>
+                        </div>
+                        <span class="severity-badge" style="background-color: #ffc107">moderate</span>
+                    </div>
+                    <div class="vulnerability-body">
+                        <h4>Unknown vulnerability</h4>
+                        <p><strong>Description:</strong> No description available</p>
+                        <p><strong>Fix Available:</strong> Yes</p>
+                    </div>
+                </div>
+            
+                <div class="vulnerability-item">
+                    <div class="vulnerability-header">
+                        <div>
+                            <strong>jest-runtime</strong>
+                            <span class="source-tag">npm-audit</span>
+                            <div class="package-path">node_modules/jest-runtime</div>
+                        </div>
+                        <span class="severity-badge" style="background-color: #ffc107">moderate</span>
+                    </div>
+                    <div class="vulnerability-body">
+                        <h4>Unknown vulnerability</h4>
+                        <p><strong>Description:</strong> No description available</p>
+                        <p><strong>Fix Available:</strong> Yes</p>
+                    </div>
+                </div>
+            
+                <div class="vulnerability-item">
+                    <div class="vulnerability-header">
+                        <div>
+                            <strong>jest-snapshot</strong>
+                            <span class="source-tag">npm-audit</span>
+                            <div class="package-path">node_modules/jest-snapshot</div>
+                        </div>
+                        <span class="severity-badge" style="background-color: #ffc107">moderate</span>
+                    </div>
+                    <div class="vulnerability-body">
+                        <h4>Unknown vulnerability</h4>
+                        <p><strong>Description:</strong> No description available</p>
+                        <p><strong>Fix Available:</strong> Yes</p>
+                    </div>
+                </div>
+            
+                <div class="vulnerability-item">
+                    <div class="vulnerability-header">
+                        <div>
+                            <strong>jest-util</strong>
+                            <span class="source-tag">npm-audit</span>
+                            <div class="package-path">node_modules/jest-util</div>
+                        </div>
+                        <span class="severity-badge" style="background-color: #ffc107">moderate</span>
+                    </div>
+                    <div class="vulnerability-body">
+                        <h4>Unknown vulnerability</h4>
+                        <p><strong>Description:</strong> No description available</p>
+                        <p><strong>Fix Available:</strong> Yes</p>
+                    </div>
+                </div>
+            
+                <div class="vulnerability-item">
+                    <div class="vulnerability-header">
+                        <div>
+                            <strong>jest-watcher</strong>
+                            <span class="source-tag">npm-audit</span>
+                            <div class="package-path">node_modules/jest-watcher</div>
+                        </div>
+                        <span class="severity-badge" style="background-color: #ffc107">moderate</span>
+                    </div>
+                    <div class="vulnerability-body">
+                        <h4>Unknown vulnerability</h4>
+                        <p><strong>Description:</strong> No description available</p>
+                        <p><strong>Fix Available:</strong> Yes</p>
+                    </div>
+                </div>
+            
+                <div class="vulnerability-item">
+                    <div class="vulnerability-header">
+                        <div>
+                            <strong>jsdom</strong>
+                            <span class="source-tag">npm-audit</span>
+                            <div class="package-path">node_modules/jsdom</div>
+                        </div>
+                        <span class="severity-badge" style="background-color: #ffc107">moderate</span>
+                    </div>
+                    <div class="vulnerability-body">
+                        <h4>Unknown vulnerability</h4>
+                        <p><strong>Description:</strong> No description available</p>
+                        <p><strong>Fix Available:</strong> Yes</p>
+                    </div>
+                </div>
+            
+                <div class="vulnerability-item">
+                    <div class="vulnerability-header">
+                        <div>
+                            <strong>node-notifier</strong>
+                            <span class="source-tag">npm-audit</span>
+                            <div class="package-path">node_modules/node-notifier</div>
+                        </div>
+                        <span class="severity-badge" style="background-color: #ffc107">moderate</span>
+                    </div>
+                    <div class="vulnerability-body">
+                        <h4>OS Command Injection in node-notifier</h4>
+                        <p><strong>Description:</strong> https://github.com/advisories/GHSA-5fw9-fq32-wv5p</p>
+                        <p><strong>Fix Available:</strong> Yes</p>
+                    </div>
+                </div>
+            
+                <div class="vulnerability-item">
+                    <div class="vulnerability-header">
+                        <div>
+                            <strong>request-promise-core</strong>
+                            <span class="source-tag">npm-audit</span>
+                            <div class="package-path">node_modules/request-promise-core</div>
+                        </div>
+                        <span class="severity-badge" style="background-color: #ffc107">moderate</span>
+                    </div>
+                    <div class="vulnerability-body">
+                        <h4>Unknown vulnerability</h4>
+                        <p><strong>Description:</strong> No description available</p>
+                        <p><strong>Fix Available:</strong> Yes</p>
+                    </div>
+                </div>
+            
+                <div class="vulnerability-item">
+                    <div class="vulnerability-header">
+                        <div>
+                            <strong>request-promise-native</strong>
+                            <span class="source-tag">npm-audit</span>
+                            <div class="package-path">node_modules/request-promise-native</div>
+                        </div>
+                        <span class="severity-badge" style="background-color: #ffc107">moderate</span>
+                    </div>
+                    <div class="vulnerability-body">
+                        <h4>Unknown vulnerability</h4>
+                        <p><strong>Description:</strong> No description available</p>
+                        <p><strong>Fix Available:</strong> Yes</p>
+                    </div>
+                </div>
+            
+                <div class="vulnerability-item">
+                    <div class="vulnerability-header">
+                        <div>
+                            <strong>sane</strong>
+                            <span class="source-tag">npm-audit</span>
+                            <div class="package-path">node_modules/sane</div>
+                        </div>
+                        <span class="severity-badge" style="background-color: #ffc107">moderate</span>
+                    </div>
+                    <div class="vulnerability-body">
+                        <h4>Unknown vulnerability</h4>
+                        <p><strong>Description:</strong> No description available</p>
+                        <p><strong>Fix Available:</strong> Yes</p>
+                    </div>
+                </div>
+            
+                <div class="vulnerability-item">
+                    <div class="vulnerability-header">
+                        <div>
+                            <strong>tough-cookie</strong>
+                            <span class="source-tag">npm-audit</span>
+                            <div class="package-path">node_modules/tough-cookie</div>
+                        </div>
+                        <span class="severity-badge" style="background-color: #ffc107">moderate</span>
+                    </div>
+                    <div class="vulnerability-body">
+                        <h4>tough-cookie Prototype Pollution vulnerability</h4>
+                        <p><strong>Description:</strong> https://github.com/advisories/GHSA-72xf-g2v4-qvf3</p>
+                        <p><strong>Fix Available:</strong> Yes</p>
+                    </div>
+                </div>
+            
+                <div class="vulnerability-item">
+                    <div class="vulnerability-header">
+                        <div>
+                            <strong>ts-jest</strong>
+                            <span class="source-tag">npm-audit</span>
+                            <div class="package-path">node_modules/ts-jest</div>
+                        </div>
+                        <span class="severity-badge" style="background-color: #ffc107">moderate</span>
+                    </div>
+                    <div class="vulnerability-body">
+                        <h4>Unknown vulnerability</h4>
+                        <p><strong>Description:</strong> No description available</p>
+                        <p><strong>Fix Available:</strong> Yes</p>
+                    </div>
+                </div>
+            
+                <div class="vulnerability-item">
+                    <div class="vulnerability-header">
+                        <div>
+                            <strong>yargs-parser</strong>
+                            <span class="source-tag">npm-audit</span>
+                            <div class="package-path">node_modules/yargs-parser</div>
+                        </div>
+                        <span class="severity-badge" style="background-color: #ffc107">moderate</span>
+                    </div>
+                    <div class="vulnerability-body">
+                        <h4>yargs-parser Vulnerable to Prototype Pollution</h4>
+                        <p><strong>Description:</strong> https://github.com/advisories/GHSA-p9pc-299p-vxgp</p>
+                        <p><strong>Fix Available:</strong> Yes</p>
+                    </div>
+                </div>
+            
+                <div class="vulnerability-item">
+                    <div class="vulnerability-header">
+                        <div>
+                            <strong>external-editor</strong>
+                            <span class="source-tag">npm-audit</span>
+                            <div class="package-path">node_modules/external-editor</div>
+                        </div>
+                        <span class="severity-badge" style="background-color: #28a745">low</span>
+                    </div>
+                    <div class="vulnerability-body">
+                        <h4>Unknown vulnerability</h4>
+                        <p><strong>Description:</strong> No description available</p>
+                        <p><strong>Fix Available:</strong> Yes</p>
+                    </div>
+                </div>
+            
+            
+            
+                <div style="text-align: center; padding: 20px; color: #6c757d;">
+                    <p>Showing first 50 vulnerabilities. Total found: 52</p>
+                    <p>Check the JSON reports for complete details.</p>
+                </div>
+            
+        </div>
+        
+        <div class="footer">
+            <p>Generated by Security Scanner | Focus: Node.js, npm audit, better-npm-audit</p>
+            <p><small>Report includes results from: is-my-node-vulnerable, npm audit, better-npm-audit</small></p>
+        </div>
+    </div>
+</body>
+</html>

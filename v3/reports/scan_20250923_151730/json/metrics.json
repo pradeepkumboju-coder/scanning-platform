@@ -1,0 +1,11 @@
+{
+    "scanId": "scan_20250923_151730",
+    "timestamp": "2025-09-23T15:17:31-05:00",
+    "scans": {
+        "node_vulnerable": "completed",
+        "npm_audit": "completed",
+        "better_npm_audit": "completed",
+        "pnpm_audit": "completed"
+    },
+    "status": "completed"
+}

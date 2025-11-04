@@ -1,0 +1,3499 @@
+<!doctype html>
+<html>
+
+<head>
+  <title>Vulnerability Scan Report</title>
+  <link rel="icon" href="https://google.github.io/osv.dev/assets/icon.png" type="image/x-icon" />
+  <link href='https://fonts.googleapis.com/css?family=Overpass' rel='stylesheet'>
+  <link rel="stylesheet" href="https://unpkg.com/material-components-web@latest/dist/material-components-web.min.css">
+  <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
+  <style>
+  body {
+  margin: 0;
+  padding: 0;
+  background: #292929;
+  color: #fff;
+  overflow-y: scroll;
+  font-family: "Overpass Mono", monospace;
+  font-size: 12pt;
+  font-weight: 100;
+  min-width: fit-content;
+}
+
+a {
+  color: inherit;
+}
+
+.container {
+  max-width: 1400px;
+  margin: 50px auto;
+  padding: 20px;
+  border-radius: 4px;
+  box-shadow: 0 0 5px rgba(255, 255, 255, 0.15);
+  min-height: 90vh;
+}
+
+h2 {
+  margin-top: 50px;
+  font-size: 15pt;
+}
+
+h3 {
+  font-size: 12pt;
+  margin-top: 30px;
+}
+
+h1,
+h2,
+h3 {
+  font-family: "Overpass Mono", monospace;
+  font-weight: normal;
+}
+
+.ecosystem {
+  margin-top: 20px;
+}
+
+header {
+  display: flex;
+  margin-bottom: 50px;
+  justify-content: space-between;
+}
+
+#header-left {
+  display: flex;
+  align-items: center;
+}
+
+.logo {
+  height: 20px;
+}
+
+#header-left .vl {
+  border-left: 2px solid #fff;
+  height: 25px;
+  margin-left: 20px;
+  margin-right: 20px;
+}
+
+#header-left h1 {
+  font-size: 23px;
+}
+
+#header-right {
+  display: flex;
+  align-items: center;
+}
+
+#header-right ::after {
+  display: inline-block;
+  content: " ";
+  background-image: url(https://osv.dev/static/img/external-link.svg);
+  width: 16px;
+  height: 16px;
+  margin-left: 3px;
+  vertical-align: middle;
+}
+
+.material-icons {
+  vertical-align: middle;
+  transform: rotate(0deg);
+  transition: transform 0.2s ease;
+  user-select: none;
+}
+
+.material-icons.expanded {
+  transform: rotate(90deg);
+}
+
+.vuln-table {
+  width: 100%;
+  text-align: left;
+  margin-bottom: 40px;
+  margin-top: 10px;
+  color: rgba(255, 255, 255, 0.87);
+  border-spacing: 0;
+}
+
+.vuln-table th {
+  border-bottom: 1px solid rgba(255, 255, 255, 0.33);
+  padding: 16px;
+}
+
+.table-tr {
+  line-height: 30px;
+}
+
+.table-tr td {
+  word-break: break-word;
+  width: 200px;
+  padding: 16px;
+}
+
+.table-tr:hover {
+  background-color: rgba(255, 255, 255, 0.04);
+}
+
+.table-tr-details > td {
+  border-bottom: 1px solid rgba(255, 255, 255, 0.2);
+}
+
+.vuln-tr {
+  display: table-row;
+}
+
+.vuln-id {
+  color: #d9534f;
+}
+
+.package-details {
+  text-align: left;
+  padding: 20px 50px 30px 50px;
+  display: block;
+  max-height: 800px;
+  overflow: auto;
+
+  background:
+     
+    linear-gradient(rgb(41, 41, 41) 30%, rgba(41, 41, 41, 0)) center top,
+      linear-gradient(rgba(41, 41, 41, 0), rgb(41, 41, 41) 70%)
+      center bottom,
+      linear-gradient(rgba(0, 0, 0, 0.2), rgba(0, 0, 0, 0))
+      center top,
+      linear-gradient(rgba(0, 0, 0, 0), rgba(0, 0, 0, 0.2))
+      center bottom;
+
+  background-repeat: no-repeat;
+  background-size:
+    100% 40px,
+    100% 40px,
+    100% 20px,
+    100% 20px;
+
+  background-attachment: local, local, scroll, scroll;
+}
+
+.package-details p {
+  margin-bottom: 10px;
+  margin-top: 10px;
+}
+
+.table-tr:hover .open-in-tab-tag {
+  display: inline;
+}
+
+.open-in-tab-tag {
+  display: none;
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  padding: 5px;
+  border-radius: 4px;
+  width: fit-content;
+}
+
+.open-in-tab-cell {
+  width: 90px !important;
+  cursor: pointer;
+}
+
+.severity-cell {
+  width: 60px !important;
+  user-select: none;
+}
+
+.fixable-tag {
+  border-radius: 4px;
+  max-width: 250px;
+  width: fit-content;
+  padding: 0 5px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-align: center;
+  user-select: none;
+}
+
+.has-fix {
+  white-space: break-spaces;
+  background-color: #6a6a6a;
+}
+
+.no-fix {
+  background-color: #252525;
+  border: 1px solid #3c4043;
+}
+
+.hide-block + .table-tr-details {
+   
+
+  display: none;
+}
+
+.uncalled-text {
+  color: #808080;
+}
+
+#vuln-tab {
+  display: block;
+  margin-top: 30px;
+}
+
+#tab-switch {
+  text-align: left;
+  border-bottom: 1px solid #6c6c6c;
+  padding-left: 20px;
+  display: flex;
+  margin-bottom: 50px;
+}
+
+.tab-switch-button {
+  width: 180px;
+  outline: 0;
+  cursor: pointer;
+  background-color: transparent;
+  text-align: center;
+  display: flex;
+}
+
+.tab-button-text-container {
+  flex-direction: column;
+  align-items: center;
+}
+
+.tab-button-text-container p {
+  width: 160px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  border-bottom: 2px solid transparent;
+  color: #5f6368;
+}
+
+.tab-switch-button span {
+  cursor: pointer;
+  font-size: 16px;
+  display: none;
+}
+
+.tab-switch-button-border {
+  width: 85%;
+  height: 3px;
+  background-color: transparent;
+  margin: auto;
+}
+
+.tab-button-text-container:hover p {
+  color: #fff;
+}
+
+.tab-switch-button-selected:hover span {
+  display: block;
+}
+
+.tab-switch-button-selected .tab-switch-button-border {
+  background-color: #eee;
+  border-top-left-radius: 5px;
+  border-top-right-radius: 5px;
+}
+
+.tab-switch-button-selected p {
+  color: #fff;
+}
+
+.osv-tab {
+  position: relative;
+}
+
+.osv-tab iframe {
+  width: 100%;
+  min-height: 1000px;
+  border: none;
+}
+
+.iframe-spinner {
+  position: absolute;
+  inset: 0;
+  margin: auto;
+  width: 48px;
+  height: 48px;
+  border: 5px solid #fff;
+  border-bottom-color: transparent;
+  border-radius: 50%;
+  display: inline-block;
+  box-sizing: border-box;
+  animation: rotation 1s linear infinite;
+}
+
+.package-tr {
+  cursor: pointer;
+}
+
+.icon-td {
+  width: 10px !important;
+}
+
+#filter-section {
+  display: flex;
+  width: 60%;
+}
+
+.filter-container {
+  margin-right: 20px;
+  max-width: 600px;
+}
+
+.filter {
+  margin-top: 10px;
+  max-width: 600px;
+  min-width: 250px;
+  background-color: transparent;
+  border-radius: 8px;
+  overflow: hidden;
+  color: #fff;
+  border: 1px solid #ddd;
+  display: flex;
+  justify-content: space-between;
+  padding: 0 20px;
+}
+
+#layer-filter {
+  width: 400px !important;
+}
+
+.filter-selected {
+  white-space: nowrap;
+  overflow: hidden;
+}
+
+.filter-option-container {
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  position: absolute;
+  background-color: #292929;
+  min-width: 200px;
+  max-width: 1400px;
+  box-shadow: 0px 8px 16px 0px rgba(0, 0, 0, 0.2);
+  z-index: 1;
+  display: block;
+}
+
+.filter-option {
+  border-bottom: 1px dotted #ddd;
+  padding: 15px 20px;
+  white-space: nowrap;
+  cursor: pointer;
+  display: block;
+}
+
+.filter-option input,
+.filter-option label {
+  cursor: pointer;
+}
+
+#layer-filter-option-container {
+  width: 1400px;
+}
+
+.layer-filter-option {
+  display: flex;
+  justify-content: space-between;
+}
+
+.filter-option:hover {
+  background-color: rgba(255, 255, 255, 0.04);
+}
+
+.filter-icon i {
+  position: relative;
+  top: 25%;
+}
+
+#summary-section {
+  display: flex;
+  justify-content: space-between;
+  width: 100%;
+}
+
+#severity-section {
+  overflow: hidden;
+}
+
+.severity-long {
+  text-align: center;
+  min-width: 100px;
+  overflow: hidden;
+  white-space: nowrap;
+  user-select: none;
+}
+
+.severity-long p {
+  font-size: 10pt;
+  padding: 5px 5px;
+  border-radius: 4px;
+  margin-right: 3px;
+}
+
+.critical {
+  background-color: #ad0300;
+}
+
+.high {
+  background-color: #ffa500;
+}
+
+.medium {
+  background-color: #ffd700;
+  color: #292929;
+}
+
+.low {
+  background-color: #53aa33;
+  color: #292929;
+}
+
+.unknown {
+  background-color: #80868b;
+}
+
+.severity-count-summary {
+  display: flex;
+}
+
+.severity-short {
+  width: 40px;
+  user-select: none;
+}
+
+.severity-short p {
+  text-align: center;
+}
+
+.severity-short-first p {
+  border-top-left-radius: 4px;
+  border-bottom-left-radius: 4px;
+}
+
+.severity-short-last p {
+  border-top-right-radius: 4px;
+  border-bottom-right-radius: 4px;
+}
+
+.severity-cell .severity-short p {
+  border-radius: 4px;
+}
+
+ 
+.search-box {
+  display: flex;
+  align-items: center;
+  width: 100%;
+  border: 1px solid #fff;
+  background-color: transparent;
+  border-radius: 8px;
+  margin-top: 30px;
+}
+
+.search-box input[type="text"] {
+  flex: 1 0 auto;
+  padding: 15px 10px;
+
+  border: none;
+  background-color: transparent;
+  color: #fff;
+  font-size: 12pt;
+}
+
+.search-box input[type="text"]:focus {
+  outline: none;
+}
+
+.search-icon {
+  height: fit-content;
+  padding: 13px;
+}
+
+.package-detail-title {
+  color: #9aa0a6;
+}
+
+.layer-command-container {
+  display: flex;
+}
+
+.inner-table {
+  width: 100%;
+  border: 0.5px solid rgba(255, 255, 255, 0.12);
+  border-spacing: 0px;
+  border-radius: 4px;
+}
+
+.inner-table th {
+  border-bottom: 0.5px solid rgba(255, 255, 255, 0.12);
+}
+
+.inner-table td {
+  border-bottom: 0.5px solid rgba(255, 255, 255, 0.12);
+}
+
+.expand-icon i.rotated {
+  transform: rotate(90deg);
+}
+
+.tooltip {
+  position: relative;
+  display: inline-block;
+  text-decoration: underline;
+  text-decoration-style: dotted;
+  text-underline-offset: 3px;
+}
+
+.tooltip.no-underline {
+  text-decoration: none;
+}
+
+.tooltip .tooltiptext {
+  visibility: hidden;
+
+  background-color: black;
+  color: #fff;
+
+  white-space: normal;
+  text-align: left;
+  line-height: 1.5;
+
+  max-width: 300px;
+  width: max-content;
+  padding: 10px;
+
+  border-radius: 4px;
+   
+  position: fixed;
+  transform: translateY(-100%);
+  z-index: 999;
+}
+
+.tooltip .tooltiptext.layer-tooltiptext {
+  white-space: normal;
+  margin-left: 0;
+  width: 1000px;
+  max-width: 1000px;
+  max-height: 200px;
+  overflow-x: hidden;
+  overflow-y: auto;
+}
+
+.tooltip:hover .tooltiptext {
+  visibility: visible;
+}
+
+.severity-count-summary .tooltip {
+  text-decoration: none;
+}
+
+.flex-box {
+  display: flex;
+}
+
+ 
+.base-icon .tooltiptext {
+  margin-left: 0px;
+  background-color: #292929;
+}
+
+div.title {
+  visibility: hidden;
+}
+
+.summary-section {
+  margin-top: 30px;
+  border: 1px solid #fff;
+  border-radius: 8px;
+  padding: 10px 20px;
+  max-height: 400px;
+  overflow-y: visible;
+  overflow-x: hidden;
+}
+
+#base-image-table {
+  width: 100%;
+}
+
+#base-image-table th {
+  text-align: left;
+  height: 30px;
+}
+
+.layer-entry {
+  display: flex;
+  justify-content: space-between;
+  padding: 0 10px;
+  border-bottom: 1px dotted #666666;
+}
+
+.base-image-summary {
+  cursor: pointer;
+}
+
+.base-image-details {
+  display: block;
+  margin-bottom: 20px;
+}
+
+.base-image-title {
+  width: 150px;
+  color: #9aa0a6;
+  height: 20px;
+}
+
+.layer-command {
+  max-width: 1000px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.clickable {
+  cursor: pointer;
+}
+
+.clickable-layer:hover {
+  background-color: rgba(255, 255, 255, 0.04);
+}
+
+.source-path {
+  border: 1px #888 solid;
+  border-radius: 4px;
+  padding: 5px;
+  background-color: rgba(0, 0, 0, 0.2);
+  line-height: 2;
+}
+
+.hide-block {
+  display: none !important;
+}
+
+#license-summary-details {
+  margin-left: 30px;
+}
+
+@keyframes rotation {
+  0% {
+    transform: rotate(0deg);
+  }
+
+  100% {
+    transform: rotate(360deg);
+  }
+}
+
+  </style>
+</head>
+
+<body>
+  <div class="container">
+    <header>
+      <div id="header-left">
+        <img src="https://raw.githubusercontent.com/google/osv-scanner/refs/heads/main/docs/images/osv-scanner-OSV-logo-darkmode.png" alt="OSV-Scanner Logo" class="logo" />
+        <div class="vl"></div>
+        <h1>Open Source Vulnerabilities</h1>
+      </div>
+      <div id="header-right">
+        <a class="improvement-link" href="https://github.com/google/osv-scanner/discussions/1529">Feedback</a>
+      </div>
+    </header>
+
+    <div id="tab-switch">
+      <div id="summary-tab-button" class="tab-switch-button tab-switch-button-selected"
+        onclick="openTab('summary-tab')">
+        <div class="tab-button-text-container">
+          <p>Scanning summary</p>
+          <div class="tab-switch-button-border"></div>
+        </div>
+      </div>
+    </div>
+
+
+    <div id="tabs">
+      <div id="summary-tab" class="tab">
+        <div id="summary-section">
+  <div id="filter-section">
+    
+
+    <div class="filter-container">
+      <span>Filters<br></span>
+      <div id="type-filter" class="filter" onclick="toggleFilter('type')">
+        <p class="filter-selected">
+          <span id="type-filter-selected"></span>
+          <span>(<span id="selected-count"></span>/23)</span>
+        </p>
+        <div class="filter-icon">
+          <i class="material-icons">keyboard_arrow_down</i>
+        </div>
+      </div>
+      <div id="type-filter-option-container" class="filter-option-container hide-block">
+        
+        <label class="filter-option" for="project-type-checkbox">
+          <input type="checkbox" checked id="project-type-checkbox"
+            data-type-project-count="23">
+          Project Vulnerabilities (23)
+        </label>
+        
+        <label class="filter-option" for="uncalled-type-checkbox">
+          <input type="checkbox" id="uncalled-type-checkbox" data-type-uncalled-count="0">
+          Uncalled/Unimportant (0)
+        </label>
+      </div>
+    </div>
+  </div>
+
+
+  <div id="severity-section">
+    <span>Overall Severity</span>
+    <div class="flex-box">
+      <div id="critical-long" class="severity-long">
+        <p class="critical">7 Critical</p>
+      </div>
+      <div id="high-long" class="severity-long">
+        <p class="high">8 High</p>
+      </div>
+      <div id="medium-long" class="severity-long">
+        <p class="medium">6 Medium</p>
+      </div>
+      <div id="low-long" class="severity-long">
+        <p class="low">2 Low</p>
+      </div>
+      <div id="unknow-long" class="severity-long">
+        <p class="unknown">0 Unknown</p>
+      </div>
+    </div>
+  </div>
+
+
+</div>
+
+
+        
+
+        
+
+        <div class="search-box">
+          <div class="search-icon">
+            <i class="material-icons">search</i>
+          </div>
+          <input type="text" id="vuln-search" placeholder="Search vulnerability ID...">
+        </div>
+
+        <div id="vuln-tab" class="view-tab">
+          
+<div class="ecosystem-container project-type">
+  <h2 class="ecosystem-heading">npm</h2>
+  <div class="ecosystem-sources-container">
+    
+    <div class="source-container">
+      <h3 class="source-heading">Source: <span class="source-path">lockfile:/home/dj/tasks/deps-updates/gdk/package-lock.json</span></h3>
+      <table class="vuln-table">
+  <tr>
+    <th></th>
+    
+    <th>Package</th>
+    
+    <th>Installed version</th>
+    <th>
+      <div class="tooltip">
+        <p>Fix available</p>
+        <span class="tooltiptext">Fix available indicates whether a patch or update exists to address the
+          vulnerabilities found in the corresponding package.</span>
+      </div>
+    </th>
+    <th>
+      <div class="tooltip">
+        <p>Vulnerability count</p>
+        <span class="tooltiptext">Vulnerability count shows the number of vulnerabilities found in the package, counted
+          by each severity level.</span>
+      </div>
+    </th>
+    
+    
+  </tr>
+  
+  
+  
+  
+  
+  
+  <tr class="table-tr package-tr has-layer-info"
+    data-layer="" id="table-tr-1" onclick="showPackageDetails('1')">
+    <td class="icon-td">
+      <div class="expand-icon">
+        <i class="material-icons">play_arrow</i>
+      </div>
+    </td>
+    <td >axios</td>
+    <td >
+    
+      1.10.0
+    
+    </td>
+    
+    <td>
+      <div class="tooltip no-underline">
+      
+        <p class="fixable-tag has-fix">Fix available</p>
+        <span class="tooltiptext">Upgrading the package can fix all 1 vulnerabilities.</span>
+      
+      </div>
+    </td>
+    <td>
+      <div class="severity-count-summary">
+  <div id="critical-short" class="severity-short tooltip severity-short-first">
+    <p class="critical">0</p>
+    <span class="tooltiptext">Critical</span>
+  </div>
+  <div id="high-short" class="severity-short tooltip">
+    <p class="high">1</p>
+    <span class="tooltiptext">High</span>
+  </div>
+  <div id="medium-short" class="severity-short tooltip">
+    <p class="medium">0</p>
+    <span class="tooltiptext">Medium</span>
+  </div>
+  <div id="low-short" class="severity-short tooltip">
+    <p class="low">0</p>
+    <span class="tooltiptext">Low</span>
+  </div>
+  <div id="unknown-short" class="severity-short tooltip severity-short-last">
+    <p class="unknown">0</p>
+    <span class="tooltiptext">Unknown</span>
+  </div>
+</div>
+
+    </td>
+    
+
+    
+
+  </tr>
+  <tr class="table-tr-details">
+    <td colspan="100%">
+      <div id="table-tr-1-details" class="package-details hide-block">
+        
+        
+
+        
+        <table class="inner-table">
+  <tr>
+    <th>Vulnerability ID</th>
+    <th>Aliases / Upstream</th>
+    <th>Fixed version</th>
+    <th class="severity-cell">Severity</th>
+    <th class="open-in-tab-cell"></th>
+  </tr>
+  
+    
+    
+
+<tr class="table-tr vuln-tr " id="table-tr-2" data-vuln-id="GHSA-4hjh-wcwx-xvwj">
+  <td >
+    
+    <div class="clickable" onclick="openVulnInNewTab('GHSA-4hjh-wcwx-xvwj')">GHSA-4hjh-wcwx-xvwj</div>
+    
+  </td>
+  <td >
+    
+    CVE-2025-58754
+    
+  </td>
+
+  <td >
+    <p >
+      1.12.0</p>
+  </td>
+  <td class="severity-cell">
+    <div id="high-short" class="severity-short">
+      <p class="high">7.5</p>
+    </div>
+  </td>
+  <td class="open-in-tab-cell">
+    <p class="open-in-tab-tag" onclick="openVulnInNewTab('GHSA-4hjh-wcwx-xvwj')">Open in tab</p>
+  </td>
+</tr>
+
+  
+
+  
+</table>
+
+      </div>
+
+    </td>
+  </tr>
+  
+  
+  
+  
+  
+  
+  <tr class="table-tr package-tr has-layer-info"
+    data-layer="" id="table-tr-3" onclick="showPackageDetails('3')">
+    <td class="icon-td">
+      <div class="expand-icon">
+        <i class="material-icons">play_arrow</i>
+      </div>
+    </td>
+    <td >axios</td>
+    <td >
+    
+      1.9.0
+    
+    </td>
+    
+    <td>
+      <div class="tooltip no-underline">
+      
+        <p class="fixable-tag has-fix">Fix available</p>
+        <span class="tooltiptext">Upgrading the package can fix all 1 vulnerabilities.</span>
+      
+      </div>
+    </td>
+    <td>
+      <div class="severity-count-summary">
+  <div id="critical-short" class="severity-short tooltip severity-short-first">
+    <p class="critical">0</p>
+    <span class="tooltiptext">Critical</span>
+  </div>
+  <div id="high-short" class="severity-short tooltip">
+    <p class="high">1</p>
+    <span class="tooltiptext">High</span>
+  </div>
+  <div id="medium-short" class="severity-short tooltip">
+    <p class="medium">0</p>
+    <span class="tooltiptext">Medium</span>
+  </div>
+  <div id="low-short" class="severity-short tooltip">
+    <p class="low">0</p>
+    <span class="tooltiptext">Low</span>
+  </div>
+  <div id="unknown-short" class="severity-short tooltip severity-short-last">
+    <p class="unknown">0</p>
+    <span class="tooltiptext">Unknown</span>
+  </div>
+</div>
+
+    </td>
+    
+
+    
+
+  </tr>
+  <tr class="table-tr-details">
+    <td colspan="100%">
+      <div id="table-tr-3-details" class="package-details hide-block">
+        
+        
+
+        
+        <table class="inner-table">
+  <tr>
+    <th>Vulnerability ID</th>
+    <th>Aliases / Upstream</th>
+    <th>Fixed version</th>
+    <th class="severity-cell">Severity</th>
+    <th class="open-in-tab-cell"></th>
+  </tr>
+  
+    
+    
+
+<tr class="table-tr vuln-tr " id="table-tr-4" data-vuln-id="GHSA-4hjh-wcwx-xvwj">
+  <td >
+    
+    <div class="clickable" onclick="openVulnInNewTab('GHSA-4hjh-wcwx-xvwj')">GHSA-4hjh-wcwx-xvwj</div>
+    
+  </td>
+  <td >
+    
+    CVE-2025-58754
+    
+  </td>
+
+  <td >
+    <p >
+      1.12.0</p>
+  </td>
+  <td class="severity-cell">
+    <div id="high-short" class="severity-short">
+      <p class="high">7.5</p>
+    </div>
+  </td>
+  <td class="open-in-tab-cell">
+    <p class="open-in-tab-tag" onclick="openVulnInNewTab('GHSA-4hjh-wcwx-xvwj')">Open in tab</p>
+  </td>
+</tr>
+
+  
+
+  
+</table>
+
+      </div>
+
+    </td>
+  </tr>
+  
+  
+  
+  
+  
+  
+  <tr class="table-tr package-tr has-layer-info"
+    data-layer="" id="table-tr-5" onclick="showPackageDetails('5')">
+    <td class="icon-td">
+      <div class="expand-icon">
+        <i class="material-icons">play_arrow</i>
+      </div>
+    </td>
+    <td >braces</td>
+    <td >
+    
+      2.3.2
+    
+    </td>
+    
+    <td>
+      <div class="tooltip no-underline">
+      
+        <p class="fixable-tag has-fix">Fix available</p>
+        <span class="tooltiptext">Upgrading the package can fix all 1 vulnerabilities.</span>
+      
+      </div>
+    </td>
+    <td>
+      <div class="severity-count-summary">
+  <div id="critical-short" class="severity-short tooltip severity-short-first">
+    <p class="critical">0</p>
+    <span class="tooltiptext">Critical</span>
+  </div>
+  <div id="high-short" class="severity-short tooltip">
+    <p class="high">1</p>
+    <span class="tooltiptext">High</span>
+  </div>
+  <div id="medium-short" class="severity-short tooltip">
+    <p class="medium">0</p>
+    <span class="tooltiptext">Medium</span>
+  </div>
+  <div id="low-short" class="severity-short tooltip">
+    <p class="low">0</p>
+    <span class="tooltiptext">Low</span>
+  </div>
+  <div id="unknown-short" class="severity-short tooltip severity-short-last">
+    <p class="unknown">0</p>
+    <span class="tooltiptext">Unknown</span>
+  </div>
+</div>
+
+    </td>
+    
+
+    
+
+  </tr>
+  <tr class="table-tr-details">
+    <td colspan="100%">
+      <div id="table-tr-5-details" class="package-details hide-block">
+        
+        
+
+        
+        <table class="inner-table">
+  <tr>
+    <th>Vulnerability ID</th>
+    <th>Aliases / Upstream</th>
+    <th>Fixed version</th>
+    <th class="severity-cell">Severity</th>
+    <th class="open-in-tab-cell"></th>
+  </tr>
+  
+    
+    
+
+<tr class="table-tr vuln-tr " id="table-tr-6" data-vuln-id="GHSA-grv7-fg5c-xmjg">
+  <td >
+    
+    <div class="clickable" onclick="openVulnInNewTab('GHSA-grv7-fg5c-xmjg')">GHSA-grv7-fg5c-xmjg</div>
+    
+  </td>
+  <td >
+    
+    CVE-2024-4068
+    
+  </td>
+
+  <td >
+    <p >
+      3.0.3</p>
+  </td>
+  <td class="severity-cell">
+    <div id="high-short" class="severity-short">
+      <p class="high">7.5</p>
+    </div>
+  </td>
+  <td class="open-in-tab-cell">
+    <p class="open-in-tab-tag" onclick="openVulnInNewTab('GHSA-grv7-fg5c-xmjg')">Open in tab</p>
+  </td>
+</tr>
+
+  
+
+  
+</table>
+
+      </div>
+
+    </td>
+  </tr>
+  
+  
+  
+  
+  
+  
+  <tr class="table-tr package-tr has-layer-info"
+    data-layer="" id="table-tr-7" onclick="showPackageDetails('7')">
+    <td class="icon-td">
+      <div class="expand-icon">
+        <i class="material-icons">play_arrow</i>
+      </div>
+    </td>
+    <td >form-data</td>
+    <td >
+    
+      2.3.3
+    
+    </td>
+    
+    <td>
+      <div class="tooltip no-underline">
+      
+        <p class="fixable-tag has-fix">Fix available</p>
+        <span class="tooltiptext">Upgrading the package can fix all 1 vulnerabilities.</span>
+      
+      </div>
+    </td>
+    <td>
+      <div class="severity-count-summary">
+  <div id="critical-short" class="severity-short tooltip severity-short-first">
+    <p class="critical">1</p>
+    <span class="tooltiptext">Critical</span>
+  </div>
+  <div id="high-short" class="severity-short tooltip">
+    <p class="high">0</p>
+    <span class="tooltiptext">High</span>
+  </div>
+  <div id="medium-short" class="severity-short tooltip">
+    <p class="medium">0</p>
+    <span class="tooltiptext">Medium</span>
+  </div>
+  <div id="low-short" class="severity-short tooltip">
+    <p class="low">0</p>
+    <span class="tooltiptext">Low</span>
+  </div>
+  <div id="unknown-short" class="severity-short tooltip severity-short-last">
+    <p class="unknown">0</p>
+    <span class="tooltiptext">Unknown</span>
+  </div>
+</div>
+
+    </td>
+    
+
+    
+
+  </tr>
+  <tr class="table-tr-details">
+    <td colspan="100%">
+      <div id="table-tr-7-details" class="package-details hide-block">
+        
+        
+
+        
+        <table class="inner-table">
+  <tr>
+    <th>Vulnerability ID</th>
+    <th>Aliases / Upstream</th>
+    <th>Fixed version</th>
+    <th class="severity-cell">Severity</th>
+    <th class="open-in-tab-cell"></th>
+  </tr>
+  
+    
+    
+
+<tr class="table-tr vuln-tr " id="table-tr-8" data-vuln-id="GHSA-fjxv-7rqg-78g4">
+  <td >
+    
+    <div class="clickable" onclick="openVulnInNewTab('GHSA-fjxv-7rqg-78g4')">GHSA-fjxv-7rqg-78g4</div>
+    
+  </td>
+  <td >
+    
+    CVE-2025-7783
+    
+  </td>
+
+  <td >
+    <p >
+      2.5.4</p>
+  </td>
+  <td class="severity-cell">
+    <div id="critical-short" class="severity-short">
+      <p class="critical">9.4</p>
+    </div>
+  </td>
+  <td class="open-in-tab-cell">
+    <p class="open-in-tab-tag" onclick="openVulnInNewTab('GHSA-fjxv-7rqg-78g4')">Open in tab</p>
+  </td>
+</tr>
+
+  
+
+  
+</table>
+
+      </div>
+
+    </td>
+  </tr>
+  
+  
+  
+  
+  
+  
+  <tr class="table-tr package-tr has-layer-info"
+    data-layer="" id="table-tr-9" onclick="showPackageDetails('9')">
+    <td class="icon-td">
+      <div class="expand-icon">
+        <i class="material-icons">play_arrow</i>
+      </div>
+    </td>
+    <td >form-data</td>
+    <td >
+    
+      2.5.3
+    
+    </td>
+    
+    <td>
+      <div class="tooltip no-underline">
+      
+        <p class="fixable-tag has-fix">Fix available</p>
+        <span class="tooltiptext">Upgrading the package can fix all 1 vulnerabilities.</span>
+      
+      </div>
+    </td>
+    <td>
+      <div class="severity-count-summary">
+  <div id="critical-short" class="severity-short tooltip severity-short-first">
+    <p class="critical">1</p>
+    <span class="tooltiptext">Critical</span>
+  </div>
+  <div id="high-short" class="severity-short tooltip">
+    <p class="high">0</p>
+    <span class="tooltiptext">High</span>
+  </div>
+  <div id="medium-short" class="severity-short tooltip">
+    <p class="medium">0</p>
+    <span class="tooltiptext">Medium</span>
+  </div>
+  <div id="low-short" class="severity-short tooltip">
+    <p class="low">0</p>
+    <span class="tooltiptext">Low</span>
+  </div>
+  <div id="unknown-short" class="severity-short tooltip severity-short-last">
+    <p class="unknown">0</p>
+    <span class="tooltiptext">Unknown</span>
+  </div>
+</div>
+
+    </td>
+    
+
+    
+
+  </tr>
+  <tr class="table-tr-details">
+    <td colspan="100%">
+      <div id="table-tr-9-details" class="package-details hide-block">
+        
+        
+
+        
+        <table class="inner-table">
+  <tr>
+    <th>Vulnerability ID</th>
+    <th>Aliases / Upstream</th>
+    <th>Fixed version</th>
+    <th class="severity-cell">Severity</th>
+    <th class="open-in-tab-cell"></th>
+  </tr>
+  
+    
+    
+
+<tr class="table-tr vuln-tr " id="table-tr-10" data-vuln-id="GHSA-fjxv-7rqg-78g4">
+  <td >
+    
+    <div class="clickable" onclick="openVulnInNewTab('GHSA-fjxv-7rqg-78g4')">GHSA-fjxv-7rqg-78g4</div>
+    
+  </td>
+  <td >
+    
+    CVE-2025-7783
+    
+  </td>
+
+  <td >
+    <p >
+      2.5.4</p>
+  </td>
+  <td class="severity-cell">
+    <div id="critical-short" class="severity-short">
+      <p class="critical">9.4</p>
+    </div>
+  </td>
+  <td class="open-in-tab-cell">
+    <p class="open-in-tab-tag" onclick="openVulnInNewTab('GHSA-fjxv-7rqg-78g4')">Open in tab</p>
+  </td>
+</tr>
+
+  
+
+  
+</table>
+
+      </div>
+
+    </td>
+  </tr>
+  
+  
+  
+  
+  
+  
+  <tr class="table-tr package-tr has-layer-info"
+    data-layer="" id="table-tr-11" onclick="showPackageDetails('11')">
+    <td class="icon-td">
+      <div class="expand-icon">
+        <i class="material-icons">play_arrow</i>
+      </div>
+    </td>
+    <td >form-data</td>
+    <td >
+    
+      4.0.3
+    
+    </td>
+    
+    <td>
+      <div class="tooltip no-underline">
+      
+        <p class="fixable-tag has-fix">Fix available</p>
+        <span class="tooltiptext">Upgrading the package can fix all 1 vulnerabilities.</span>
+      
+      </div>
+    </td>
+    <td>
+      <div class="severity-count-summary">
+  <div id="critical-short" class="severity-short tooltip severity-short-first">
+    <p class="critical">1</p>
+    <span class="tooltiptext">Critical</span>
+  </div>
+  <div id="high-short" class="severity-short tooltip">
+    <p class="high">0</p>
+    <span class="tooltiptext">High</span>
+  </div>
+  <div id="medium-short" class="severity-short tooltip">
+    <p class="medium">0</p>
+    <span class="tooltiptext">Medium</span>
+  </div>
+  <div id="low-short" class="severity-short tooltip">
+    <p class="low">0</p>
+    <span class="tooltiptext">Low</span>
+  </div>
+  <div id="unknown-short" class="severity-short tooltip severity-short-last">
+    <p class="unknown">0</p>
+    <span class="tooltiptext">Unknown</span>
+  </div>
+</div>
+
+    </td>
+    
+
+    
+
+  </tr>
+  <tr class="table-tr-details">
+    <td colspan="100%">
+      <div id="table-tr-11-details" class="package-details hide-block">
+        
+        
+
+        
+        <table class="inner-table">
+  <tr>
+    <th>Vulnerability ID</th>
+    <th>Aliases / Upstream</th>
+    <th>Fixed version</th>
+    <th class="severity-cell">Severity</th>
+    <th class="open-in-tab-cell"></th>
+  </tr>
+  
+    
+    
+
+<tr class="table-tr vuln-tr " id="table-tr-12" data-vuln-id="GHSA-fjxv-7rqg-78g4">
+  <td >
+    
+    <div class="clickable" onclick="openVulnInNewTab('GHSA-fjxv-7rqg-78g4')">GHSA-fjxv-7rqg-78g4</div>
+    
+  </td>
+  <td >
+    
+    CVE-2025-7783
+    
+  </td>
+
+  <td >
+    <p >
+      4.0.4</p>
+  </td>
+  <td class="severity-cell">
+    <div id="critical-short" class="severity-short">
+      <p class="critical">9.4</p>
+    </div>
+  </td>
+  <td class="open-in-tab-cell">
+    <p class="open-in-tab-tag" onclick="openVulnInNewTab('GHSA-fjxv-7rqg-78g4')">Open in tab</p>
+  </td>
+</tr>
+
+  
+
+  
+</table>
+
+      </div>
+
+    </td>
+  </tr>
+  
+  
+  
+  
+  
+  
+  <tr class="table-tr package-tr has-layer-info"
+    data-layer="" id="table-tr-13" onclick="showPackageDetails('13')">
+    <td class="icon-td">
+      <div class="expand-icon">
+        <i class="material-icons">play_arrow</i>
+      </div>
+    </td>
+    <td >koa</td>
+    <td >
+    
+      2.15.3
+    
+    </td>
+    
+    <td>
+      <div class="tooltip no-underline">
+      
+        <p class="fixable-tag has-fix">Fix available</p>
+        <span class="tooltiptext">Upgrading the package can fix all 3 vulnerabilities.</span>
+      
+      </div>
+    </td>
+    <td>
+      <div class="severity-count-summary">
+  <div id="critical-short" class="severity-short tooltip severity-short-first">
+    <p class="critical">1</p>
+    <span class="tooltiptext">Critical</span>
+  </div>
+  <div id="high-short" class="severity-short tooltip">
+    <p class="high">0</p>
+    <span class="tooltiptext">High</span>
+  </div>
+  <div id="medium-short" class="severity-short tooltip">
+    <p class="medium">1</p>
+    <span class="tooltiptext">Medium</span>
+  </div>
+  <div id="low-short" class="severity-short tooltip">
+    <p class="low">1</p>
+    <span class="tooltiptext">Low</span>
+  </div>
+  <div id="unknown-short" class="severity-short tooltip severity-short-last">
+    <p class="unknown">0</p>
+    <span class="tooltiptext">Unknown</span>
+  </div>
+</div>
+
+    </td>
+    
+
+    
+
+  </tr>
+  <tr class="table-tr-details">
+    <td colspan="100%">
+      <div id="table-tr-13-details" class="package-details hide-block">
+        
+        
+
+        
+        <table class="inner-table">
+  <tr>
+    <th>Vulnerability ID</th>
+    <th>Aliases / Upstream</th>
+    <th>Fixed version</th>
+    <th class="severity-cell">Severity</th>
+    <th class="open-in-tab-cell"></th>
+  </tr>
+  
+    
+    
+
+<tr class="table-tr vuln-tr " id="table-tr-14" data-vuln-id="GHSA-593f-38f6-jp5m">
+  <td >
+    
+    <div class="clickable" onclick="openVulnInNewTab('GHSA-593f-38f6-jp5m')">GHSA-593f-38f6-jp5m</div>
+    
+  </td>
+  <td >
+    
+    CVE-2025-25200
+    
+  </td>
+
+  <td >
+    <p >
+      2.15.4</p>
+  </td>
+  <td class="severity-cell">
+    <div id="critical-short" class="severity-short">
+      <p class="critical">9.2</p>
+    </div>
+  </td>
+  <td class="open-in-tab-cell">
+    <p class="open-in-tab-tag" onclick="openVulnInNewTab('GHSA-593f-38f6-jp5m')">Open in tab</p>
+  </td>
+</tr>
+
+  
+    
+    
+
+<tr class="table-tr vuln-tr " id="table-tr-15" data-vuln-id="GHSA-jgmv-j7ww-jx2x">
+  <td >
+    
+    <div class="clickable" onclick="openVulnInNewTab('GHSA-jgmv-j7ww-jx2x')">GHSA-jgmv-j7ww-jx2x</div>
+    
+  </td>
+  <td >
+    
+    CVE-2025-8129
+    
+  </td>
+
+  <td >
+    <p >
+      2.16.2</p>
+  </td>
+  <td class="severity-cell">
+    <div id="low-short" class="severity-short">
+      <p class="low">3.5</p>
+    </div>
+  </td>
+  <td class="open-in-tab-cell">
+    <p class="open-in-tab-tag" onclick="openVulnInNewTab('GHSA-jgmv-j7ww-jx2x')">Open in tab</p>
+  </td>
+</tr>
+
+  
+    
+    
+
+<tr class="table-tr vuln-tr " id="table-tr-16" data-vuln-id="GHSA-x2rg-q646-7m2v">
+  <td >
+    
+    <div class="clickable" onclick="openVulnInNewTab('GHSA-x2rg-q646-7m2v')">GHSA-x2rg-q646-7m2v</div>
+    
+  </td>
+  <td >
+    
+    CVE-2025-32379
+    
+  </td>
+
+  <td >
+    <p >
+      2.16.1</p>
+  </td>
+  <td class="severity-cell">
+    <div id="medium-short" class="severity-short">
+      <p class="medium">5.0</p>
+    </div>
+  </td>
+  <td class="open-in-tab-cell">
+    <p class="open-in-tab-tag" onclick="openVulnInNewTab('GHSA-x2rg-q646-7m2v')">Open in tab</p>
+  </td>
+</tr>
+
+  
+
+  
+</table>
+
+      </div>
+
+    </td>
+  </tr>
+  
+  
+  
+  
+  
+  
+  <tr class="table-tr package-tr has-layer-info"
+    data-layer="" id="table-tr-17" onclick="showPackageDetails('17')">
+    <td class="icon-td">
+      <div class="expand-icon">
+        <i class="material-icons">play_arrow</i>
+      </div>
+    </td>
+    <td >micromatch</td>
+    <td >
+    
+      3.1.10
+    
+    </td>
+    
+    <td>
+      <div class="tooltip no-underline">
+      
+        <p class="fixable-tag has-fix">Fix available</p>
+        <span class="tooltiptext">Upgrading the package can fix all 1 vulnerabilities.</span>
+      
+      </div>
+    </td>
+    <td>
+      <div class="severity-count-summary">
+  <div id="critical-short" class="severity-short tooltip severity-short-first">
+    <p class="critical">0</p>
+    <span class="tooltiptext">Critical</span>
+  </div>
+  <div id="high-short" class="severity-short tooltip">
+    <p class="high">0</p>
+    <span class="tooltiptext">High</span>
+  </div>
+  <div id="medium-short" class="severity-short tooltip">
+    <p class="medium">1</p>
+    <span class="tooltiptext">Medium</span>
+  </div>
+  <div id="low-short" class="severity-short tooltip">
+    <p class="low">0</p>
+    <span class="tooltiptext">Low</span>
+  </div>
+  <div id="unknown-short" class="severity-short tooltip severity-short-last">
+    <p class="unknown">0</p>
+    <span class="tooltiptext">Unknown</span>
+  </div>
+</div>
+
+    </td>
+    
+
+    
+
+  </tr>
+  <tr class="table-tr-details">
+    <td colspan="100%">
+      <div id="table-tr-17-details" class="package-details hide-block">
+        
+        
+
+        
+        <table class="inner-table">
+  <tr>
+    <th>Vulnerability ID</th>
+    <th>Aliases / Upstream</th>
+    <th>Fixed version</th>
+    <th class="severity-cell">Severity</th>
+    <th class="open-in-tab-cell"></th>
+  </tr>
+  
+    
+    
+
+<tr class="table-tr vuln-tr " id="table-tr-18" data-vuln-id="GHSA-952p-6rrq-rcjv">
+  <td >
+    
+    <div class="clickable" onclick="openVulnInNewTab('GHSA-952p-6rrq-rcjv')">GHSA-952p-6rrq-rcjv</div>
+    
+  </td>
+  <td >
+    
+    CVE-2024-4067
+    
+  </td>
+
+  <td >
+    <p >
+      4.0.8</p>
+  </td>
+  <td class="severity-cell">
+    <div id="medium-short" class="severity-short">
+      <p class="medium">5.3</p>
+    </div>
+  </td>
+  <td class="open-in-tab-cell">
+    <p class="open-in-tab-tag" onclick="openVulnInNewTab('GHSA-952p-6rrq-rcjv')">Open in tab</p>
+  </td>
+</tr>
+
+  
+
+  
+</table>
+
+      </div>
+
+    </td>
+  </tr>
+  
+  
+  
+  
+  
+  
+  <tr class="table-tr package-tr has-layer-info"
+    data-layer="" id="table-tr-19" onclick="showPackageDetails('19')">
+    <td class="icon-td">
+      <div class="expand-icon">
+        <i class="material-icons">play_arrow</i>
+      </div>
+    </td>
+    <td >multer</td>
+    <td >
+    
+      2.0.1
+    
+    </td>
+    
+    <td>
+      <div class="tooltip no-underline">
+      
+        <p class="fixable-tag has-fix">Fix available</p>
+        <span class="tooltiptext">Upgrading the package can fix all 1 vulnerabilities.</span>
+      
+      </div>
+    </td>
+    <td>
+      <div class="severity-count-summary">
+  <div id="critical-short" class="severity-short tooltip severity-short-first">
+    <p class="critical">0</p>
+    <span class="tooltiptext">Critical</span>
+  </div>
+  <div id="high-short" class="severity-short tooltip">
+    <p class="high">1</p>
+    <span class="tooltiptext">High</span>
+  </div>
+  <div id="medium-short" class="severity-short tooltip">
+    <p class="medium">0</p>
+    <span class="tooltiptext">Medium</span>
+  </div>
+  <div id="low-short" class="severity-short tooltip">
+    <p class="low">0</p>
+    <span class="tooltiptext">Low</span>
+  </div>
+  <div id="unknown-short" class="severity-short tooltip severity-short-last">
+    <p class="unknown">0</p>
+    <span class="tooltiptext">Unknown</span>
+  </div>
+</div>
+
+    </td>
+    
+
+    
+
+  </tr>
+  <tr class="table-tr-details">
+    <td colspan="100%">
+      <div id="table-tr-19-details" class="package-details hide-block">
+        
+        
+
+        
+        <table class="inner-table">
+  <tr>
+    <th>Vulnerability ID</th>
+    <th>Aliases / Upstream</th>
+    <th>Fixed version</th>
+    <th class="severity-cell">Severity</th>
+    <th class="open-in-tab-cell"></th>
+  </tr>
+  
+    
+    
+
+<tr class="table-tr vuln-tr " id="table-tr-20" data-vuln-id="GHSA-fjgf-rc76-4x9p">
+  <td >
+    
+    <div class="clickable" onclick="openVulnInNewTab('GHSA-fjgf-rc76-4x9p')">GHSA-fjgf-rc76-4x9p</div>
+    
+  </td>
+  <td >
+    
+    CVE-2025-7338
+    
+  </td>
+
+  <td >
+    <p >
+      2.0.2</p>
+  </td>
+  <td class="severity-cell">
+    <div id="high-short" class="severity-short">
+      <p class="high">7.5</p>
+    </div>
+  </td>
+  <td class="open-in-tab-cell">
+    <p class="open-in-tab-tag" onclick="openVulnInNewTab('GHSA-fjgf-rc76-4x9p')">Open in tab</p>
+  </td>
+</tr>
+
+  
+
+  
+</table>
+
+      </div>
+
+    </td>
+  </tr>
+  
+  
+  
+  
+  
+  
+  <tr class="table-tr package-tr has-layer-info"
+    data-layer="" id="table-tr-21" onclick="showPackageDetails('21')">
+    <td class="icon-td">
+      <div class="expand-icon">
+        <i class="material-icons">play_arrow</i>
+      </div>
+    </td>
+    <td >node-notifier</td>
+    <td >
+    
+      5.4.5
+    
+    </td>
+    
+    <td>
+      <div class="tooltip no-underline">
+      
+        <p class="fixable-tag has-fix">Fix available</p>
+        <span class="tooltiptext">Upgrading the package can fix all 1 vulnerabilities.</span>
+      
+      </div>
+    </td>
+    <td>
+      <div class="severity-count-summary">
+  <div id="critical-short" class="severity-short tooltip severity-short-first">
+    <p class="critical">0</p>
+    <span class="tooltiptext">Critical</span>
+  </div>
+  <div id="high-short" class="severity-short tooltip">
+    <p class="high">0</p>
+    <span class="tooltiptext">High</span>
+  </div>
+  <div id="medium-short" class="severity-short tooltip">
+    <p class="medium">1</p>
+    <span class="tooltiptext">Medium</span>
+  </div>
+  <div id="low-short" class="severity-short tooltip">
+    <p class="low">0</p>
+    <span class="tooltiptext">Low</span>
+  </div>
+  <div id="unknown-short" class="severity-short tooltip severity-short-last">
+    <p class="unknown">0</p>
+    <span class="tooltiptext">Unknown</span>
+  </div>
+</div>
+
+    </td>
+    
+
+    
+
+  </tr>
+  <tr class="table-tr-details">
+    <td colspan="100%">
+      <div id="table-tr-21-details" class="package-details hide-block">
+        
+        
+
+        
+        <table class="inner-table">
+  <tr>
+    <th>Vulnerability ID</th>
+    <th>Aliases / Upstream</th>
+    <th>Fixed version</th>
+    <th class="severity-cell">Severity</th>
+    <th class="open-in-tab-cell"></th>
+  </tr>
+  
+    
+    
+
+<tr class="table-tr vuln-tr " id="table-tr-22" data-vuln-id="GHSA-5fw9-fq32-wv5p">
+  <td >
+    
+    <div class="clickable" onclick="openVulnInNewTab('GHSA-5fw9-fq32-wv5p')">GHSA-5fw9-fq32-wv5p</div>
+    
+  </td>
+  <td >
+    
+    CVE-2020-7789
+    
+  </td>
+
+  <td >
+    <p >
+      8.0.1</p>
+  </td>
+  <td class="severity-cell">
+    <div id="medium-short" class="severity-short">
+      <p class="medium">5.6</p>
+    </div>
+  </td>
+  <td class="open-in-tab-cell">
+    <p class="open-in-tab-tag" onclick="openVulnInNewTab('GHSA-5fw9-fq32-wv5p')">Open in tab</p>
+  </td>
+</tr>
+
+  
+
+  
+</table>
+
+      </div>
+
+    </td>
+  </tr>
+  
+  
+  
+  
+  
+  
+  <tr class="table-tr package-tr has-layer-info"
+    data-layer="" id="table-tr-23" onclick="showPackageDetails('23')">
+    <td class="icon-td">
+      <div class="expand-icon">
+        <i class="material-icons">play_arrow</i>
+      </div>
+    </td>
+    <td >pbkdf2</td>
+    <td >
+    
+      3.1.2
+    
+    </td>
+    
+    <td>
+      <div class="tooltip no-underline">
+      
+        <p class="fixable-tag has-fix">Fix available</p>
+        <span class="tooltiptext">Upgrading the package can fix all 2 vulnerabilities.</span>
+      
+      </div>
+    </td>
+    <td>
+      <div class="severity-count-summary">
+  <div id="critical-short" class="severity-short tooltip severity-short-first">
+    <p class="critical">2</p>
+    <span class="tooltiptext">Critical</span>
+  </div>
+  <div id="high-short" class="severity-short tooltip">
+    <p class="high">0</p>
+    <span class="tooltiptext">High</span>
+  </div>
+  <div id="medium-short" class="severity-short tooltip">
+    <p class="medium">0</p>
+    <span class="tooltiptext">Medium</span>
+  </div>
+  <div id="low-short" class="severity-short tooltip">
+    <p class="low">0</p>
+    <span class="tooltiptext">Low</span>
+  </div>
+  <div id="unknown-short" class="severity-short tooltip severity-short-last">
+    <p class="unknown">0</p>
+    <span class="tooltiptext">Unknown</span>
+  </div>
+</div>
+
+    </td>
+    
+
+    
+
+  </tr>
+  <tr class="table-tr-details">
+    <td colspan="100%">
+      <div id="table-tr-23-details" class="package-details hide-block">
+        
+        
+
+        
+        <table class="inner-table">
+  <tr>
+    <th>Vulnerability ID</th>
+    <th>Aliases / Upstream</th>
+    <th>Fixed version</th>
+    <th class="severity-cell">Severity</th>
+    <th class="open-in-tab-cell"></th>
+  </tr>
+  
+    
+    
+
+<tr class="table-tr vuln-tr " id="table-tr-24" data-vuln-id="GHSA-h7cp-r72f-jxh6">
+  <td >
+    
+    <div class="clickable" onclick="openVulnInNewTab('GHSA-h7cp-r72f-jxh6')">GHSA-h7cp-r72f-jxh6</div>
+    
+  </td>
+  <td >
+    
+    CVE-2025-6545
+    
+  </td>
+
+  <td >
+    <p >
+      3.1.3</p>
+  </td>
+  <td class="severity-cell">
+    <div id="critical-short" class="severity-short">
+      <p class="critical">9.1</p>
+    </div>
+  </td>
+  <td class="open-in-tab-cell">
+    <p class="open-in-tab-tag" onclick="openVulnInNewTab('GHSA-h7cp-r72f-jxh6')">Open in tab</p>
+  </td>
+</tr>
+
+  
+    
+    
+
+<tr class="table-tr vuln-tr " id="table-tr-25" data-vuln-id="GHSA-v62p-rq8g-8h59">
+  <td >
+    
+    <div class="clickable" onclick="openVulnInNewTab('GHSA-v62p-rq8g-8h59')">GHSA-v62p-rq8g-8h59</div>
+    
+  </td>
+  <td >
+    
+    CVE-2025-6547
+    
+  </td>
+
+  <td >
+    <p >
+      3.1.3</p>
+  </td>
+  <td class="severity-cell">
+    <div id="critical-short" class="severity-short">
+      <p class="critical">9.1</p>
+    </div>
+  </td>
+  <td class="open-in-tab-cell">
+    <p class="open-in-tab-tag" onclick="openVulnInNewTab('GHSA-v62p-rq8g-8h59')">Open in tab</p>
+  </td>
+</tr>
+
+  
+
+  
+</table>
+
+      </div>
+
+    </td>
+  </tr>
+  
+  
+  
+  
+  
+  
+  <tr class="table-tr package-tr has-layer-info"
+    data-layer="" id="table-tr-26" onclick="showPackageDetails('26')">
+    <td class="icon-td">
+      <div class="expand-icon">
+        <i class="material-icons">play_arrow</i>
+      </div>
+    </td>
+    <td >request</td>
+    <td >
+    
+      2.88.2
+    
+    </td>
+    
+    <td>
+      <div class="tooltip no-underline">
+      
+        
+          <p class="fixable-tag no-fix">No fix available</p>
+            <span class="tooltiptext">All 1 vulnerabilities have no fixed version available.</span>
+          
+      
+      </div>
+    </td>
+    <td>
+      <div class="severity-count-summary">
+  <div id="critical-short" class="severity-short tooltip severity-short-first">
+    <p class="critical">0</p>
+    <span class="tooltiptext">Critical</span>
+  </div>
+  <div id="high-short" class="severity-short tooltip">
+    <p class="high">0</p>
+    <span class="tooltiptext">High</span>
+  </div>
+  <div id="medium-short" class="severity-short tooltip">
+    <p class="medium">1</p>
+    <span class="tooltiptext">Medium</span>
+  </div>
+  <div id="low-short" class="severity-short tooltip">
+    <p class="low">0</p>
+    <span class="tooltiptext">Low</span>
+  </div>
+  <div id="unknown-short" class="severity-short tooltip severity-short-last">
+    <p class="unknown">0</p>
+    <span class="tooltiptext">Unknown</span>
+  </div>
+</div>
+
+    </td>
+    
+
+    
+
+  </tr>
+  <tr class="table-tr-details">
+    <td colspan="100%">
+      <div id="table-tr-26-details" class="package-details hide-block">
+        
+        
+
+        
+        <table class="inner-table">
+  <tr>
+    <th>Vulnerability ID</th>
+    <th>Aliases / Upstream</th>
+    <th>Fixed version</th>
+    <th class="severity-cell">Severity</th>
+    <th class="open-in-tab-cell"></th>
+  </tr>
+  
+    
+    
+
+<tr class="table-tr vuln-tr " id="table-tr-27" data-vuln-id="GHSA-p8p7-x288-28g6">
+  <td >
+    
+    <div class="clickable" onclick="openVulnInNewTab('GHSA-p8p7-x288-28g6')">GHSA-p8p7-x288-28g6</div>
+    
+  </td>
+  <td >
+    
+    CVE-2023-28155
+    
+  </td>
+
+  <td >
+    <p  class="fixable-tag no-fix" >
+      No fix available</p>
+  </td>
+  <td class="severity-cell">
+    <div id="medium-short" class="severity-short">
+      <p class="medium">6.1</p>
+    </div>
+  </td>
+  <td class="open-in-tab-cell">
+    <p class="open-in-tab-tag" onclick="openVulnInNewTab('GHSA-p8p7-x288-28g6')">Open in tab</p>
+  </td>
+</tr>
+
+  
+
+  
+</table>
+
+      </div>
+
+    </td>
+  </tr>
+  
+  
+  
+  
+  
+  
+  <tr class="table-tr package-tr has-layer-info"
+    data-layer="" id="table-tr-28" onclick="showPackageDetails('28')">
+    <td class="icon-td">
+      <div class="expand-icon">
+        <i class="material-icons">play_arrow</i>
+      </div>
+    </td>
+    <td >sha.js</td>
+    <td >
+    
+      2.4.11
+    
+    </td>
+    
+    <td>
+      <div class="tooltip no-underline">
+      
+        <p class="fixable-tag has-fix">Fix available</p>
+        <span class="tooltiptext">Upgrading the package can fix all 1 vulnerabilities.</span>
+      
+      </div>
+    </td>
+    <td>
+      <div class="severity-count-summary">
+  <div id="critical-short" class="severity-short tooltip severity-short-first">
+    <p class="critical">1</p>
+    <span class="tooltiptext">Critical</span>
+  </div>
+  <div id="high-short" class="severity-short tooltip">
+    <p class="high">0</p>
+    <span class="tooltiptext">High</span>
+  </div>
+  <div id="medium-short" class="severity-short tooltip">
+    <p class="medium">0</p>
+    <span class="tooltiptext">Medium</span>
+  </div>
+  <div id="low-short" class="severity-short tooltip">
+    <p class="low">0</p>
+    <span class="tooltiptext">Low</span>
+  </div>
+  <div id="unknown-short" class="severity-short tooltip severity-short-last">
+    <p class="unknown">0</p>
+    <span class="tooltiptext">Unknown</span>
+  </div>
+</div>
+
+    </td>
+    
+
+    
+
+  </tr>
+  <tr class="table-tr-details">
+    <td colspan="100%">
+      <div id="table-tr-28-details" class="package-details hide-block">
+        
+        
+
+        
+        <table class="inner-table">
+  <tr>
+    <th>Vulnerability ID</th>
+    <th>Aliases / Upstream</th>
+    <th>Fixed version</th>
+    <th class="severity-cell">Severity</th>
+    <th class="open-in-tab-cell"></th>
+  </tr>
+  
+    
+    
+
+<tr class="table-tr vuln-tr " id="table-tr-29" data-vuln-id="GHSA-95m3-7q98-8xr5">
+  <td >
+    
+    <div class="clickable" onclick="openVulnInNewTab('GHSA-95m3-7q98-8xr5')">GHSA-95m3-7q98-8xr5</div>
+    
+  </td>
+  <td >
+    
+    CVE-2025-9288
+    
+  </td>
+
+  <td >
+    <p >
+      2.4.12</p>
+  </td>
+  <td class="severity-cell">
+    <div id="critical-short" class="severity-short">
+      <p class="critical">9.1</p>
+    </div>
+  </td>
+  <td class="open-in-tab-cell">
+    <p class="open-in-tab-tag" onclick="openVulnInNewTab('GHSA-95m3-7q98-8xr5')">Open in tab</p>
+  </td>
+</tr>
+
+  
+
+  
+</table>
+
+      </div>
+
+    </td>
+  </tr>
+  
+  
+  
+  
+  
+  
+  <tr class="table-tr package-tr has-layer-info"
+    data-layer="" id="table-tr-30" onclick="showPackageDetails('30')">
+    <td class="icon-td">
+      <div class="expand-icon">
+        <i class="material-icons">play_arrow</i>
+      </div>
+    </td>
+    <td >tar-fs</td>
+    <td >
+    
+      2.1.1
+    
+    </td>
+    
+    <td>
+      <div class="tooltip no-underline">
+      
+        <p class="fixable-tag has-fix">Fix available</p>
+        <span class="tooltiptext">Upgrading the package can fix all 3 vulnerabilities.</span>
+      
+      </div>
+    </td>
+    <td>
+      <div class="severity-count-summary">
+  <div id="critical-short" class="severity-short tooltip severity-short-first">
+    <p class="critical">0</p>
+    <span class="tooltiptext">Critical</span>
+  </div>
+  <div id="high-short" class="severity-short tooltip">
+    <p class="high">3</p>
+    <span class="tooltiptext">High</span>
+  </div>
+  <div id="medium-short" class="severity-short tooltip">
+    <p class="medium">0</p>
+    <span class="tooltiptext">Medium</span>
+  </div>
+  <div id="low-short" class="severity-short tooltip">
+    <p class="low">0</p>
+    <span class="tooltiptext">Low</span>
+  </div>
+  <div id="unknown-short" class="severity-short tooltip severity-short-last">
+    <p class="unknown">0</p>
+    <span class="tooltiptext">Unknown</span>
+  </div>
+</div>
+
+    </td>
+    
+
+    
+
+  </tr>
+  <tr class="table-tr-details">
+    <td colspan="100%">
+      <div id="table-tr-30-details" class="package-details hide-block">
+        
+        
+
+        
+        <table class="inner-table">
+  <tr>
+    <th>Vulnerability ID</th>
+    <th>Aliases / Upstream</th>
+    <th>Fixed version</th>
+    <th class="severity-cell">Severity</th>
+    <th class="open-in-tab-cell"></th>
+  </tr>
+  
+    
+    
+
+<tr class="table-tr vuln-tr " id="table-tr-31" data-vuln-id="GHSA-8cj5-5rvv-wf4v">
+  <td >
+    
+    <div class="clickable" onclick="openVulnInNewTab('GHSA-8cj5-5rvv-wf4v')">GHSA-8cj5-5rvv-wf4v</div>
+    
+  </td>
+  <td >
+    
+    CVE-2025-48387
+    
+  </td>
+
+  <td >
+    <p >
+      2.1.3</p>
+  </td>
+  <td class="severity-cell">
+    <div id="high-short" class="severity-short">
+      <p class="high">8.7</p>
+    </div>
+  </td>
+  <td class="open-in-tab-cell">
+    <p class="open-in-tab-tag" onclick="openVulnInNewTab('GHSA-8cj5-5rvv-wf4v')">Open in tab</p>
+  </td>
+</tr>
+
+  
+    
+    
+
+<tr class="table-tr vuln-tr " id="table-tr-32" data-vuln-id="GHSA-pq67-2wwv-3xjx">
+  <td >
+    
+    <div class="clickable" onclick="openVulnInNewTab('GHSA-pq67-2wwv-3xjx')">GHSA-pq67-2wwv-3xjx</div>
+    
+  </td>
+  <td >
+    
+    CVE-2024-12905
+    
+  </td>
+
+  <td >
+    <p >
+      2.1.2</p>
+  </td>
+  <td class="severity-cell">
+    <div id="high-short" class="severity-short">
+      <p class="high">7.5</p>
+    </div>
+  </td>
+  <td class="open-in-tab-cell">
+    <p class="open-in-tab-tag" onclick="openVulnInNewTab('GHSA-pq67-2wwv-3xjx')">Open in tab</p>
+  </td>
+</tr>
+
+  
+    
+    
+
+<tr class="table-tr vuln-tr " id="table-tr-33" data-vuln-id="GHSA-vj76-c3g6-qr5v">
+  <td >
+    
+    <div class="clickable" onclick="openVulnInNewTab('GHSA-vj76-c3g6-qr5v')">GHSA-vj76-c3g6-qr5v</div>
+    
+  </td>
+  <td >
+    
+    CVE-2025-59343
+    
+  </td>
+
+  <td >
+    <p >
+      2.1.3</p>
+  </td>
+  <td class="severity-cell">
+    <div id="high-short" class="severity-short">
+      <p class="high">8.7</p>
+    </div>
+  </td>
+  <td class="open-in-tab-cell">
+    <p class="open-in-tab-tag" onclick="openVulnInNewTab('GHSA-vj76-c3g6-qr5v')">Open in tab</p>
+  </td>
+</tr>
+
+  
+
+  
+</table>
+
+      </div>
+
+    </td>
+  </tr>
+  
+  
+  
+  
+  
+  
+  <tr class="table-tr package-tr has-layer-info"
+    data-layer="" id="table-tr-34" onclick="showPackageDetails('34')">
+    <td class="icon-td">
+      <div class="expand-icon">
+        <i class="material-icons">play_arrow</i>
+      </div>
+    </td>
+    <td >tmp</td>
+    <td >
+    
+      0.0.33
+    
+    </td>
+    
+    <td>
+      <div class="tooltip no-underline">
+      
+        <p class="fixable-tag has-fix">Fix available</p>
+        <span class="tooltiptext">Upgrading the package can fix all 1 vulnerabilities.</span>
+      
+      </div>
+    </td>
+    <td>
+      <div class="severity-count-summary">
+  <div id="critical-short" class="severity-short tooltip severity-short-first">
+    <p class="critical">0</p>
+    <span class="tooltiptext">Critical</span>
+  </div>
+  <div id="high-short" class="severity-short tooltip">
+    <p class="high">0</p>
+    <span class="tooltiptext">High</span>
+  </div>
+  <div id="medium-short" class="severity-short tooltip">
+    <p class="medium">0</p>
+    <span class="tooltiptext">Medium</span>
+  </div>
+  <div id="low-short" class="severity-short tooltip">
+    <p class="low">1</p>
+    <span class="tooltiptext">Low</span>
+  </div>
+  <div id="unknown-short" class="severity-short tooltip severity-short-last">
+    <p class="unknown">0</p>
+    <span class="tooltiptext">Unknown</span>
+  </div>
+</div>
+
+    </td>
+    
+
+    
+
+  </tr>
+  <tr class="table-tr-details">
+    <td colspan="100%">
+      <div id="table-tr-34-details" class="package-details hide-block">
+        
+        
+
+        
+        <table class="inner-table">
+  <tr>
+    <th>Vulnerability ID</th>
+    <th>Aliases / Upstream</th>
+    <th>Fixed version</th>
+    <th class="severity-cell">Severity</th>
+    <th class="open-in-tab-cell"></th>
+  </tr>
+  
+    
+    
+
+<tr class="table-tr vuln-tr " id="table-tr-35" data-vuln-id="GHSA-52f5-9888-hmc6">
+  <td >
+    
+    <div class="clickable" onclick="openVulnInNewTab('GHSA-52f5-9888-hmc6')">GHSA-52f5-9888-hmc6</div>
+    
+  </td>
+  <td >
+    
+    CVE-2025-54798
+    
+  </td>
+
+  <td >
+    <p >
+      0.2.4</p>
+  </td>
+  <td class="severity-cell">
+    <div id="low-short" class="severity-short">
+      <p class="low">2.5</p>
+    </div>
+  </td>
+  <td class="open-in-tab-cell">
+    <p class="open-in-tab-tag" onclick="openVulnInNewTab('GHSA-52f5-9888-hmc6')">Open in tab</p>
+  </td>
+</tr>
+
+  
+
+  
+</table>
+
+      </div>
+
+    </td>
+  </tr>
+  
+  
+  
+  
+  
+  
+  <tr class="table-tr package-tr has-layer-info"
+    data-layer="" id="table-tr-36" onclick="showPackageDetails('36')">
+    <td class="icon-td">
+      <div class="expand-icon">
+        <i class="material-icons">play_arrow</i>
+      </div>
+    </td>
+    <td >tough-cookie</td>
+    <td >
+    
+      2.5.0
+    
+    </td>
+    
+    <td>
+      <div class="tooltip no-underline">
+      
+        <p class="fixable-tag has-fix">Fix available</p>
+        <span class="tooltiptext">Upgrading the package can fix all 1 vulnerabilities.</span>
+      
+      </div>
+    </td>
+    <td>
+      <div class="severity-count-summary">
+  <div id="critical-short" class="severity-short tooltip severity-short-first">
+    <p class="critical">0</p>
+    <span class="tooltiptext">Critical</span>
+  </div>
+  <div id="high-short" class="severity-short tooltip">
+    <p class="high">0</p>
+    <span class="tooltiptext">High</span>
+  </div>
+  <div id="medium-short" class="severity-short tooltip">
+    <p class="medium">1</p>
+    <span class="tooltiptext">Medium</span>
+  </div>
+  <div id="low-short" class="severity-short tooltip">
+    <p class="low">0</p>
+    <span class="tooltiptext">Low</span>
+  </div>
+  <div id="unknown-short" class="severity-short tooltip severity-short-last">
+    <p class="unknown">0</p>
+    <span class="tooltiptext">Unknown</span>
+  </div>
+</div>
+
+    </td>
+    
+
+    
+
+  </tr>
+  <tr class="table-tr-details">
+    <td colspan="100%">
+      <div id="table-tr-36-details" class="package-details hide-block">
+        
+        
+
+        
+        <table class="inner-table">
+  <tr>
+    <th>Vulnerability ID</th>
+    <th>Aliases / Upstream</th>
+    <th>Fixed version</th>
+    <th class="severity-cell">Severity</th>
+    <th class="open-in-tab-cell"></th>
+  </tr>
+  
+    
+    
+
+<tr class="table-tr vuln-tr " id="table-tr-37" data-vuln-id="GHSA-72xf-g2v4-qvf3">
+  <td >
+    
+    <div class="clickable" onclick="openVulnInNewTab('GHSA-72xf-g2v4-qvf3')">GHSA-72xf-g2v4-qvf3</div>
+    
+  </td>
+  <td >
+    
+    CVE-2023-26136
+    
+  </td>
+
+  <td >
+    <p >
+      4.1.3</p>
+  </td>
+  <td class="severity-cell">
+    <div id="medium-short" class="severity-short">
+      <p class="medium">6.5</p>
+    </div>
+  </td>
+  <td class="open-in-tab-cell">
+    <p class="open-in-tab-tag" onclick="openVulnInNewTab('GHSA-72xf-g2v4-qvf3')">Open in tab</p>
+  </td>
+</tr>
+
+  
+
+  
+</table>
+
+      </div>
+
+    </td>
+  </tr>
+  
+  
+  
+  
+  
+  
+  <tr class="table-tr package-tr has-layer-info"
+    data-layer="" id="table-tr-38" onclick="showPackageDetails('38')">
+    <td class="icon-td">
+      <div class="expand-icon">
+        <i class="material-icons">play_arrow</i>
+      </div>
+    </td>
+    <td >ws</td>
+    <td >
+    
+      8.6.0
+    
+    </td>
+    
+    <td>
+      <div class="tooltip no-underline">
+      
+        <p class="fixable-tag has-fix">Fix available</p>
+        <span class="tooltiptext">Upgrading the package can fix all 1 vulnerabilities.</span>
+      
+      </div>
+    </td>
+    <td>
+      <div class="severity-count-summary">
+  <div id="critical-short" class="severity-short tooltip severity-short-first">
+    <p class="critical">0</p>
+    <span class="tooltiptext">Critical</span>
+  </div>
+  <div id="high-short" class="severity-short tooltip">
+    <p class="high">1</p>
+    <span class="tooltiptext">High</span>
+  </div>
+  <div id="medium-short" class="severity-short tooltip">
+    <p class="medium">0</p>
+    <span class="tooltiptext">Medium</span>
+  </div>
+  <div id="low-short" class="severity-short tooltip">
+    <p class="low">0</p>
+    <span class="tooltiptext">Low</span>
+  </div>
+  <div id="unknown-short" class="severity-short tooltip severity-short-last">
+    <p class="unknown">0</p>
+    <span class="tooltiptext">Unknown</span>
+  </div>
+</div>
+
+    </td>
+    
+
+    
+
+  </tr>
+  <tr class="table-tr-details">
+    <td colspan="100%">
+      <div id="table-tr-38-details" class="package-details hide-block">
+        
+        
+
+        
+        <table class="inner-table">
+  <tr>
+    <th>Vulnerability ID</th>
+    <th>Aliases / Upstream</th>
+    <th>Fixed version</th>
+    <th class="severity-cell">Severity</th>
+    <th class="open-in-tab-cell"></th>
+  </tr>
+  
+    
+    
+
+<tr class="table-tr vuln-tr " id="table-tr-39" data-vuln-id="GHSA-3h5v-q93c-6h6q">
+  <td >
+    
+    <div class="clickable" onclick="openVulnInNewTab('GHSA-3h5v-q93c-6h6q')">GHSA-3h5v-q93c-6h6q</div>
+    
+  </td>
+  <td >
+    
+    CVE-2024-37890
+    
+  </td>
+
+  <td >
+    <p >
+      8.17.1</p>
+  </td>
+  <td class="severity-cell">
+    <div id="high-short" class="severity-short">
+      <p class="high">8.7</p>
+    </div>
+  </td>
+  <td class="open-in-tab-cell">
+    <p class="open-in-tab-tag" onclick="openVulnInNewTab('GHSA-3h5v-q93c-6h6q')">Open in tab</p>
+  </td>
+</tr>
+
+  
+
+  
+</table>
+
+      </div>
+
+    </td>
+  </tr>
+  
+  
+  
+  
+  
+  
+  <tr class="table-tr package-tr has-layer-info"
+    data-layer="" id="table-tr-40" onclick="showPackageDetails('40')">
+    <td class="icon-td">
+      <div class="expand-icon">
+        <i class="material-icons">play_arrow</i>
+      </div>
+    </td>
+    <td >yargs-parser</td>
+    <td >
+    
+      10.1.0
+    
+    </td>
+    
+    <td>
+      <div class="tooltip no-underline">
+      
+        <p class="fixable-tag has-fix">Fix available</p>
+        <span class="tooltiptext">Upgrading the package can fix all 1 vulnerabilities.</span>
+      
+      </div>
+    </td>
+    <td>
+      <div class="severity-count-summary">
+  <div id="critical-short" class="severity-short tooltip severity-short-first">
+    <p class="critical">0</p>
+    <span class="tooltiptext">Critical</span>
+  </div>
+  <div id="high-short" class="severity-short tooltip">
+    <p class="high">0</p>
+    <span class="tooltiptext">High</span>
+  </div>
+  <div id="medium-short" class="severity-short tooltip">
+    <p class="medium">1</p>
+    <span class="tooltiptext">Medium</span>
+  </div>
+  <div id="low-short" class="severity-short tooltip">
+    <p class="low">0</p>
+    <span class="tooltiptext">Low</span>
+  </div>
+  <div id="unknown-short" class="severity-short tooltip severity-short-last">
+    <p class="unknown">0</p>
+    <span class="tooltiptext">Unknown</span>
+  </div>
+</div>
+
+    </td>
+    
+
+    
+
+  </tr>
+  <tr class="table-tr-details">
+    <td colspan="100%">
+      <div id="table-tr-40-details" class="package-details hide-block">
+        
+        
+
+        
+        <table class="inner-table">
+  <tr>
+    <th>Vulnerability ID</th>
+    <th>Aliases / Upstream</th>
+    <th>Fixed version</th>
+    <th class="severity-cell">Severity</th>
+    <th class="open-in-tab-cell"></th>
+  </tr>
+  
+    
+    
+
+<tr class="table-tr vuln-tr " id="table-tr-41" data-vuln-id="GHSA-p9pc-299p-vxgp">
+  <td >
+    
+    <div class="clickable" onclick="openVulnInNewTab('GHSA-p9pc-299p-vxgp')">GHSA-p9pc-299p-vxgp</div>
+    
+  </td>
+  <td >
+    
+    CVE-2020-7608
+    
+  </td>
+
+  <td >
+    <p >
+      13.1.2</p>
+  </td>
+  <td class="severity-cell">
+    <div id="medium-short" class="severity-short">
+      <p class="medium">5.3</p>
+    </div>
+  </td>
+  <td class="open-in-tab-cell">
+    <p class="open-in-tab-tag" onclick="openVulnInNewTab('GHSA-p9pc-299p-vxgp')">Open in tab</p>
+  </td>
+</tr>
+
+  
+
+  
+</table>
+
+      </div>
+
+    </td>
+  </tr>
+  
+</table>
+
+    </div>
+    
+  </div>
+</div>
+
+
+        </div>
+      </div>
+    </div>
+
+  </div>
+  <script>
+  const selectedTypeFilterValue = new Set(["all"]);
+let selectedLayer = "all";
+
+function toggleDetails(summaryID) {
+  const detailsElementID = `${summaryID}-details`;
+  const iconElementID = `${summaryID}-icon`;
+  const detailsElement = document.getElementById(detailsElementID);
+  const iconElement = document.getElementById(iconElementID);
+
+  detailsElement.classList.toggle("hide-block");
+  iconElement.classList.toggle("expanded");
+}
+
+function quickFilterByLayer(DiffID, layerCommand) {
+  selectedLayer = DiffID;
+  applyFilters(selectedTypeFilterValue, selectedLayer);
+  const selectedDisplay = document.getElementById("layer-filter-selected");
+  selectedDisplay.textContent = layerCommand;
+}
+
+function showBaseImageLayer(imageID) {
+  const detailElementID = `base-image-details-${imageID}`;
+  const detailsElement = document.getElementById(detailElementID);
+
+  const icon = document.querySelector(
+    `#base-image-summary-${imageID} .material-icons`
+  ); 
+
+  const hidBlock = detailsElement.classList.toggle("hide-block");
+  icon.classList.toggle("expanded", !hidBlock);
+}
+
+function showPackageDetails(detailsId) {
+  const detailsElement = document.getElementById(
+    `table-tr-${detailsId}-details`
+  );
+  const icon = document.querySelector(`#table-tr-${detailsId} .material-icons`); 
+
+  const hidBlock = detailsElement.classList.toggle("hide-block");
+  icon.classList.toggle("expanded", !hidBlock);
+}
+
+function openVulnInNewTab(inputString) {
+  const osvURL = `https://osv.dev/${inputString}`;
+  const tabs = document.getElementById("tabs");
+  const tabSwitches = document.getElementById("tab-switch");
+
+  const existingTab = document.getElementById(inputString);
+  if (existingTab) {
+    openTab(inputString);
+    return;
+  }
+
+  
+  const newTab = document.createElement("div");
+  newTab.id = inputString; 
+  newTab.className = "tab osv-tab"; 
+
+  
+  const spinner = document.createElement("div");
+  spinner.className = "iframe-spinner";
+
+  
+  const iframe = document.createElement("iframe");
+  iframe.src = osvURL;
+  iframe.onload = () => {
+    newTab.removeChild(spinner);
+  };
+
+  
+  const newTabButton = document.createElement("div");
+  newTabButton.id = `${inputString}-button`;
+  newTabButton.className = "tab-switch-button";
+  newTabButton.onclick = () => {
+    openTab(inputString);
+  };
+
+  
+  const newTabTextContainer = document.createElement("div");
+  newTabTextContainer.className = "tab-button-text-container";
+  const newTabText = document.createElement("p");
+  newTabText.textContent = inputString;
+  newTabTextContainer.appendChild(newTabText);
+
+  const newTabButtonBorder = document.createElement("div");
+  newTabButtonBorder.className = "tab-switch-button-border";
+  newTabTextContainer.appendChild(newTabButtonBorder);
+
+  newTabButton.appendChild(newTabTextContainer);
+
+  const closeIcon = document.createElement("span");
+  closeIcon.className = "material-icons";
+  closeIcon.textContent = "close";
+  
+  closeIcon.onclick = event => {
+    event.stopPropagation(); 
+    closeVulnTab(inputString);
+  };
+
+  newTabButton.appendChild(closeIcon);
+
+  
+  newTab.appendChild(spinner);
+  newTab.appendChild(iframe);
+  
+  tabs.appendChild(newTab);
+  tabSwitches.appendChild(newTabButton);
+
+  openTab(newTab.id);
+}
+
+function closeVulnTab(inputString) {
+  const tabToRemove = document.getElementById(inputString);
+  const buttonToRemove = document.getElementById(`${inputString}-button`);
+  const tabs = document.getElementById("tabs");
+  const tabSwitches = document.getElementById("tab-switch");
+
+  if (tabToRemove && buttonToRemove) {
+    const nextTabButton =
+      buttonToRemove.nextElementSibling ||
+      buttonToRemove.previousElementSibling;
+
+    tabs.removeChild(tabToRemove);
+    tabSwitches.removeChild(buttonToRemove);
+
+    if (nextTabButton) {
+      const nextTabId = nextTabButton.id.replace("-button", "");
+      openTab(nextTabId);
+    }
+  }
+}
+
+function openTab(activeTabId) {
+  const tabs = document.getElementsByClassName("tab");
+  const tabButtons = document.getElementsByClassName("tab-switch-button");
+  for (let i = 0; i < tabs.length; i += 1) {
+    tabs[i].classList.toggle("hide-block", tabs[i].id !== activeTabId);
+    tabButtons[i].classList.toggle(
+      "tab-switch-button-selected",
+      tabs[i].id === activeTabId
+    );
+  }
+}
+
+function hideAllFilterOptions() {
+  const containers = document.getElementsByClassName("filter-option-container");
+
+  for (const container of containers) {
+    container.classList.add("hide-block");
+  }
+}
+
+function toggleFilter(input) {
+  const targetID = `${input}-filter-option-container`;
+  const optionContainer = document.getElementById(targetID);
+  const containers = document.getElementsByClassName("filter-option-container");
+  for (const loopContainer of containers) {
+    if (loopContainer.id === targetID) {
+      optionContainer.classList.toggle("hide-block");
+    } else {
+      loopContainer.classList.add("hide-block");
+    }
+  }
+}
+
+function showAndHideParentSections() {
+  const ecosystemContainers = document.querySelectorAll(".ecosystem-container");
+
+  ecosystemContainers.forEach(ecosystemContainer => {
+    const sourceContainers =
+      ecosystemContainer.querySelectorAll(".source-container");
+    let ecosystemHasVisibleSources = false;
+
+    sourceContainers.forEach(sourceContainer => {
+      const packageRows = sourceContainer.querySelectorAll(".package-tr");
+      let sourceHasVisibleRows = false;
+
+      packageRows.forEach(packageRow => {
+        const packageDetails = document.getElementById(
+          `${packageRow.id}-details`
+        );
+        const vulnRows = packageDetails.querySelectorAll(".vuln-tr");
+        if (
+          Array.from(vulnRows).some(
+            row => !row.classList.contains("hide-block")
+          )
+        ) {
+          sourceHasVisibleRows = true;
+          packageRow.classList.remove("hide-block");
+          return;
+        }
+
+        packageRow.classList.add("hide-block");
+        packageDetails.classList.add("hide-block");
+        const icon = document.querySelector(
+          `#${packageRow.id} .material-icons`
+        );
+        icon.classList.remove("expanded"); 
+      });
+
+      sourceContainer.classList.toggle("hide-block", !sourceHasVisibleRows);
+
+      if (sourceHasVisibleRows) {
+        ecosystemHasVisibleSources = true;
+      }
+    });
+
+    ecosystemContainer.classList.toggle(
+      "hide-block",
+      !ecosystemHasVisibleSources
+    );
+  });
+}
+
+function showAllVulns() {
+  const vulnRows = document.getElementsByClassName("vuln-tr");
+  for (const row of vulnRows) {
+    const isUncalled = row.classList.contains("uncalled-tr");
+    row.classList.toggle("hide-block", isUncalled);
+  }
+
+  showAndHideParentSections();
+}
+
+function applyFilters(selectedTypeFilterValue, selectedLayerFilterValue) {
+  
+  showAllVulns();
+  applyTypeFilter(selectedTypeFilterValue);
+  applyLayerFilter(selectedLayerFilterValue);
+  showAndHideParentSections();
+}
+
+function applyTypeFilter(selectedValue) {
+  updateTypeFilterText();
+  const selectedAll = selectedValue.has("all");
+  const selectedProject = selectedAll || selectedValue.has("project");
+  const selectedOS = selectedAll || selectedValue.has("os");
+  const selectedUncalled = selectedValue.has("uncalled");
+
+  const ecosystemElements = document.querySelectorAll(".ecosystem-container");
+
+  ecosystemElements.forEach(ecosystemElement => {
+    const vulnElements = ecosystemElement.querySelectorAll(".vuln-tr");
+    vulnElements.forEach(vuln => {
+      if (vuln.classList.contains("uncalled-tr")) {
+        vuln.classList.toggle("hide-block", !selectedUncalled);
+      }
+      if (
+        (ecosystemElement.classList.contains("os-type") && !selectedOS) ||
+        (ecosystemElement.classList.contains("project-type") &&
+          !selectedProject)
+      ) {
+        vuln.classList.add("hide-block");
+      }
+    });
+  });
+}
+
+function applyLayerFilter(selectedLayerID) {
+  const tableRows = document.querySelectorAll("tr.has-layer-info");
+  tableRows.forEach(row => {
+    const rowLayerID = row.getAttribute("data-layer");
+    if (selectedLayerID !== "all" && rowLayerID !== selectedLayerID) {
+      const packageDetails = document.getElementById(`${row.id}-details`);
+      const vulnElements = packageDetails.querySelectorAll(".vuln-tr");
+      vulnElements.forEach(vuln => {
+        vuln.classList.add("hide-block");
+      });
+    }
+  });
+}
+
+function updateTypeFilterText() {
+  const typeSelected = document.getElementById("type-filter-selected");
+  const selectedVulnCount = document.getElementById("selected-count");
+
+  const allTypeCheckbox = document.getElementById("all-type-checkbox");
+  const osTypeCheckbox = document.getElementById("os-type-checkbox");
+  const projectTypeCheckbox = document.getElementById("project-type-checkbox");
+  const uncalledTypeCheckbox = document.getElementById(
+    "uncalled-type-checkbox"
+  );
+
+  let selectedText = "";
+  let selectedCount = 0;
+
+  if (projectTypeCheckbox && projectTypeCheckbox.checked) {
+    selectedText += `${selectedText ? ", " : ""}Project`;
+    const projectTypeVulnCount = projectTypeCheckbox.getAttribute(
+      "data-type-project-count"
+    );
+    selectedCount += parseInt(projectTypeVulnCount, 10);
+  }
+  if (osTypeCheckbox && osTypeCheckbox.checked) {
+    selectedText += `${selectedText ? ", " : ""}OS`;
+    const osTypeVulnCount = osTypeCheckbox.getAttribute("data-type-os-count");
+    selectedCount += parseInt(osTypeVulnCount, 10);
+  }
+  if (uncalledTypeCheckbox && uncalledTypeCheckbox.checked) {
+    selectedText += `${selectedText ? ", " : ""}Unimportant`;
+    const uncalledTypeVulnCount = uncalledTypeCheckbox.getAttribute(
+      "data-type-uncalled-count"
+    );
+    selectedCount += parseInt(uncalledTypeVulnCount, 10);
+  }
+
+  if (
+    allTypeCheckbox &&
+    allTypeCheckbox.checked &&
+    uncalledTypeCheckbox &&
+    !uncalledTypeCheckbox.checked
+  ) {
+    selectedText = "Default";
+  }
+
+  typeSelected.textContent = selectedText;
+  selectedVulnCount.textContent = selectedCount;
+}
+
+function resetFilterText() {
+  const layerSelected = document.getElementById("layer-filter-selected");
+  const allLayerCheckedBox = document.getElementById("all-layer-checkbox");
+  if (layerSelected) {
+    layerSelected.textContent = `All layers (${allLayerCheckedBox.getAttribute("data-layer-all-count")})`;
+  }
+
+  const typeSelected = document.getElementById("type-filter-selected");
+  const selectedVulnCount = document.getElementById("selected-count");
+  const allTypeCheckedBox = document.getElementById("all-type-checkbox");
+  const uncalledTypeCheckBox = document.getElementById(
+    "uncalled-type-checkbox"
+  );
+  if (allTypeCheckedBox) {
+    typeSelected.textContent = "Default";
+    selectedVulnCount.textContent = allTypeCheckedBox.getAttribute(
+      "data-type-all-count"
+    );
+    if (allLayerCheckedBox) {
+      allLayerCheckedBox.checked = true;
+    }
+    uncalledTypeCheckBox.checked = false;
+  } else {
+    const projectTypeCheckedBox = document.getElementById(
+      "project-type-checkbox"
+    );
+    projectTypeCheckedBox.checked = true;
+    typeSelected.textContent = "Default";
+    selectedVulnCount.textContent = projectTypeCheckedBox.getAttribute(
+      "data-type-project-count"
+    );
+    uncalledTypeCheckBox.checked = false;
+  }
+}
+
+function resetSearchText() {
+  const vulnSearchInput = document.getElementById("vuln-search");
+  if (vulnSearchInput.value !== "") {
+    vulnSearchInput.value = "";
+    showAllVulns();
+  }
+}
+
+function resetTypeCheckbox() {
+  const allTypeCheckbox = document.getElementById("all-type-checkbox");
+  const osTypeCheckbox = document.getElementById("os-type-checkbox");
+  const projectTypeCheckbox = document.getElementById("project-type-checkbox");
+  const uncalledTypeCheckbox = document.getElementById(
+    "uncalled-type-checkbox"
+  );
+
+  if (allTypeCheckbox) {
+    allTypeCheckbox.checked = true;
+    projectTypeCheckbox.checked = true;
+    if (osTypeCheckbox) {
+      osTypeCheckbox.checked = true;
+    }
+    uncalledTypeCheckbox.checked = false;
+  }
+}
+
+document.addEventListener("DOMContentLoaded", () => {
+  resetFilterText();
+  showAndHideParentSections();
+
+  
+  const typeFilterOptions = document.getElementById(
+    "type-filter-option-container"
+  );
+
+  typeFilterOptions.addEventListener("change", event => {
+    resetSearchText();
+    const changedElement = event.target;
+    const allTypesCheckbox = document.getElementById("all-type-checkbox");
+    const projectCheckbox = document.getElementById("project-type-checkbox"); 
+    const osCheckbox = document.getElementById("os-type-checkbox"); 
+    const uncalledCheckbox = document.getElementById("uncalled-type-checkbox"); 
+    selectedTypeFilterValue.clear();
+
+    if (allTypesCheckbox !== null) {
+      if (changedElement === allTypesCheckbox) {
+        osCheckbox.checked = allTypesCheckbox.checked;
+        projectCheckbox.checked = allTypesCheckbox.checked;
+        if (allTypesCheckbox.checked === true) {
+          selectedTypeFilterValue.add("all");
+        }
+      }
+      if (osCheckbox.checked === false || projectCheckbox.checked === false) {
+        allTypesCheckbox.checked = false;
+      }
+
+      if (osCheckbox.checked) {
+        selectedTypeFilterValue.add("os");
+      }
+    }
+
+    if (projectCheckbox.checked) {
+      selectedTypeFilterValue.add("project");
+    }
+
+    if (uncalledCheckbox.checked) {
+      selectedTypeFilterValue.add("uncalled");
+    }
+
+    applyFilters(selectedTypeFilterValue, selectedLayer);
+  });
+
+  
+  const layerFilterOptionsContainer = document.getElementById(
+    "layer-filter-option-container"
+  );
+
+  if (layerFilterOptionsContainer) {
+    layerFilterOptionsContainer.addEventListener("click", event => {
+      const clickedOption = event.target.closest(".layer-filter-option");
+      if (clickedOption) {
+        resetSearchText();
+        selectedLayer = clickedOption.getAttribute("data-layer-hash");
+        const selectedDisplay = document.getElementById(
+          "layer-filter-selected"
+        );
+        const layerCommand = clickedOption.querySelector("p:first-child");
+        selectedDisplay.textContent = layerCommand.textContent;
+
+        hideAllFilterOptions();
+        applyFilters(selectedTypeFilterValue, selectedLayer);
+      }
+    });
+  }
+
+  
+  const filterSections = document.querySelectorAll("div.filter");
+
+  document.addEventListener("click", event => {
+    if (![...filterSections].some(c => c.contains(event.target))) {
+      hideAllFilterOptions();
+    }
+  });
+
+  
+  const vulnSearchInput = document.getElementById("vuln-search");
+  vulnSearchInput.addEventListener("keyup", () => {
+    resetFilterText();
+    selectedTypeFilterValue.clear();
+    selectedTypeFilterValue.add("all");
+    selectedLayer = "all";
+    resetTypeCheckbox();
+
+    const searchTerm = vulnSearchInput.value.trim().toLowerCase();
+
+    const vulnRows = document.querySelectorAll("[data-vuln-id]");
+
+    if (searchTerm === "") {
+      showAllVulns();
+      return;
+    }
+
+    vulnRows.forEach(row => {
+      const vulnID = row.getAttribute("data-vuln-id").toLowerCase();
+      row.classList.toggle("hide-block", !vulnID.includes(searchTerm));
+    });
+    showAndHideParentSections();
+  });
+
+  
+  document.querySelectorAll(".tooltip").forEach(elem => {
+    elem.addEventListener("mouseover", () => {
+      const rect = elem.getBoundingClientRect();
+      const tooltipElem = elem.querySelector(".tooltiptext");
+
+      tooltipElem.style.left = `${rect.left}px`;
+      tooltipElem.style.top = `${rect.top}px`;
+    });
+  });
+
+  showAllVulns();
+});
+
+  </script>
+</body>
+
+</html>

@@ -1,0 +1,468 @@
+{
+  "scanId": "scan_20250924_131318",
+  "timestamp": "2025-09-24T18:14:52.281Z",
+  "nodeJs": {
+    "version": "unknown",
+    "vulnerable": false,
+    "issues": []
+  },
+  "summary": {
+    "total": 52,
+    "packages": 52,
+    "critical": 8,
+    "high": 9,
+    "moderate": 32,
+    "medium": 32,
+    "low": 3,
+    "info": 0
+  },
+  "severity": {
+    "critical": 8,
+    "high": 9,
+    "moderate": 32,
+    "medium": 32,
+    "low": 3,
+    "info": 0
+  },
+  "fixability": {
+    "fixable": {
+      "yes": 45,
+      "manual": 0,
+      "no": 7
+    },
+    "automaticFixRate": 87
+  },
+  "riskScore": 402,
+  "posture": {
+    "level": "CRITICAL",
+    "color": "red",
+    "message": "Critical vulnerabilities found - immediate action required",
+    "priority": 1
+  },
+  "recommendations": [
+    {
+      "priority": "CRITICAL",
+      "action": "Fix 8 critical vulnerabilities immediately",
+      "type": "security"
+    },
+    {
+      "priority": "HIGH",
+      "action": "Address 9 high-severity vulnerabilities",
+      "type": "security"
+    },
+    {
+      "priority": "LOW",
+      "action": "Review and address medium-severity vulnerabilities when possible",
+      "type": "maintenance"
+    }
+  ],
+  "scanCoverage": {
+    "scansRun": [
+      "npm-audit",
+      "better-npm-audit"
+    ],
+    "totalScans": 4,
+    "coverage": 50
+  },
+  "targets": {
+    "critical": {
+      "current": 8,
+      "target": 0,
+      "status": "FAIL"
+    },
+    "high": {
+      "current": 9,
+      "target": 5,
+      "status": "FAIL"
+    },
+    "medium": {
+      "current": 64,
+      "target": 20,
+      "status": "FAIL"
+    },
+    "nodeVulnerable": {
+      "current": false,
+      "target": false,
+      "status": "PASS"
+    },
+    "automaticFixRate": {
+      "current": 87,
+      "target": 60,
+      "status": "PASS"
+    }
+  },
+  "rawData": {
+    "consolidatedVulnerabilities": [
+      {
+        "package": "@aristocrattechnologiesinc/local-storage-server",
+        "severity": "critical",
+        "title": "Unknown vulnerability",
+        "fixAvailable": "no",
+        "source": "npm-audit"
+      },
+      {
+        "package": "@aristocrattechnologiesinc/lone-star-platform",
+        "severity": "critical",
+        "title": "Unknown vulnerability",
+        "fixAvailable": "no",
+        "source": "npm-audit"
+      },
+      {
+        "package": "@aristocrattechnologiesinc/plugins-terminate-round",
+        "severity": "critical",
+        "title": "Unknown vulnerability",
+        "fixAvailable": "no",
+        "source": "npm-audit"
+      },
+      {
+        "package": "@jest/core",
+        "severity": "moderate",
+        "title": "Unknown vulnerability",
+        "fixAvailable": "yes",
+        "source": "npm-audit"
+      },
+      {
+        "package": "@jest/environment",
+        "severity": "moderate",
+        "title": "Unknown vulnerability",
+        "fixAvailable": "yes",
+        "source": "npm-audit"
+      },
+      {
+        "package": "@jest/fake-timers",
+        "severity": "moderate",
+        "title": "Unknown vulnerability",
+        "fixAvailable": "yes",
+        "source": "npm-audit"
+      },
+      {
+        "package": "@jest/reporters",
+        "severity": "moderate",
+        "title": "Unknown vulnerability",
+        "fixAvailable": "yes",
+        "source": "npm-audit"
+      },
+      {
+        "package": "@jest/test-sequencer",
+        "severity": "moderate",
+        "title": "Unknown vulnerability",
+        "fixAvailable": "yes",
+        "source": "npm-audit"
+      },
+      {
+        "package": "@jest/transform",
+        "severity": "moderate",
+        "title": "Unknown vulnerability",
+        "fixAvailable": "yes",
+        "source": "npm-audit"
+      },
+      {
+        "package": "@nestjs/platform-express",
+        "severity": "high",
+        "title": "Unknown vulnerability",
+        "fixAvailable": "yes",
+        "source": "npm-audit"
+      },
+      {
+        "package": "@openapitools/openapi-generator-cli",
+        "severity": "high",
+        "title": "Unknown vulnerability",
+        "fixAvailable": "yes",
+        "source": "npm-audit"
+      },
+      {
+        "package": "anymatch",
+        "severity": "moderate",
+        "title": "Unknown vulnerability",
+        "fixAvailable": "yes",
+        "source": "npm-audit"
+      },
+      {
+        "package": "axios",
+        "severity": "high",
+        "title": "Axios is vulnerable to DoS attack through lack of data size check",
+        "fixAvailable": "yes",
+        "source": "npm-audit"
+      },
+      {
+        "package": "babel-jest",
+        "severity": "moderate",
+        "title": "Unknown vulnerability",
+        "fixAvailable": "yes",
+        "source": "npm-audit"
+      },
+      {
+        "package": "braces",
+        "severity": "high",
+        "title": "Uncontrolled resource consumption in braces",
+        "fixAvailable": "yes",
+        "source": "npm-audit"
+      },
+      {
+        "package": "expect",
+        "severity": "moderate",
+        "title": "Unknown vulnerability",
+        "fixAvailable": "yes",
+        "source": "npm-audit"
+      },
+      {
+        "package": "external-editor",
+        "severity": "low",
+        "title": "Unknown vulnerability",
+        "fixAvailable": "yes",
+        "source": "npm-audit"
+      },
+      {
+        "package": "form-data",
+        "severity": "critical",
+        "title": "form-data uses unsafe random function in form-data for choosing boundary",
+        "fixAvailable": "yes",
+        "source": "npm-audit"
+      },
+      {
+        "package": "inquirer",
+        "severity": "low",
+        "title": "Unknown vulnerability",
+        "fixAvailable": "yes",
+        "source": "npm-audit"
+      },
+      {
+        "package": "jest",
+        "severity": "moderate",
+        "title": "Unknown vulnerability",
+        "fixAvailable": "yes",
+        "source": "npm-audit"
+      },
+      {
+        "package": "jest-cli",
+        "severity": "moderate",
+        "title": "Unknown vulnerability",
+        "fixAvailable": "yes",
+        "source": "npm-audit"
+      },
+      {
+        "package": "jest-config",
+        "severity": "moderate",
+        "title": "Unknown vulnerability",
+        "fixAvailable": "yes",
+        "source": "npm-audit"
+      },
+      {
+        "package": "jest-each",
+        "severity": "moderate",
+        "title": "Unknown vulnerability",
+        "fixAvailable": "yes",
+        "source": "npm-audit"
+      },
+      {
+        "package": "jest-environment-jsdom",
+        "severity": "moderate",
+        "title": "Unknown vulnerability",
+        "fixAvailable": "yes",
+        "source": "npm-audit"
+      },
+      {
+        "package": "jest-environment-node",
+        "severity": "moderate",
+        "title": "Unknown vulnerability",
+        "fixAvailable": "yes",
+        "source": "npm-audit"
+      },
+      {
+        "package": "jest-haste-map",
+        "severity": "moderate",
+        "title": "Unknown vulnerability",
+        "fixAvailable": "yes",
+        "source": "npm-audit"
+      },
+      {
+        "package": "jest-jasmine2",
+        "severity": "moderate",
+        "title": "Unknown vulnerability",
+        "fixAvailable": "yes",
+        "source": "npm-audit"
+      },
+      {
+        "package": "jest-message-util",
+        "severity": "moderate",
+        "title": "Unknown vulnerability",
+        "fixAvailable": "yes",
+        "source": "npm-audit"
+      },
+      {
+        "package": "jest-resolve-dependencies",
+        "severity": "moderate",
+        "title": "Unknown vulnerability",
+        "fixAvailable": "yes",
+        "source": "npm-audit"
+      },
+      {
+        "package": "jest-runner",
+        "severity": "moderate",
+        "title": "Unknown vulnerability",
+        "fixAvailable": "yes",
+        "source": "npm-audit"
+      },
+      {
+        "package": "jest-runtime",
+        "severity": "moderate",
+        "title": "Unknown vulnerability",
+        "fixAvailable": "yes",
+        "source": "npm-audit"
+      },
+      {
+        "package": "jest-snapshot",
+        "severity": "moderate",
+        "title": "Unknown vulnerability",
+        "fixAvailable": "yes",
+        "source": "npm-audit"
+      },
+      {
+        "package": "jest-util",
+        "severity": "moderate",
+        "title": "Unknown vulnerability",
+        "fixAvailable": "yes",
+        "source": "npm-audit"
+      },
+      {
+        "package": "jest-watcher",
+        "severity": "moderate",
+        "title": "Unknown vulnerability",
+        "fixAvailable": "yes",
+        "source": "npm-audit"
+      },
+      {
+        "package": "jsdom",
+        "severity": "moderate",
+        "title": "Unknown vulnerability",
+        "fixAvailable": "yes",
+        "source": "npm-audit"
+      },
+      {
+        "package": "koa",
+        "severity": "critical",
+        "title": "Inefficient Regular Expression Complexity in koa",
+        "fixAvailable": "no",
+        "source": "npm-audit"
+      },
+      {
+        "package": "micromatch",
+        "severity": "high",
+        "title": "Regular Expression Denial of Service (ReDoS) in micromatch",
+        "fixAvailable": "yes",
+        "source": "npm-audit"
+      },
+      {
+        "package": "multer",
+        "severity": "high",
+        "title": "Multer vulnerable to Denial of Service via unhandled exception from malformed request",
+        "fixAvailable": "yes",
+        "source": "npm-audit"
+      },
+      {
+        "package": "node-notifier",
+        "severity": "moderate",
+        "title": "OS Command Injection in node-notifier",
+        "fixAvailable": "yes",
+        "source": "npm-audit"
+      },
+      {
+        "package": "pbkdf2",
+        "severity": "critical",
+        "title": "pbkdf2 silently disregards Uint8Array input, returning static keys",
+        "fixAvailable": "yes",
+        "source": "npm-audit"
+      },
+      {
+        "package": "puppeteer",
+        "severity": "high",
+        "title": "Unknown vulnerability",
+        "fixAvailable": "no",
+        "source": "npm-audit"
+      },
+      {
+        "package": "request",
+        "severity": "critical",
+        "title": "Server-Side Request Forgery in Request",
+        "fixAvailable": "yes",
+        "source": "npm-audit"
+      },
+      {
+        "package": "request-promise-core",
+        "severity": "moderate",
+        "title": "Unknown vulnerability",
+        "fixAvailable": "yes",
+        "source": "npm-audit"
+      },
+      {
+        "package": "request-promise-native",
+        "severity": "moderate",
+        "title": "Unknown vulnerability",
+        "fixAvailable": "yes",
+        "source": "npm-audit"
+      },
+      {
+        "package": "sane",
+        "severity": "moderate",
+        "title": "Unknown vulnerability",
+        "fixAvailable": "yes",
+        "source": "npm-audit"
+      },
+      {
+        "package": "sha.js",
+        "severity": "critical",
+        "title": "sha.js is missing type checks leading to hash rewind and passing on crafted data",
+        "fixAvailable": "yes",
+        "source": "npm-audit"
+      },
+      {
+        "package": "tar-fs",
+        "severity": "high",
+        "title": "tar-fs Vulnerable to Link Following and Path Traversal via Extracting a Crafted tar File",
+        "fixAvailable": "no",
+        "source": "npm-audit"
+      },
+      {
+        "package": "tmp",
+        "severity": "low",
+        "title": "tmp allows arbitrary temporary file / directory write via symbolic link `dir` parameter",
+        "fixAvailable": "yes",
+        "source": "npm-audit"
+      },
+      {
+        "package": "tough-cookie",
+        "severity": "moderate",
+        "title": "tough-cookie Prototype Pollution vulnerability",
+        "fixAvailable": "yes",
+        "source": "npm-audit"
+      },
+      {
+        "package": "ts-jest",
+        "severity": "moderate",
+        "title": "Unknown vulnerability",
+        "fixAvailable": "yes",
+        "source": "npm-audit"
+      },
+      {
+        "package": "ws",
+        "severity": "high",
+        "title": "ws affected by a DoS when handling a request with many HTTP headers",
+        "fixAvailable": "no",
+        "source": "npm-audit"
+      },
+      {
+        "package": "yargs-parser",
+        "severity": "moderate",
+        "title": "yargs-parser Vulnerable to Prototype Pollution",
+        "fixAvailable": "yes",
+        "source": "npm-audit"
+      }
+    ],
+    "sources": [
+      "npm-audit",
+      "better-npm-audit",
+      "pnpm-audit",
+      "node-vulnerable"
+    ]
+  }
+}

